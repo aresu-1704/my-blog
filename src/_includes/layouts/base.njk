@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="vi">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{ title or "Lý Thuận An" }}</title>
+	<meta name="description" content="{{ description or 'Blog cá nhân của Lý Thuận An' }}">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+	<header class="site-header">
+		<div class="container">
+			<div class="brand">
+				<a href="/" class="brand__link">Lý Thuận An</a>
+			</div>
+			<nav class="nav">
+				<ul class="nav__list">
+					<li><a class="nav__link{% if page.url == '/' %} is-active{% endif %}" href="/">Home</a></li>
+					<li><a class="nav__link" href="/about/">About</a></li>
+					<li><a class="nav__link" href="/resume/">Resume</a></li>
+					<li><a class="nav__link" href="/gallery/">Gallery</a></li>
+					<li><a class="nav__link" href="/portfolio/">Portfolio</a></li>
+					<li><a class="nav__link" href="/research/">Research</a></li>
+					<li><a class="nav__link" href="/shares/">Shares</a></li>
+					<li><a class="nav__link" href="/contact/">Contact</a></li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+	<main class="site-main">
+		<div class="container">
+			{{ content | safe }}
+		</div>
+	</main>
+	<footer class="site-footer">
+		<div class="container">
+			<p>© {{ site.year }} Lý Thuận An. All rights reserved.</p>
+		</div>
+	</footer>
+	<script src="/assets/js/main.js" defer></script>
+	</body>
+</html>
+

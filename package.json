@@ -1,0 +1,14 @@
+{
+  "name": "my-blog",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Personal blog of Ly Thuận An built with Eleventy (11ty)",
+  "scripts": {
+    "dev": "eleventy --serve --quiet",
+    "build": "eleventy"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.0.0"
+  }
+}
+
