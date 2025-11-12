@@ -8,24 +8,24 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="/assets/css/main.css">
+	<link rel="stylesheet" href="{{ '/assets/css/main.css' | url }}">
 </head>
 <body>
 	<header class="site-header">
 		<div class="container">
 			<div class="brand">
-				<a href="/" class="brand__link">Lý Thuận An</a>
+				<a href="{{ '/' | url }}" class="brand__link">Lý Thuận An</a>
 			</div>
 			<nav class="nav">
 				<ul class="nav__list">
-					<li><a class="nav__link{% if page.url == '/' %} is-active{% endif %}" href="/">Home</a></li>
-					<li><a class="nav__link" href="/about/">About</a></li>
-					<li><a class="nav__link" href="/resume/">Resume</a></li>
-					<li><a class="nav__link" href="/gallery/">Gallery</a></li>
-					<li><a class="nav__link" href="/portfolio/">Portfolio</a></li>
-					<li><a class="nav__link" href="/research/">Research</a></li>
-					<li><a class="nav__link" href="/shares/">Shares</a></li>
-					<li><a class="nav__link" href="/contact/">Contact</a></li>
+					<li><a class="nav__link{% if page.url == '/' %} is-active{% endif %}" href="{{ '/' | url }}">Home</a></li>
+					<li><a class="nav__link{% if page.url.startsWith('/about/') %} is-active{% endif %}" href="{{ '/about/' | url }}">About</a></li>
+					<li><a class="nav__link{% if page.url.startsWith('/resume/') %} is-active{% endif %}" href="{{ '/resume/' | url }}">Resume</a></li>
+					<li><a class="nav__link{% if page.url.startsWith('/gallery/') %} is-active{% endif %}" href="{{ '/gallery/' | url }}">Gallery</a></li>
+					<li><a class="nav__link{% if page.url.startsWith('/portfolio/') %} is-active{% endif %}" href="{{ '/portfolio/' | url }}">Portfolio</a></li>
+					<li><a class="nav__link{% if page.url.startsWith('/research/') %} is-active{% endif %}" href="{{ '/research/' | url }}">Research</a></li>
+					<li><a class="nav__link{% if page.url.startsWith('/shares/') %} is-active{% endif %}" href="{{ '/shares/' | url }}">Shares</a></li>
+					<li><a class="nav__link{% if page.url.startsWith('/contact/') %} is-active{% endif %}" href="{{ '/contact/' | url }}">Contact</a></li>
 				</ul>
 			</nav>
 		</div>
@@ -40,7 +40,7 @@
 			<p>© {{ site.year }} Lý Thuận An. All rights reserved.</p>
 		</div>
 	</footer>
-	<script src="/assets/js/main.js" defer></script>
+	<script src="{{ '/assets/js/main.js' | url }}" defer></script>
 	</body>
 </html>
 
