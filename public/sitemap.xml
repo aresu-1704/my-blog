@@ -3,13 +3,46 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>http://localhost:1313/</loc>
-    <lastmod>2025-12-21T19:00:00+07:00</lastmod>
+    <lastmod>2025-12-22T00:23:10+07:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/categories/</loc>
-    <lastmod>2025-12-21T19:00:00+07:00</lastmod>
+    <lastmod>2025-12-22T00:23:10+07:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/client-server/</loc>
-    <lastmod>2025-12-21T19:00:00+07:00</lastmod>
+    <lastmod>2025-12-22T00:23:10+07:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/full-stack/</loc>
+    <lastmod>2025-12-22T00:23:10+07:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/http/</loc>
+    <lastmod>2025-12-22T00:23:10+07:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/categories/javascript/</loc>
+    <lastmod>2025-12-22T00:23:10+07:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/javascript/</loc>
+    <lastmod>2025-12-22T00:23:10+07:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/post/js-client-server/</loc>
+    <lastmod>2025-12-22T00:23:10+07:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/categories/networking/</loc>
+    <lastmod>2025-12-22T00:23:10+07:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/node.js/</loc>
+    <lastmod>2025-12-22T00:23:10+07:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/post/</loc>
+    <lastmod>2025-12-22T00:23:10+07:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/categories/programming/</loc>
+    <lastmod>2025-12-22T00:23:10+07:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/</loc>
+    <lastmod>2025-12-22T00:23:10+07:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/about/</loc>
+    <lastmod>2025-12-21T21:50:00+07:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/categories/java/</loc>
     <lastmod>2025-12-21T19:00:00+07:00</lastmod>
@@ -23,25 +56,16 @@
     <loc>http://localhost:1313/tags/network/</loc>
     <lastmod>2025-12-21T19:00:00+07:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/categories/networking/</loc>
-    <lastmod>2025-12-21T19:00:00+07:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/post/</loc>
-    <lastmod>2025-12-21T19:00:00+07:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/categories/programming/</loc>
-    <lastmod>2025-12-21T19:00:00+07:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/post/simple-chat-tcp-java/</loc>
-    <lastmod>2025-12-21T19:00:00+07:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/tags/socket/</loc>
-    <lastmod>2025-12-21T19:00:00+07:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/tags/</loc>
     <lastmod>2025-12-21T19:00:00+07:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/tcp/ip/</loc>
     <lastmod>2025-12-21T19:00:00+07:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/post/advanced-chat-tcp-java/</loc>
+    <lastmod>2025-12-20T19:00:00+07:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/post/simple-chat-tcp-java/</loc>
+    <lastmod>2025-12-18T19:00:00+07:00</lastmod>
   </url>
 </urlset>

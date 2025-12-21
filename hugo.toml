@@ -3,12 +3,10 @@ languageCode = 'vi-vn'
 title = 'Blog của Thuận An'
 theme = 'Stack'
 
-[menu]
+[markup.goldmark.renderer]
+unsafe = true
 
-  [[menu.main]]
-    name = "Programming"
-    url = "/programing-knowledge/"
-    weight = 10
+[menu]
 
   [[menu.main]]
     name = "Research"

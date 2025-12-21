@@ -6,18 +6,18 @@
         <description>Recent content in Categories on Blog của Thuận An</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>vi-vn</language>
-        <lastBuildDate>Sun, 21 Dec 2025 19:00:00 +0700</lastBuildDate><atom:link href="http://localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>Java</title>
-        <link>http://localhost:1313/categories/java/</link>
-        <pubDate>Sun, 21 Dec 2025 19:00:00 +0700</pubDate>
+        <lastBuildDate>Mon, 22 Dec 2025 00:23:10 +0700</lastBuildDate><atom:link href="http://localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>JavaScript</title>
+        <link>http://localhost:1313/categories/javascript/</link>
+        <pubDate>Mon, 22 Dec 2025 00:23:10 +0700</pubDate>
         
-        <guid>http://localhost:1313/categories/java/</guid>
+        <guid>http://localhost:1313/categories/javascript/</guid>
         <description></description>
         </item>
         <item>
         <title>Networking</title>
         <link>http://localhost:1313/categories/networking/</link>
-        <pubDate>Sun, 21 Dec 2025 19:00:00 +0700</pubDate>
+        <pubDate>Mon, 22 Dec 2025 00:23:10 +0700</pubDate>
         
         <guid>http://localhost:1313/categories/networking/</guid>
         <description></description>
@@ -25,9 +25,17 @@
         <item>
         <title>Programming</title>
         <link>http://localhost:1313/categories/programming/</link>
-        <pubDate>Sun, 21 Dec 2025 19:00:00 +0700</pubDate>
+        <pubDate>Mon, 22 Dec 2025 00:23:10 +0700</pubDate>
         
         <guid>http://localhost:1313/categories/programming/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Java</title>
+        <link>http://localhost:1313/categories/java/</link>
+        <pubDate>Sun, 21 Dec 2025 19:00:00 +0700</pubDate>
+        
+        <guid>http://localhost:1313/categories/java/</guid>
         <description></description>
         </item>
         

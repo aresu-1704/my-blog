@@ -1,0 +1,25 @@
+/* Tăng chiều cao ảnh preview cho bài viết và stretch full width */
+.article-list {
+  article {
+    .article-image {
+      width: 100%;
+      overflow: hidden;
+      
+      img {
+        width: 100% !important;
+        height: 225px !important; /* Mobile: giảm 1/2 */
+        object-fit: cover !important;
+        object-position: center !important;
+        display: block;
+
+        @media (min-width: 768px) {
+          height: 240px !important; /* Tablet: giảm 1/2 */
+        }
+
+        @media (min-width: 1280px) {
+          height: 325px !important; /* Desktop: giảm 1/2 */
+        }
+      }
+    }
+  }
+}
