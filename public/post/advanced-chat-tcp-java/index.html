@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="vi-vn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Hướng dẫn xây dựng ứng dụng Chat nâng cao sử dụng TCP trong Java nâng cao bằng Multi-threads">
+<title>Ứng dụng Chat sử dụng TCP trong Java (Phần 2)</title>
+
+<link rel='canonical' href='http://localhost:1313/post/advanced-chat-tcp-java/'>
+
+<link rel="stylesheet" href="/scss/style.min.4d36f8dc1fd48129e1635deb4b8eb2870fa09474f7280c4cb606d40b2526994b.css"><meta property='og:title' content="Ứng dụng Chat sử dụng TCP trong Java (Phần 2)">
+<meta property='og:description' content="Hướng dẫn xây dựng ứng dụng Chat nâng cao sử dụng TCP trong Java nâng cao bằng Multi-threads">
+<meta property='og:url' content='http://localhost:1313/post/advanced-chat-tcp-java/'>
+<meta property='og:site_name' content='Blog của Thuận An'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Java' /><meta property='article:tag' content='TCP/IP' /><meta property='article:tag' content='Socket' /><meta property='article:tag' content='Client-Server' /><meta property='article:tag' content='Network' /><meta property='article:published_time' content='2025-12-20T19:00:00&#43;07:00'/><meta property='article:modified_time' content='2025-12-20T19:00:00&#43;07:00'/><meta property='og:image' content='http://localhost:1313/images/multi-thread-example.jpg' />
+<meta name="twitter:title" content="Ứng dụng Chat sử dụng TCP trong Java (Phần 2)">
+<meta name="twitter:description" content="Hướng dẫn xây dựng ứng dụng Chat nâng cao sử dụng TCP trong Java nâng cao bằng Multi-threads"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='http://localhost:1313/images/multi-thread-example.jpg' />
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column compact"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_f2c6dce42be5aaca.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Blog của Thuận An</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/programing-knowledge/' >
+                
+                
+                
+                <span>Programming</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/research/' >
+                
+                
+                
+                <span>Research</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/portfolio/' >
+                
+                
+                
+                <span>Portfolio</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/resume/' >
+                
+                
+                
+                <span>Résumé</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/contact/' >
+                
+                
+                
+                <span>Contact</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/post/advanced-chat-tcp-java/">
+                
+                    <img src="/images/multi-thread-example.jpg" loading="lazy" alt="Featured image of post Ứng dụng Chat sử dụng TCP trong Java (Phần 2)" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/programming/" >
+                Programming
+            </a>
+        
+            <a href="/categories/java/" >
+                Java
+            </a>
+        
+            <a href="/categories/networking/" >
+                Networking
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/advanced-chat-tcp-java/">Ứng dụng Chat sử dụng TCP trong Java (Phần 2)</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Hướng dẫn xây dựng ứng dụng Chat nâng cao sử dụng TCP trong Java nâng cao bằng Multi-threads
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published" datetime='2025-12-20T19:00:00&#43;07:00'>Dec 20, 2025</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    8 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>Trong phần trước, chúng ta đã kết nối được Client và Server. Tuy nhiên, nó có một điểm yếu chết người: <strong>Blocking I/O</strong>. Khi code chạy lệnh <code>readLine()</code>, chương trình bị &ldquo;đơ&rdquo; để chờ tin nhắn, khiến bạn không thể gõ tin nhắn gửi đi trong lúc đang chờ nhận.</p>
+<p>Để giải quyết, chúng ta cần sử dụng <strong>Threads (Luồng)</strong>.</p>
+<ul>
+<li><strong>Server</strong>: Cần một luồng chính để đón khách, và mỗi khi có khách (Client) mới, server sẽ tạo riêng một luồng con (Worker Thread) để phục vụ vị khách đó.</li>
+<li><strong>Client</strong>: Cần tách việc &ldquo;Gửi tin&rdquo; và &ldquo;Nhận tin&rdquo; ra làm 2 luồng chạy song song.</li>
+</ul>
+<p>Dưới đây là mã nguồn chi tiết cho một hệ thống <strong>Chat Room hoàn chỉnh</strong>.</p>
+<h2 id="1-xây-dựng-server-đa-luồng-chatserverjava">1. Xây dựng Server Đa Luồng (ChatServer.java)
+</h2><p>Server này có khả năng:</p>
+<ul>
+<li>Chấp nhận nhiều kết nối cùng lúc.</li>
+<li>Lưu danh sách các người dùng đang online.</li>
+<li>Khi một người nhắn, Server sẽ <strong>Broadcast</strong> (phát loa) tin nhắn đó tới tất cả những người khác.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> java.io.*;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.net.*;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.*;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ChatServer</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> port;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Set dùng để lưu danh sách các user unique, tránh trùng lặp</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Set<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> userNames <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HashSet<span style="color:#f92672">&lt;&gt;</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Set lưu trữ các luồng viết của từng client để broadcast tin nhắn</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Set<span style="color:#f92672">&lt;</span>UserThread<span style="color:#f92672">&gt;</span> userThreads <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HashSet<span style="color:#f92672">&lt;&gt;</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ChatServer</span>(<span style="color:#66d9ef">int</span> port) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">port</span> <span style="color:#f92672">=</span> port;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">execute</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> (ServerSocket serverSocket <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ServerSocket(port)) {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Chat Server đang chạy trên cổng &#34;</span> <span style="color:#f92672">+</span> port);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">while</span> (<span style="color:#66d9ef">true</span>) {
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// Vòng lặp vô tận để liên tục chấp nhận kết nối mới</span>
+</span></span><span style="display:flex;"><span>                Socket socket <span style="color:#f92672">=</span> serverSocket.<span style="color:#a6e22e">accept</span>();
+</span></span><span style="display:flex;"><span>                System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;New user connected&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// Với mỗi user mới, tạo một Thread riêng để xử lý</span>
+</span></span><span style="display:flex;"><span>                UserThread newUser <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> UserThread(socket, <span style="color:#66d9ef">this</span>);
+</span></span><span style="display:flex;"><span>                userThreads.<span style="color:#a6e22e">add</span>(newUser);
+</span></span><span style="display:flex;"><span>                newUser.<span style="color:#a6e22e">start</span>(); <span style="color:#75715e">// Bắt đầu luồng</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (IOException ex) {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Lỗi Server: &#34;</span> <span style="color:#f92672">+</span> ex.<span style="color:#a6e22e">getMessage</span>());
+</span></span><span style="display:flex;"><span>            ex.<span style="color:#a6e22e">printStackTrace</span>();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) {
+</span></span><span style="display:flex;"><span>        ChatServer server <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ChatServer(5000);
+</span></span><span style="display:flex;"><span>        server.<span style="color:#a6e22e">execute</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * Gửi tin nhắn đến TẤT CẢ các user khác (Broadcast)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">broadcast</span>(String message, UserThread excludeUser) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (UserThread aUser : userThreads) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (aUser <span style="color:#f92672">!=</span> excludeUser) {
+</span></span><span style="display:flex;"><span>                aUser.<span style="color:#a6e22e">sendMessage</span>(message);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * Lưu tên user mới
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">addUserName</span>(String userName) {
+</span></span><span style="display:flex;"><span>        userNames.<span style="color:#a6e22e">add</span>(userName);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * Xóa user khi họ thoát
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">removeUser</span>(String userName, UserThread aUser) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">boolean</span> removed <span style="color:#f92672">=</span> userNames.<span style="color:#a6e22e">remove</span>(userName);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (removed) {
+</span></span><span style="display:flex;"><span>            userThreads.<span style="color:#a6e22e">remove</span>(aUser);
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;User &#34;</span> <span style="color:#f92672">+</span> userName <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; đã thoát.&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Set<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">getUserNames</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">userNames</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">hasUsers</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">!</span><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">userNames</span>.<span style="color:#a6e22e">isEmpty</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="server-helper-userthreadjava">Server Helper: UserThread.java
+</h3><p>Đây là lớp &ldquo;công nhân&rdquo; xử lý riêng cho từng kết nối.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> java.io.*;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.net.*;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UserThread</span> <span style="color:#66d9ef">extends</span> Thread {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Socket socket;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> ChatServer server;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> PrintWriter writer;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">UserThread</span>(Socket socket, ChatServer server) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">socket</span> <span style="color:#f92672">=</span> socket;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">server</span> <span style="color:#f92672">=</span> server;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Setup luồng vào/ra</span>
+</span></span><span style="display:flex;"><span>            InputStream input <span style="color:#f92672">=</span> socket.<span style="color:#a6e22e">getInputStream</span>();
+</span></span><span style="display:flex;"><span>            BufferedReader reader <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedReader(<span style="color:#66d9ef">new</span> InputStreamReader(input));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            OutputStream output <span style="color:#f92672">=</span> socket.<span style="color:#a6e22e">getOutputStream</span>();
+</span></span><span style="display:flex;"><span>            writer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> PrintWriter(output, <span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            printUsers();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Dòng đầu tiên client gửi sang sẽ là Tên</span>
+</span></span><span style="display:flex;"><span>            String userName <span style="color:#f92672">=</span> reader.<span style="color:#a6e22e">readLine</span>();
+</span></span><span style="display:flex;"><span>            server.<span style="color:#a6e22e">addUserName</span>(userName);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            String serverMessage <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;User mới tham gia: &#34;</span> <span style="color:#f92672">+</span> userName;
+</span></span><span style="display:flex;"><span>            server.<span style="color:#a6e22e">broadcast</span>(serverMessage, <span style="color:#66d9ef">this</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Vòng lặp chat</span>
+</span></span><span style="display:flex;"><span>            String clientMessage;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">do</span> {
+</span></span><span style="display:flex;"><span>                clientMessage <span style="color:#f92672">=</span> reader.<span style="color:#a6e22e">readLine</span>();
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (clientMessage <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span>                    serverMessage <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;[&#34;</span> <span style="color:#f92672">+</span> userName <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;]: &#34;</span> <span style="color:#f92672">+</span> clientMessage;
+</span></span><span style="display:flex;"><span>                    server.<span style="color:#a6e22e">broadcast</span>(serverMessage, <span style="color:#66d9ef">this</span>);
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            } <span style="color:#66d9ef">while</span> (<span style="color:#f92672">!</span>clientMessage.<span style="color:#a6e22e">equals</span>(<span style="color:#e6db74">&#34;bye&#34;</span>)); <span style="color:#75715e">// Gõ &#39;bye&#39; để thoát</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            server.<span style="color:#a6e22e">removeUser</span>(userName, <span style="color:#66d9ef">this</span>);
+</span></span><span style="display:flex;"><span>            socket.<span style="color:#a6e22e">close</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            serverMessage <span style="color:#f92672">=</span> userName <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; đã rời phòng chat.&#34;</span>;
+</span></span><span style="display:flex;"><span>            server.<span style="color:#a6e22e">broadcast</span>(serverMessage, <span style="color:#66d9ef">this</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (IOException ex) {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Lỗi trong UserThread: &#34;</span> <span style="color:#f92672">+</span> ex.<span style="color:#a6e22e">getMessage</span>());
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * Gửi danh sách người đang online cho người mới vào
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">printUsers</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (server.<span style="color:#a6e22e">hasUsers</span>()) {
+</span></span><span style="display:flex;"><span>            writer.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Đang online: &#34;</span> <span style="color:#f92672">+</span> server.<span style="color:#a6e22e">getUserNames</span>());
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>            writer.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Chưa có ai online.&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * Hàm gửi tin nhắn xuống Client của thread này
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">sendMessage</span>(String message) {
+</span></span><span style="display:flex;"><span>        writer.<span style="color:#a6e22e">println</span>(message);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="2-xây-dựng-client-bất-đồng-bộ-chatclientjava">2. Xây dựng Client Bất đồng bộ (ChatClient.java)
+</h2><p>Ở phía Client, chúng ta cần tách việc <strong>Đọc (Read)</strong> và <strong>Ghi (Write)</strong> ra làm 2 luồng riêng biệt để chúng không chặn nhau.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> java.net.*;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.io.*;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ChatClient</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String hostname;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> port;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String userName;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ChatClient</span>(String hostname, <span style="color:#66d9ef">int</span> port) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">hostname</span> <span style="color:#f92672">=</span> hostname;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">port</span> <span style="color:#f92672">=</span> port;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">execute</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>            Socket socket <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Socket(hostname, port);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Đã kết nối vào phòng chat!&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Thread 1: Chuyên nghe tin nhắn từ Server</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">new</span> ReadThread(socket, <span style="color:#66d9ef">this</span>).<span style="color:#a6e22e">start</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Thread 2: Chuyên gửi tin nhắn đi (Main thread)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">new</span> WriteThread(socket, <span style="color:#66d9ef">this</span>).<span style="color:#a6e22e">start</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (UnknownHostException ex) {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Không tìm thấy Server: &#34;</span> <span style="color:#f92672">+</span> ex.<span style="color:#a6e22e">getMessage</span>());
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (IOException ex) {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Lỗi I/O: &#34;</span> <span style="color:#f92672">+</span> ex.<span style="color:#a6e22e">getMessage</span>());
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setUserName</span>(String userName) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">userName</span> <span style="color:#f92672">=</span> userName;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    String <span style="color:#a6e22e">getUserName</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">userName</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) {
+</span></span><span style="display:flex;"><span>        ChatClient client <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ChatClient(<span style="color:#e6db74">&#34;127.0.0.1&#34;</span>, 5000);
+</span></span><span style="display:flex;"><span>        client.<span style="color:#a6e22e">execute</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="client-helper-1-readthreadjava-luồng-đọc">Client Helper 1: ReadThread.java (Luồng Đọc)
+</h3><p>Nhiệm vụ: Liên tục lắng nghe xem có tin nhắn mới từ Server không và in ra màn hình.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> java.io.*;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.net.*;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ReadThread</span> <span style="color:#66d9ef">extends</span> Thread {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> BufferedReader reader;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Socket socket;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> ChatClient client;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ReadThread</span>(Socket socket, ChatClient client) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">socket</span> <span style="color:#f92672">=</span> socket;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">client</span> <span style="color:#f92672">=</span> client;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>            InputStream input <span style="color:#f92672">=</span> socket.<span style="color:#a6e22e">getInputStream</span>();
+</span></span><span style="display:flex;"><span>            reader <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedReader(<span style="color:#66d9ef">new</span> InputStreamReader(input));
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (IOException ex) {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Lỗi lấy Input Stream: &#34;</span> <span style="color:#f92672">+</span> ex.<span style="color:#a6e22e">getMessage</span>());
+</span></span><span style="display:flex;"><span>            ex.<span style="color:#a6e22e">printStackTrace</span>();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> (<span style="color:#66d9ef">true</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>                String response <span style="color:#f92672">=</span> reader.<span style="color:#a6e22e">readLine</span>();
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (response <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span>                    System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;\nServer đã ngắt kết nối.&#34;</span>);
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// In tin nhắn từ người khác ra màn hình</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// Dùng \r để đưa con trỏ về đầu dòng (trick giao diện)</span>
+</span></span><span style="display:flex;"><span>                System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;\n&#34;</span> <span style="color:#f92672">+</span> response); 
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// In lại dấu nhắc nhập liệu để người dùng biết mình đang ở đâu</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (client.<span style="color:#a6e22e">getUserName</span>() <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span>                    System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">print</span>(<span style="color:#e6db74">&#34;[&#34;</span> <span style="color:#f92672">+</span> client.<span style="color:#a6e22e">getUserName</span>() <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;]: &#34;</span>);
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            } <span style="color:#66d9ef">catch</span> (IOException ex) {
+</span></span><span style="display:flex;"><span>                System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Lỗi đọc dữ liệu: &#34;</span> <span style="color:#f92672">+</span> ex.<span style="color:#a6e22e">getMessage</span>());
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="client-helper-2-writethreadjava-luồng-ghi">Client Helper 2: WriteThread.java (Luồng Ghi)
+</h3><p>Nhiệm vụ: Đọc từ bàn phím người dùng và gửi sang Server.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> java.io.*;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.net.*;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.Scanner;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WriteThread</span> <span style="color:#66d9ef">extends</span> Thread {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> PrintWriter writer;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Socket socket;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> ChatClient client;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">WriteThread</span>(Socket socket, ChatClient client) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">socket</span> <span style="color:#f92672">=</span> socket;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">client</span> <span style="color:#f92672">=</span> client;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>            OutputStream output <span style="color:#f92672">=</span> socket.<span style="color:#a6e22e">getOutputStream</span>();
+</span></span><span style="display:flex;"><span>            writer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> PrintWriter(output, <span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (IOException ex) {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Lỗi lấy Output Stream: &#34;</span> <span style="color:#f92672">+</span> ex.<span style="color:#a6e22e">getMessage</span>());
+</span></span><span style="display:flex;"><span>            ex.<span style="color:#a6e22e">printStackTrace</span>();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Nếu chạy trong IDE (Eclipse/IntelliJ) thì Console có thể null, fallback về Scanner</span>
+</span></span><span style="display:flex;"><span>        Scanner scanner <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Scanner(System.<span style="color:#a6e22e">in</span>); 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">print</span>(<span style="color:#e6db74">&#34;Nhập tên của bạn: &#34;</span>);
+</span></span><span style="display:flex;"><span>        String userName <span style="color:#f92672">=</span> scanner.<span style="color:#a6e22e">nextLine</span>();
+</span></span><span style="display:flex;"><span>        client.<span style="color:#a6e22e">setUserName</span>(userName);
+</span></span><span style="display:flex;"><span>        writer.<span style="color:#a6e22e">println</span>(userName); <span style="color:#75715e">// Gửi tên lên server đầu tiên</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        String text;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">do</span> {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">print</span>(<span style="color:#e6db74">&#34;[&#34;</span> <span style="color:#f92672">+</span> userName <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;]: &#34;</span>);
+</span></span><span style="display:flex;"><span>            text <span style="color:#f92672">=</span> scanner.<span style="color:#a6e22e">nextLine</span>();
+</span></span><span style="display:flex;"><span>            writer.<span style="color:#a6e22e">println</span>(text);
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">while</span> (<span style="color:#f92672">!</span>text.<span style="color:#a6e22e">equals</span>(<span style="color:#e6db74">&#34;bye&#34;</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>            socket.<span style="color:#a6e22e">close</span>();
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (IOException ex) {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Lỗi khi ghi dữ liệu: &#34;</span> <span style="color:#f92672">+</span> ex.<span style="color:#a6e22e">getMessage</span>());
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="3-phân-tích-kỹ-thuật-technical-deep-dive">3. Phân tích kỹ thuật (Technical Deep Dive)
+</h2><h3 id="tại-sao-lại-cần-setuserthread">Tại sao lại cần Set&lt;UserThread&gt;?
+</h3><p>Trong file <code>ChatServer.java</code>, tôi sử dụng <code>Set</code> thay vì <code>List</code>.</p>
+<p><strong>Lý do</strong>: Chúng ta cần đảm bảo danh sách kết nối là duy nhất. <code>Set</code> giúp quản lý việc thêm/xóa user nhanh hơn và tránh việc gửi tin nhắn 2 lần cho cùng một người nếu code có lỗi logic.</p>
+<h3 id="logic-của-hàm-broadcast">Logic của hàm broadcast()
+</h3><p>Đây là <strong>trái tim</strong> của Chat Room.</p>
+<ol>
+<li>Server nhận tin từ User A.</li>
+<li>Server lặp qua danh sách <code>Set&lt;UserThread&gt;</code> (chứa User A, B, C&hellip;).</li>
+<li>Nó kiểm tra <code>if (aUser != excludeUser)</code>: Nếu người trong danh sách không phải là người vừa gửi tin (User A), thì gửi tin nhắn đó đi. Điều này tránh việc User A tự nhận lại tin nhắn mình vừa gửi.</li>
+</ol>
+<h3 id="vấn-đề-concurrency-đồng-thời">Vấn đề Concurrency (Đồng thời)
+</h3><p>Trong mã nguồn trên, tôi đã tối giản để dễ hiểu. Tuy nhiên trong môi trường <strong>Production</strong> thực tế, biến <code>userNames</code> và <code>userThreads</code> nên được thay thế bằng <code>Collections.synchronizedSet(...)</code> hoặc <code>ConcurrentHashMap</code> để tránh lỗi <strong>Race Condition</strong> (Tranh chấp luồng) khi có 2 người cùng thoát ra hoặc cùng đăng nhập chính xác tại một thời điểm.</p>
+<h2 id="4-chạy-thử-nghiệm">4. Chạy thử nghiệm
+</h2><p>Để thấy điều kỳ diệu (Chat nhiều người), hãy làm như sau:</p>
+<ol>
+<li><strong>Chạy Server</strong>: Chạy file <code>ChatServer.java</code>.</li>
+<li><strong>Chạy Client 1</strong>: Chạy file <code>ChatClient.java</code>, nhập tên là &ldquo;Tùng&rdquo;.</li>
+<li><strong>Chạy Client 2</strong>: Mở thêm một Terminal khác, chạy <code>ChatClient.java</code>, nhập tên là &ldquo;Cúc&rdquo;.</li>
+<li><strong>Chạy Client 3</strong>: Mở thêm Terminal nữa, chạy <code>ChatClient.java</code>, nhập tên là &ldquo;Trúc&rdquo;.</li>
+</ol>
+<p>Bây giờ khi &ldquo;Tùng&rdquo; nhắn <strong>&ldquo;Hello mọi người&rdquo;</strong>, cả &ldquo;Cúc&rdquo; và &ldquo;Trúc&rdquo; đều sẽ nhận được tin nhắn ngay lập tức. &ldquo;Cúc&rdquo; có thể trả lời trong khi &ldquo;Trúc&rdquo; đang gõ phím mà không ai bị chặn cả.</p>
+<h2 id="5-lời-kết">5. Lời kết
+</h2><p>Việc xây dựng một ứng dụng Chat đa luồng là bước nhảy vọt quan trọng trong hành trình học lập trình mạng. Bạn đã học được:</p>
+<ul>
+<li><strong>Multi-threading</strong>: Cách tạo và quản lý nhiều luồng chạy song song.</li>
+<li><strong>Broadcast Pattern</strong>: Cách gửi tin nhắn tới nhiều người cùng lúc.</li>
+<li><strong>Non-blocking I/O concept</strong>: Tách việc đọc và ghi để giao diện không bị &ldquo;đơ&rdquo;.</li>
+<li><strong>Real-time Communication</strong>: Nguyên lý cơ bản đằng sau các ứng dụng chat hiện đại.</li>
+</ul>
+<p>Từ đây, bạn có thể mở rộng thêm nhiều tính năng thú vị:</p>
+<ul>
+<li><strong>Private Message</strong>: Tin nhắn riêng giữa 2 người.</li>
+<li><strong>Chat Rooms</strong>: Tạo nhiều phòng chat khác nhau.</li>
+<li><strong>File Transfer</strong>: Gửi file qua lại.</li>
+<li><strong>Encryption</strong>: Mã hóa tin nhắn để bảo mật.</li>
+<li><strong>GUI Interface</strong>: Xây dựng giao diện đồ họa với JavaFX hoặc Swing.</li>
+</ul>
+<p>Hãy thử thách bản thân bằng cách implement những tính năng này! Networking không khó, chỉ cần luyện tập đủ nhiều, bạn sẽ thành thạo.</p>
+<p>Happy coding!</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/java/">Java</a>
+        
+            <a href="/tags/tcp/ip/">TCP/IP</a>
+        
+            <a href="/tags/socket/">Socket</a>
+        
+            <a href="/tags/client-server/">Client-Server</a>
+        
+            <a href="/tags/network/">Network</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/post/simple-chat-tcp-java/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="/images/simple-chat-room.jpg" loading="lazy" data-key="" data-hash="/images/simple-chat-room.jpg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Ứng dụng Chat sử dụng TCP trong Java (Phần 1)</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Blog của Thuận An
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.32.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.bcc7e9405c3d3cb732a7311965dda94f6ae5bcc3030b1c75796c4d2ed04912aa.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

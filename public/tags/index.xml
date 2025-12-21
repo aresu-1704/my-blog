@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Tags on Blog của Thuận An</title>
+        <link>http://localhost:1313/tags/</link>
+        <description>Recent content in Tags on Blog của Thuận An</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>vi-vn</language>
+        <lastBuildDate>Sun, 21 Dec 2025 19:00:00 +0700</lastBuildDate><atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Client-Server</title>
+        <link>http://localhost:1313/tags/client-server/</link>
+        <pubDate>Sun, 21 Dec 2025 19:00:00 +0700</pubDate>
+        
+        <guid>http://localhost:1313/tags/client-server/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Java</title>
+        <link>http://localhost:1313/tags/java/</link>
+        <pubDate>Sun, 21 Dec 2025 19:00:00 +0700</pubDate>
+        
+        <guid>http://localhost:1313/tags/java/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Network</title>
+        <link>http://localhost:1313/tags/network/</link>
+        <pubDate>Sun, 21 Dec 2025 19:00:00 +0700</pubDate>
+        
+        <guid>http://localhost:1313/tags/network/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Socket</title>
+        <link>http://localhost:1313/tags/socket/</link>
+        <pubDate>Sun, 21 Dec 2025 19:00:00 +0700</pubDate>
+        
+        <guid>http://localhost:1313/tags/socket/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>TCP/IP</title>
+        <link>http://localhost:1313/tags/tcp/ip/</link>
+        <pubDate>Sun, 21 Dec 2025 19:00:00 +0700</pubDate>
+        
+        <guid>http://localhost:1313/tags/tcp/ip/</guid>
+        <description></description>
+        </item>
+        
+    </channel>
+</rss>

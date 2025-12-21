@@ -1,0 +1,36 @@
+baseURL = 'https://example.org/'
+languageCode = 'vi-vn'
+title = 'Blog của Thuận An'
+theme = 'Stack'
+
+[menu]
+
+  [[menu.main]]
+    name = "Programming"
+    url = "/programing-knowledge/"
+    weight = 10
+
+  [[menu.main]]
+    name = "Research"
+    url = "/research/"
+    weight = 20
+
+  [[menu.main]]
+    name = "Portfolio"
+    url = "/portfolio/"
+    weight = 30
+
+  [[menu.main]]
+    name = "Résumé"
+    url = "/resume/"
+    weight = 40
+
+  [[menu.main]]
+    name = "About"
+    url = "/about-me/"
+    weight = 50
+
+  [[menu.main]]
+    name = "Contact"
+    url = "/contact/"
+    weight = 60

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="vi-vn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Hướng dẫn xây dựng ứng dụng Chat đơn giản sử dụng TCP trong Java">
+<title>Ứng dụng Chat sử dụng TCP trong Java (Phần 1)</title>
+
+<link rel='canonical' href='http://localhost:1313/post/simple-chat-tcp-java/'>
+
+<link rel="stylesheet" href="/scss/style.min.4d36f8dc1fd48129e1635deb4b8eb2870fa09474f7280c4cb606d40b2526994b.css"><meta property='og:title' content="Ứng dụng Chat sử dụng TCP trong Java (Phần 1)">
+<meta property='og:description' content="Hướng dẫn xây dựng ứng dụng Chat đơn giản sử dụng TCP trong Java">
+<meta property='og:url' content='http://localhost:1313/post/simple-chat-tcp-java/'>
+<meta property='og:site_name' content='Blog của Thuận An'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Java' /><meta property='article:tag' content='TCP/IP' /><meta property='article:tag' content='Socket' /><meta property='article:tag' content='Client-Server' /><meta property='article:tag' content='Network' /><meta property='article:published_time' content='2025-12-18T19:00:00&#43;07:00'/><meta property='article:modified_time' content='2025-12-18T19:00:00&#43;07:00'/><meta property='og:image' content='http://localhost:1313/images/simple-chat-room.jpg' />
+<meta name="twitter:title" content="Ứng dụng Chat sử dụng TCP trong Java (Phần 1)">
+<meta name="twitter:description" content="Hướng dẫn xây dựng ứng dụng Chat đơn giản sử dụng TCP trong Java"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='http://localhost:1313/images/simple-chat-room.jpg' />
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column compact"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_f2c6dce42be5aaca.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Blog của Thuận An</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/programing-knowledge/' >
+                
+                
+                
+                <span>Programming</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/research/' >
+                
+                
+                
+                <span>Research</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/portfolio/' >
+                
+                
+                
+                <span>Portfolio</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/resume/' >
+                
+                
+                
+                <span>Résumé</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/contact/' >
+                
+                
+                
+                <span>Contact</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/post/simple-chat-tcp-java/">
+                
+                    <img src="/images/simple-chat-room.jpg" loading="lazy" alt="Featured image of post Ứng dụng Chat sử dụng TCP trong Java (Phần 1)" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/programming/" >
+                Programming
+            </a>
+        
+            <a href="/categories/java/" >
+                Java
+            </a>
+        
+            <a href="/categories/networking/" >
+                Networking
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/simple-chat-tcp-java/">Ứng dụng Chat sử dụng TCP trong Java (Phần 1)</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Hướng dẫn xây dựng ứng dụng Chat đơn giản sử dụng TCP trong Java
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published" datetime='2025-12-18T19:00:00&#43;07:00'>Dec 18, 2025</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    5 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>Trong lập trình mạng (Network Programming), việc xây dựng một ứng dụng Chat là bài tập &ldquo;Hello World&rdquo; kinh điển nhất để hiểu về giao thức TCP/IP. Trong bài viết này, chúng ta sẽ cùng nhau xây dựng một ứng dụng Chat Console (cửa sổ dòng lệnh) đơn giản giữa một Client và một Server sử dụng Java Sockets.</p>
+<h2 id="1-kiến-trúc-client-server-với-tcp">1. Kiến trúc Client-Server với TCP
+</h2><p>Trước khi đi vào code, hãy hình dung cách hai máy tính nói chuyện với nhau. <strong>TCP</strong> (Transmission Control Protocol) là giao thức hướng kết nối (connection-oriented), nghĩa là một &ldquo;đường ống&rdquo; ổn định phải được thiết lập trước khi dữ liệu được gửi đi.</p>
+<p>Mô hình hoạt động sẽ như sau:</p>
+<ul>
+<li><strong>Server</strong>: Chạy trước, mở một cổng (Port) và &ldquo;lắng nghe&rdquo; (Listen) chờ đợi kết nối.</li>
+<li><strong>Client</strong>: Biết địa chỉ IP và Port của Server, chủ động gửi yêu cầu kết nối.</li>
+<li><strong>Socket</strong>: Khi kết nối thành công, một &ldquo;Socket&rdquo; được tạo ra ở cả hai đầu. Đây là nơi chúng ta ghi dữ liệu vào (Output) và đọc dữ liệu ra (Input).</li>
+</ul>
+<h2 id="2-xây-dựng-server-serverjava">2. Xây dựng Server (Server.java)
+</h2><p>Server cần sử dụng lớp <code>ServerSocket</code> để mở cổng. Trong ví dụ này, chúng ta sẽ tạo một Server đơn giản: nhận tin nhắn từ Client và hiển thị lên màn hình, đồng thời cho phép Server gõ tin nhắn trả lời lại.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> java.io.*;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.net.*;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Server</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> port <span style="color:#f92672">=</span> 5000; <span style="color:#75715e">// Cổng kết nối (Port)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> (ServerSocket serverSocket <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ServerSocket(port)) {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Server đang lắng nghe tại cổng &#34;</span> <span style="color:#f92672">+</span> port);
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Chờ đợi Client kết nối (Hàm này sẽ chặn chương trình đến khi có kết nối)</span>
+</span></span><span style="display:flex;"><span>            Socket socket <span style="color:#f92672">=</span> serverSocket.<span style="color:#a6e22e">accept</span>();
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Client đã kết nối!&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Tạo luồng Input để đọc dữ liệu từ Client</span>
+</span></span><span style="display:flex;"><span>            InputStream input <span style="color:#f92672">=</span> socket.<span style="color:#a6e22e">getInputStream</span>();
+</span></span><span style="display:flex;"><span>            BufferedReader reader <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedReader(<span style="color:#66d9ef">new</span> InputStreamReader(input));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Tạo luồng Output để gửi dữ liệu tới Client</span>
+</span></span><span style="display:flex;"><span>            OutputStream output <span style="color:#f92672">=</span> socket.<span style="color:#a6e22e">getOutputStream</span>();
+</span></span><span style="display:flex;"><span>            PrintWriter writer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> PrintWriter(output, <span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Tạo luồng đọc dữ liệu từ bàn phím (Server gõ tin nhắn)</span>
+</span></span><span style="display:flex;"><span>            BufferedReader consoleReader <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedReader(<span style="color:#66d9ef">new</span> InputStreamReader(System.<span style="color:#a6e22e">in</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            String text;
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Vòng lặp chat</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">while</span> (<span style="color:#66d9ef">true</span>) {
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// Đọc tin nhắn từ Client</span>
+</span></span><span style="display:flex;"><span>                text <span style="color:#f92672">=</span> reader.<span style="color:#a6e22e">readLine</span>();
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (text <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#34;bye&#34;</span>.<span style="color:#a6e22e">equalsIgnoreCase</span>(text)) {
+</span></span><span style="display:flex;"><span>                    System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Client đã ngắt kết nối.&#34;</span>);
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Client: &#34;</span> <span style="color:#f92672">+</span> text);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// Server trả lời</span>
+</span></span><span style="display:flex;"><span>                System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">print</span>(<span style="color:#e6db74">&#34;Server: &#34;</span>);
+</span></span><span style="display:flex;"><span>                String response <span style="color:#f92672">=</span> consoleReader.<span style="color:#a6e22e">readLine</span>();
+</span></span><span style="display:flex;"><span>                writer.<span style="color:#a6e22e">println</span>(response);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            socket.<span style="color:#a6e22e">close</span>();
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (IOException ex) {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Lỗi Server: &#34;</span> <span style="color:#f92672">+</span> ex.<span style="color:#a6e22e">getMessage</span>());
+</span></span><span style="display:flex;"><span>            ex.<span style="color:#a6e22e">printStackTrace</span>();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="3-xây-dựng-client-clientjava">3. Xây dựng Client (Client.java)
+</h2><p>Client sử dụng lớp <code>Socket</code> để kết nối đến Server. Lưu ý là IP <code>127.0.0.1</code> (localhost) được dùng để test trên cùng một máy.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> java.io.*;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.net.*;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Client</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) {
+</span></span><span style="display:flex;"><span>        String hostname <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;127.0.0.1&#34;</span>; <span style="color:#75715e">// Địa chỉ IP của Server (Localhost)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> port <span style="color:#f92672">=</span> 5000;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> (Socket socket <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Socket(hostname, port)) {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Đã kết nối tới Server!&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Luồng Output để gửi tin nhắn</span>
+</span></span><span style="display:flex;"><span>            OutputStream output <span style="color:#f92672">=</span> socket.<span style="color:#a6e22e">getOutputStream</span>();
+</span></span><span style="display:flex;"><span>            PrintWriter writer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> PrintWriter(output, <span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Luồng Input để nhận tin nhắn</span>
+</span></span><span style="display:flex;"><span>            InputStream input <span style="color:#f92672">=</span> socket.<span style="color:#a6e22e">getInputStream</span>();
+</span></span><span style="display:flex;"><span>            BufferedReader reader <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedReader(<span style="color:#66d9ef">new</span> InputStreamReader(input));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Luồng đọc từ bàn phím</span>
+</span></span><span style="display:flex;"><span>            BufferedReader consoleReader <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedReader(<span style="color:#66d9ef">new</span> InputStreamReader(System.<span style="color:#a6e22e">in</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            String text;
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Vòng lặp chat</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">while</span> (<span style="color:#66d9ef">true</span>) {
+</span></span><span style="display:flex;"><span>                System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">print</span>(<span style="color:#e6db74">&#34;Client: &#34;</span>);
+</span></span><span style="display:flex;"><span>                text <span style="color:#f92672">=</span> consoleReader.<span style="color:#a6e22e">readLine</span>();
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// Gửi tin nhắn tới Server</span>
+</span></span><span style="display:flex;"><span>                writer.<span style="color:#a6e22e">println</span>(text);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (<span style="color:#e6db74">&#34;bye&#34;</span>.<span style="color:#a6e22e">equalsIgnoreCase</span>(text)) {
+</span></span><span style="display:flex;"><span>                    System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Đã ngắt kết nối.&#34;</span>);
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// Nhận phản hồi từ Server</span>
+</span></span><span style="display:flex;"><span>                String response <span style="color:#f92672">=</span> reader.<span style="color:#a6e22e">readLine</span>();
+</span></span><span style="display:flex;"><span>                System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Server: &#34;</span> <span style="color:#f92672">+</span> response);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (UnknownHostException ex) {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Không tìm thấy Server: &#34;</span> <span style="color:#f92672">+</span> ex.<span style="color:#a6e22e">getMessage</span>());
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (IOException ex) {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Lỗi I/O: &#34;</span> <span style="color:#f92672">+</span> ex.<span style="color:#a6e22e">getMessage</span>());
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="4-giải-thích-các-thành-phần-chính">4. Giải thích các thành phần chính
+</h2><ul>
+<li><strong>ServerSocket(port)</strong>: Chỉ dùng ở phía Server. Nó đăng ký port với hệ điều hành và chờ.</li>
+<li><strong>socket.accept()</strong>: Đây là method blocking (chặn). Code sẽ dừng ở dòng này cho đến khi có một Client kết nối vào.</li>
+<li><strong>new Socket(ip, port)</strong>: Dùng ở phía Client để bắt tay (handshake) với Server.</li>
+<li><strong>BufferedReader &amp; PrintWriter</strong>: Java IO làm việc với byte, nhưng Chat làm việc với văn bản (String). Chúng ta bọc (wrap) các luồng byte (InputStream) vào các lớp xử lý ký tự này để có thể dùng hàm tiện lợi như <code>readLine()</code> hay <code>println()</code>.</li>
+</ul>
+<h2 id="5-cách-chạy-ứng-dụng">5. Cách chạy ứng dụng
+</h2><p>Để test ứng dụng này, bạn cần mở 2 cửa sổ Terminal (hoặc 2 tab Console trong IDE):</p>
+<p><strong>Bước 1</strong>: Compile cả 2 file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>javac Server.java Client.java
+</span></span></code></pre></div><p><strong>Bước 2</strong>: Chạy Server trước (bắt buộc):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>java Server
+</span></span></code></pre></div><p>Màn hình sẽ hiện: &ldquo;Server đang lắng nghe tại cổng 5000&rdquo;</p>
+<p><strong>Bước 3</strong>: Chạy Client ở cửa sổ Terminal thứ 2:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>java Client
+</span></span></code></pre></div><p><strong>Bước 4</strong>: Bắt đầu chat!</p>
+<ul>
+<li>Gõ tin nhắn bên Client và nhấn Enter.</li>
+<li>Server nhận được và bạn có thể gõ trả lời từ phía Server.</li>
+</ul>
+<h2 id="tổng-kết">Tổng kết
+</h2><p>Đây là ví dụ cơ bản nhất về <strong>Synchronous Blocking Chat</strong> (Chat đồng bộ chặn). Nghĩa là Client gửi 1 tin, phải chờ Server trả lời rồi mới gửi tiếp được.</p>
+<p>Trong thực tế, để xây dựng các ứng dụng Chat chuyên nghiệp (như Messenger, Zalo), chúng ta cần áp dụng <strong>Multi-threading</strong> (Đa luồng) để Server có thể xử lý hàng ngàn Client cùng lúc và gửi/nhận tin nhắn bất đồng bộ. Hẹn gặp lại các bạn ở <a class="link" href="/post/advanced-chat-tcp-java/" >bài viết nâng cao về &ldquo;Multi-threaded Chat Server&rdquo;</a>!</p>
+<pre tabindex="0"><code></code></pre>
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/java/">Java</a>
+        
+            <a href="/tags/tcp/ip/">TCP/IP</a>
+        
+            <a href="/tags/socket/">Socket</a>
+        
+            <a href="/tags/client-server/">Client-Server</a>
+        
+            <a href="/tags/network/">Network</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Blog của Thuận An
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.32.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.bcc7e9405c3d3cb732a7311965dda94f6ae5bcc3030b1c75796c4d2ed04912aa.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
