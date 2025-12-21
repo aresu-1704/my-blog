@@ -1,7 +1,8 @@
 baseURL = 'https://example.org/'
 languageCode = 'vi-vn'
-title = 'Blog của Thuận An'
+title = 'Kiến thức lập trình'
 theme = 'Stack'
+
 
 [markup.goldmark.renderer]
 unsafe = true

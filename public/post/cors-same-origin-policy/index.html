@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="vi-vn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Phân tích sâu về Same-Origin Policy và CORS từ góc độ bảo mật web và mạng máy tính. Hiểu rõ preflight request, vì sao Postman không gặp CORS, và vai trò của browser trong việc bảo vệ người dùng">
+<title>CORS và Same-Origin Policy dưới góc nhìn mạng máy tính (JavaScript)</title>
+
+<link rel='canonical' href='http://localhost:1313/post/cors-same-origin-policy/'>
+
+<link rel="stylesheet" href="/scss/style.min.6074b3f881d887398809e454b84ee6668c1a2f5c01bbffe38339b724acdda96e.css"><meta property='og:title' content="CORS và Same-Origin Policy dưới góc nhìn mạng máy tính (JavaScript)">
+<meta property='og:description' content="Phân tích sâu về Same-Origin Policy và CORS từ góc độ bảo mật web và mạng máy tính. Hiểu rõ preflight request, vì sao Postman không gặp CORS, và vai trò của browser trong việc bảo vệ người dùng">
+<meta property='og:url' content='http://localhost:1313/post/cors-same-origin-policy/'>
+<meta property='og:site_name' content='Kiến thức lập trình'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='CORS' /><meta property='article:tag' content='Same-Origin Policy' /><meta property='article:tag' content='Security' /><meta property='article:tag' content='JavaScript' /><meta property='article:tag' content='HTTP' /><meta property='article:tag' content='Browser' /><meta property='article:published_time' content='2025-12-22T01:11:00&#43;07:00'/><meta property='article:modified_time' content='2025-12-22T01:11:00&#43;07:00'/><meta property='og:image' content='http://localhost:1313/images/cors.jpg' />
+<meta name="twitter:title" content="CORS và Same-Origin Policy dưới góc nhìn mạng máy tính (JavaScript)">
+<meta name="twitter:description" content="Phân tích sâu về Same-Origin Policy và CORS từ góc độ bảo mật web và mạng máy tính. Hiểu rõ preflight request, vì sao Postman không gặp CORS, và vai trò của browser trong việc bảo vệ người dùng"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='http://localhost:1313/images/cors.jpg' />
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column compact"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_f2c6dce42be5aaca.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Kiến thức lập trình</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/research/' >
+                
+                
+                
+                <span>Research</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/portfolio/' >
+                
+                
+                
+                <span>Portfolio</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/resume/' >
+                
+                
+                
+                <span>Résumé</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/contact/' >
+                
+                
+                
+                <span>Contact</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/post/cors-same-origin-policy/">
+                
+                    <img src="/images/cors.jpg" loading="lazy" alt="Featured image of post CORS và Same-Origin Policy dưới góc nhìn mạng máy tính (JavaScript)" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/web-security/" >
+                Web Security
+            </a>
+        
+            <a href="/categories/javascript/" >
+                JavaScript
+            </a>
+        
+            <a href="/categories/network/" >
+                Network
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/cors-same-origin-policy/">CORS và Same-Origin Policy dưới góc nhìn mạng máy tính (JavaScript)</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Phân tích sâu về Same-Origin Policy và CORS từ góc độ bảo mật web và mạng máy tính. Hiểu rõ preflight request, vì sao Postman không gặp CORS, và vai trò của browser trong việc bảo vệ người dùng
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published" datetime='2025-12-22T01:11:00&#43;07:00'>Dec 22, 2025</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    12 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="khi-trình-duyệt-trở-thành-bức-tường-bảo-vệ">Khi trình duyệt trở thành bức tường bảo vệ
+</h2><p>Hồi mới học web development, mình thường gặp lỗi này khi gọi API từ frontend: &ldquo;Access to fetch at &lsquo;<a class="link" href="https://api.example.com"  target="_blank" rel="noopener"
+    >https://api.example.com</a>&rsquo; from origin &lsquo;http://localhost:3000&rsquo; has been blocked by CORS policy&rdquo;. Lúc đầu nghĩ đây là lỗi code, sửa mãi không được. Rồi mình test API bằng Postman thì thấy nó chạy ngon lành. Càng confused hơn, API hoạt động tốt mà sao trình duyệt lại chặn?</p>
+<p>Câu trả lời nằm ở chỗ trình duyệt không phải là một HTTP client thông thường như Postman hay curl. Trình duyệt là một môi trường thực thi code với quyền truy cập vào cookies, localStorage, session tokens của người dùng. Nếu không có cơ chế bảo mật, bất kỳ website nào cũng có thể chạy JavaScript để đánh cắp dữ liệu từ các site khác mà user đang đăng nhập.</p>
+<h2 id="same-origin-policy---nền-tảng-bảo-mật-web">Same-Origin Policy - Nền tảng bảo mật web
+</h2><p>Same-Origin Policy ra đời từ những ngày đầu của web để ngăn chặn một website đọc dữ liệu từ website khác. Hai URL được coi là cùng origin nếu chúng có cùng protocol, domain và port. Ví dụ, <code>https://example.com:443/page1</code> và <code>https://example.com:443/page2</code> là cùng origin. Nhưng <code>https://example.com</code> và <code>http://example.com</code> khác origin vì protocol khác nhau. Tương tự, <code>https://example.com</code> và <code>https://api.example.com</code> cũng khác origin vì subdomain khác nhau.</p>
+<p>Chính sách này nghe có vẻ strict, nhưng hãy tưởng tượng kịch bản sau. Bạn đang đăng nhập vào ngân hàng ở tab này, session cookie được lưu trong browser. Sau đó bạn vào một website độc hại ở tab khác. Nếu không có Same-Origin Policy, website đó có thể chạy JavaScript để gửi request đến <code>https://bank.com/api/transfer</code> với credentials của bạn. Vì cookies được tự động gửi kèm trong mỗi request đến cùng domain, ngân hàng sẽ nghĩ đây là request hợp lệ từ bạn và thực hiện chuyển tiền.</p>
+<p>Đây chính là CSRF (Cross-Site Request Forgery) attack. Same-Origin Policy ngăn chặn scenario này bằng cách không cho phép JavaScript từ <code>evil.com</code> đọc response từ <code>bank.com</code>. Request vẫn được gửi đi (vì HTTP protocol không biết gì về origins), nhưng trình duyệt sẽ chặn JavaScript access vào response data.</p>
+<p>Điểm quan trọng cần hiểu là Same-Origin Policy được implement ở tầng ứng dụng bởi trình duyệt, không phải ở network layer hay transport layer. Nếu nhìn qua mô hình OSI, HTTP request vẫn đi qua các tầng Physical, Data Link, Network, Transport một cách bình thường. Server nhận request, xử lý và gửi response về. Nhưng khi response về đến browser (tầng Application), browser kiểm tra origin và quyết định có cho phép JavaScript access hay không.</p>
+<h2 id="vấn-đề-với-modern-web-applications">Vấn đề với modern web applications
+</h2><p>Thời đầu web, các trang đều static HTML được serve từ cùng một domain. Same-Origin Policy hoạt động hoàn hảo. Nhưng modern architecture lại khác. Frontend chạy trên <code>https://app.example.com</code>, backend API ở <code>https://api.example.com</code>, CDN serving assets từ <code>https://cdn.example.com</code>. Đây là các origins khác nhau, và Same-Origin Policy sẽ block tất cả.</p>
+<p>Mình từng làm một project mà frontend được deploy lên Netlify (<code>https://myapp.netlify.app</code>) còn backend API chạy trên Heroku (<code>https://myapi.herokuapp.com</code>). Khi frontend gọi API, browser ngay lập tức block với CORS error. Đây không phải là lỗi của code, mà là Same-Origin Policy đang làm đúng nhiệm vụ bảo vệ. Vấn đề là làm sao để cho phép cross-origin requests một cách có kiểm soát?</p>
+<h2 id="cors---cơ-chế-nới-lỏng-có-kiểm-soát">CORS - Cơ chế nới lỏng có kiểm soát
+</h2><p>CORS (Cross-Origin Resource Sharing) ra đời như một mechanism để server có thể explicit cho phép requests từ origins khác. Ý tưởng đơn giản: server gửi các headers đặc biệt trong response để báo cho browser biết &ldquo;origin này được phép truy cập resource của tôi&rdquo;.</p>
+<p>Header quan trọng nhất là <code>Access-Control-Allow-Origin</code>. Khi server gửi header này trong response, browser sẽ kiểm tra xem origin của request có match với value trong header không. Nếu match, JavaScript được phép access response. Nếu không match, browser block access.</p>
+<p>Ví dụ, khi frontend ở <code>https://app.example.com</code> gọi API ở <code>https://api.example.com</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#75715e">// Frontend code chạy trên https://app.example.com
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">fetch</span>(<span style="color:#e6db74">&#39;https://api.example.com/users&#39;</span>)
+</span></span><span style="display:flex;"><span>    .<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">response</span> =&gt; <span style="color:#a6e22e">response</span>.<span style="color:#a6e22e">json</span>())
+</span></span><span style="display:flex;"><span>    .<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">data</span> =&gt; <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">data</span>))
+</span></span><span style="display:flex;"><span>    .<span style="color:#66d9ef">catch</span>(<span style="color:#a6e22e">error</span> =&gt; <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">error</span>(<span style="color:#e6db74">&#39;CORS error:&#39;</span>, <span style="color:#a6e22e">error</span>));
+</span></span></code></pre></div><p>Browser sẽ gửi request với header <code>Origin: https://app.example.com</code>. Server nhận request, xử lý, và trả về response kèm header:</p>
+<pre tabindex="0"><code>Access-Control-Allow-Origin: https://app.example.com
+</code></pre><p>Browser thấy origin match, cho phép JavaScript access data. Simple và hiệu quả.</p>
+<h2 id="preflight-request---bước-kiểm-tra-an-toàn">Preflight request - Bước kiểm tra an toàn
+</h2><p>Nhưng có một điều thú vị. Đối với một số loại requests, browser không gửi actual request ngay lập tức. Thay vào đó, nó gửi một &ldquo;preflight&rdquo; request dùng method OPTIONS để hỏi server &ldquo;tôi muốn gửi request này, bạn có cho phép không?&rdquo;. Server phải respond với các CORS headers thích hợp, browser mới gửi actual request.</p>
+<p>Preflight request xảy ra khi request không phải là &ldquo;simple request&rdquo;. Simple request phải thỏa mãn tất cả các điều kiện sau: method phải là GET, HEAD hoặc POST; không có custom headers ngoài một số headers được cho phép như Content-Type, Accept; nếu có Content-Type thì phải là <code>application/x-www-form-urlencoded</code>, <code>multipart/form-data</code> hoặc <code>text/plain</code>.</p>
+<p>Nghe phức tạp, nhưng về cơ bản, nếu bạn gửi JSON với <code>Content-Type: application/json</code> hoặc thêm custom header như <code>Authorization: Bearer token</code>, request không còn &ldquo;simple&rdquo; nữa. Browser sẽ gửi preflight.</p>
+<p>Tại sao lại cần preflight? Lý do là để protect legacy servers. Trước khi CORS ra đời, nhiều servers được build với giả định rằng chỉ same-origin requests mới đến được. Nếu browser cho phép cross-origin requests với methods như PUT, DELETE hoặc custom headers mà không kiểm tra trước, những servers này có thể bị attack. Preflight request cho server cơ hội từ chối trước khi actual request được gửi.</p>
+<p>Ví dụ khi gửi JSON:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#75715e">// Request này sẽ trigger preflight
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">fetch</span>(<span style="color:#e6db74">&#39;https://api.example.com/users&#39;</span>, {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">method</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;POST&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">headers</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;Content-Type&#39;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;application/json&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;Authorization&#39;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Bearer mytoken123&#39;</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">body</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">stringify</span>({ <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;John&#39;</span> })
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><p>Browser sẽ gửi preflight request trước:</p>
+<pre tabindex="0"><code>OPTIONS /users HTTP/1.1
+Host: api.example.com
+Origin: https://app.example.com
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: Content-Type, Authorization
+</code></pre><p>Server phải respond:</p>
+<pre tabindex="0"><code>HTTP/1.1 204 No Content
+Access-Control-Allow-Origin: https://app.example.com
+Access-Control-Allow-Methods: POST, GET, OPTIONS
+Access-Control-Allow-Headers: Content-Type, Authorization
+Access-Control-Max-Age: 86400
+</code></pre><p><code>Access-Control-Max-Age</code> cho browser biết có thể cache preflight response trong 86400 giây (24 giờ). Trong thời gian này, browser không cần gửi preflight lại cho cùng loại request, giảm overhead.</p>
+<h2 id="tại-sao-postman-không-gặp-cors">Tại sao Postman không gặp CORS
+</h2><p>Đây là câu hỏi mình hay gặp nhất. API chạy tốt trên Postman nhưng lại CORS error trên browser. Nguyên nhân đơn giản: Postman không phải là trình duyệt web. Nó là một HTTP client thuần túy, không implement Same-Origin Policy.</p>
+<p>Khi bạn gửi request từ Postman, nó chỉ đơn giản là tạo HTTP request, gửi đi, nhận response và hiển thị. Không có khái niệm &ldquo;origin&rdquo;, không có security restrictions. Postman không chạy JavaScript từ websites mà user đang browse, nên không cần bảo vệ user khỏi malicious scripts.</p>
+<p>Còn browser thì khác. Browser là một platform chạy code từ bất kỳ website nào user visit. Nếu không có Same-Origin Policy và CORS, một website độc hại có thể exploit browser để truy cập dữ liệu từ các sites khác, sử dụng cookies và credentials của user. Browser phải assume rằng mọi website đều potentially malicious và áp dụng các restrictions tương ứng.</p>
+<p>Đây cũng là lý do tại sao backend developers thường confused về CORS. Khi họ test API bằng curl hoặc Postman, mọi thứ work perfectly. Nhưng khi frontend team integrate, lại báo CORS errors. Đó không phải lỗi của API code, mà là vì API chưa được config để accept cross-origin requests từ browser.</p>
+<h2 id="cors-trong-kiến-trúc-phân-tầng">CORS trong kiến trúc phân tầng
+</h2><p>Để hiểu rõ hơn vị trí của CORS trong stack, hãy nhìn vào mô hình OSI. HTTP request bắt đầu từ tầng Application (tầng 7), đi xuống qua Presentation, Session, Transport (TCP), Network (IP), Data Link, và cuối cùng là Physical layer. Data được encode, packet-ized, routed và transmitted qua network.</p>
+<p>Ở phía server, request đi ngược lại từ Physical lên Application. Server process request ở tầng Application, generate response và gửi xuống ngược lại. Response travel qua các tầng giống như request.</p>
+<p>Same-Origin Policy và CORS hoạt động hoàn toàn ở tầng Application, specifically là ở browser runtime. Network layers bên dưới không biết gì về origins hay CORS. TCP connection được establish bình thường, HTTP request được gửi và nhận response thành công. Chỉ khi response về đến browser, JavaScript runtime mới kiểm tra CORS headers và quyết định có expose response cho script hay không.</p>
+<p>Điều này giải thích tại sao bạn có thể thấy request thành công trong Network tab của DevTools (vì request đã đến server và nhận về response ở HTTP level), nhưng JavaScript vẫn báo lỗi CORS (vì browser block access ở Application level).</p>
+<h2 id="implement-cors-ở-backend">Implement CORS ở backend
+</h2><p>Việc enable CORS ở backend khá straightforward nhưng cần cẩn thận. Nhiều developers để <code>Access-Control-Allow-Origin: *</code> cho tiện, nhưng đây là security risk. Wildcard cho phép mọi origin access API của bạn, kể cả các malicious sites.</p>
+<p>Better practice là explicitly list allowed origins. Nếu bạn có nhiều environments (dev, staging, production), maintain một whitelist:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#75715e">// Node.js/Express example
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">allowedOrigins</span> <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;https://app.example.com&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;https://staging.example.com&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;http://localhost:3000&#39;</span> <span style="color:#75715e">// Development
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">app</span>.<span style="color:#a6e22e">use</span>((<span style="color:#a6e22e">req</span>, <span style="color:#a6e22e">res</span>, <span style="color:#a6e22e">next</span>) =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">origin</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">headers</span>.<span style="color:#a6e22e">origin</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">allowedOrigins</span>.<span style="color:#a6e22e">includes</span>(<span style="color:#a6e22e">origin</span>)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">setHeader</span>(<span style="color:#e6db74">&#39;Access-Control-Allow-Origin&#39;</span>, <span style="color:#a6e22e">origin</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">setHeader</span>(<span style="color:#e6db74">&#39;Access-Control-Allow-Methods&#39;</span>, <span style="color:#e6db74">&#39;GET, POST, PUT, DELETE, OPTIONS&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">setHeader</span>(<span style="color:#e6db74">&#39;Access-Control-Allow-Headers&#39;</span>, <span style="color:#e6db74">&#39;Content-Type, Authorization&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">setHeader</span>(<span style="color:#e6db74">&#39;Access-Control-Allow-Credentials&#39;</span>, <span style="color:#e6db74">&#39;true&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">setHeader</span>(<span style="color:#e6db74">&#39;Access-Control-Max-Age&#39;</span>, <span style="color:#e6db74">&#39;86400&#39;</span>);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Handle preflight
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">method</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;OPTIONS&#39;</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">sendStatus</span>(<span style="color:#ae81ff">204</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">next</span>();
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><p>Header <code>Access-Control-Allow-Credentials</code> cần đặc biệt chú ý. Nếu set <code>true</code>, browser sẽ include cookies và authorization headers trong cross-origin requests. Nhưng khi enable credentials, bạn không thể dùng wildcard <code>*</code> cho Allow-Origin, phải specify exact origin.</p>
+<p>Trong Java Spring Boot, config còn đơn giản hơn:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CorsConfig</span> <span style="color:#66d9ef">implements</span> WebMvcConfigurer {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">addCorsMappings</span>(CorsRegistry registry) {
+</span></span><span style="display:flex;"><span>        registry.<span style="color:#a6e22e">addMapping</span>(<span style="color:#e6db74">&#34;/api/**&#34;</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">allowedOrigins</span>(
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;https://app.example.com&#34;</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;http://localhost:3000&#34;</span>
+</span></span><span style="display:flex;"><span>                )
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">allowedMethods</span>(<span style="color:#e6db74">&#34;GET&#34;</span>, <span style="color:#e6db74">&#34;POST&#34;</span>, <span style="color:#e6db74">&#34;PUT&#34;</span>, <span style="color:#e6db74">&#34;DELETE&#34;</span>, <span style="color:#e6db74">&#34;OPTIONS&#34;</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">allowedHeaders</span>(<span style="color:#e6db74">&#34;Content-Type&#34;</span>, <span style="color:#e6db74">&#34;Authorization&#34;</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">allowCredentials</span>(<span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">maxAge</span>(86400);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="debugging-cors-issues">Debugging CORS issues
+</h2><p>Khi gặp CORS errors, bước đầu tiên là mở DevTools Network tab. Tìm request bị block và check cả request headers lẫn response headers. Request phải có header <code>Origin</code>, còn response phải có <code>Access-Control-Allow-Origin</code>.</p>
+<p>Nếu thấy preflight request (method OPTIONS) failed, nghĩa là server chưa handle preflight đúng cách. Server phải respond với status 200 hoặc 204 và include tất cả CORS headers cần thiết.</p>
+<p>Một trick mình hay dùng là temporary disable CORS ở browser để verify rằng vấn đề thực sự là CORS chứ không phải lỗi khác. Chrome có thể start với flag <code>--disable-web-security</code>. Nhưng nhớ rằng đây chỉ để debug, never dùng trong production.</p>
+<p>Nếu API của bạn phía sau proxy hoặc load balancer, đảm bảo rằng CORS headers không bị strip đi. Một số proxies có default config remove certain headers. Bạn cần config proxy để preserve CORS headers hoặc thêm headers ở proxy level.</p>
+<h2 id="cors-với-credentials-và-authentication">CORS với credentials và authentication
+</h2><p>Khi làm việc với authenticated APIs, CORS trở nên phức tạp hơn một chút. Nếu API yêu cầu authentication token trong header (ví dụ JWT), frontend phải include credentials trong fetch request:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">fetch</span>(<span style="color:#e6db74">&#39;https://api.example.com/protected&#39;</span>, {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">method</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;GET&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">credentials</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;include&#39;</span>, <span style="color:#75715e">// Quan trọng!
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">headers</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;Authorization&#39;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Bearer &#39;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">token</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;Content-Type&#39;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;application/json&#39;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>})
+</span></span><span style="display:flex;"><span>.<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">response</span> =&gt; <span style="color:#a6e22e">response</span>.<span style="color:#a6e22e">json</span>())
+</span></span><span style="display:flex;"><span>.<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">data</span> =&gt; <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">data</span>));
+</span></span></code></pre></div><p>Setting <code>credentials: 'include'</code> tells browser gửi cookies và authorization headers. Server phải respond với <code>Access-Control-Allow-Credentials: true</code> và một specific origin (không được dùng wildcard).</p>
+<p>Một pattern hay gặp là dùng cookies cho session management. Browser automatically gửi cookies trong mọi request đến domain đó, kể cả cross-origin requests. Nhưng với CORS, cookies chỉ được gửi nếu <code>credentials: 'include'</code> ở client và <code>Allow-Credentials: true</code> ở server. Đây là layer bảo vệ thêm để prevent accidental credential leakage.</p>
+<h2 id="cors-không-phải-silver-bullet">CORS không phải silver bullet
+</h2><p>Quan trọng là hiểu rằng CORS không phải là security feature cho backend. Nó là một browser security mechanism để protect users. Backend vẫn phải implement proper authentication và authorization. Việc một request pass được CORS check không có nghĩa là request đó legitimate.</p>
+<p>Hacker có thể bypass CORS bằng cách gửi requests từ server-side code (không qua browser) hoặc dùng proxy. CORS chỉ prevent malicious websites từ việc sử dụng browser của user để attack. Nó không protect API khỏi direct attacks.</p>
+<p>Vì thế, backend phải luôn validate requests, check authentication tokens, verify permissions. CORS chỉ là một layer trong defense-in-depth strategy, không phải là duy nhất.</p>
+<h2 id="security-considerations">Security considerations
+</h2><p>Khi config CORS, easy mistake là quá permissive. Setting <code>Access-Control-Allow-Origin: *</code> tiện lợi nhưng nguy hiểm. Bất kỳ website nào cũng có thể call API của bạn từ browser. Nếu API không require authentication, data có thể bị leaked.</p>
+<p>Worse hơn, nếu bạn set wildcard và enable credentials cùng lúc, browser sẽ reject (thankfully). Nhưng nhiều developers thấy error rồi fix bằng cách allow specific origin trong code nhưng vẫn check origin không cẩn thận, leading to bypass opportunities.</p>
+<p>Một attack vector là subdomain takeover. Nếu bạn allow <code>*.example.com</code>, attacker có thể takeover một abandoned subdomain và sử dụng nó để call API với valid origin. Better practice là whitelist exact subdomains bạn control.</p>
+<p>Reflect origin từ request header vào response cũng nguy hiểm. Nếu code chỉ đơn giản là <code>res.setHeader('Access-Control-Allow-Origin', req.headers.origin)</code>, bất kỳ origin nào cũng qua. Phải validate origin against whitelist trước.</p>
+<h2 id="kết-luận">Kết luận
+</h2><p>Same-Origin Policy và CORS thường bị hiểu lầm là &ldquo;lỗi phiền phức&rdquo; của web development. Nhưng thực ra chúng là những mechanisms quan trọng bảo vệ users khỏi cross-site attacks. Hiểu rõ cách chúng hoạt động ở tầng mạng và browser runtime giúp bạn không chỉ fix CORS errors mà còn design secure APIs.</p>
+<p>CORS không hoạt động ở network layer hay transport layer. Nó là một tầng bảo mật ở application layer, được implement bởi browsers để kiểm soát cross-origin access. Server express consent thông qua CORS headers, browser enforce policies đó. Postman và các HTTP clients khác không gặp CORS vì chúng không chạy trong browser security context.</p>
+<p>Khi implement CORS, hãy balance giữa usability và security. Quá strict làm development khó khăn, quá permissive tạo security holes. Whitelist specific origins, validate requests properly, và test thoroughly ở tất cả environments. CORS errors thường là dấu hiệu rằng bạn đang làm đúng - browser đang protect users. Nhiệm vụ của developer là config properly để legitimate requests pass qua nhưng malicious requests bị block.</p>
+<hr>
+<p><strong>Tham khảo:</strong></p>
+<ul>
+<li>MDN Web Docs: Same-Origin Policy &amp; CORS</li>
+<li>OWASP CORS Security Cheat Sheet</li>
+<li>RFC 6454: The Web Origin Concept</li>
+<li>&ldquo;Web Security Academy&rdquo; - PortSwigger</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/cors/">CORS</a>
+        
+            <a href="/tags/same-origin-policy/">Same-Origin Policy</a>
+        
+            <a href="/tags/security/">Security</a>
+        
+            <a href="/tags/javascript/">JavaScript</a>
+        
+            <a href="/tags/http/">HTTP</a>
+        
+            <a href="/tags/browser/">Browser</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/post/websocket-vs-polling-sse/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="/images/websocket.jpg" loading="lazy" data-key="" data-hash="/images/websocket.jpg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">WebSocket hoạt động ra sao ở tầng mạng? So sánh với HTTP Polling và SSE</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/post/js-client-server/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="/images/js-client-server.jpg" loading="lazy" data-key="" data-hash="/images/js-client-server.jpg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">JavaScript trong mô hình Client–Server: Từ trình duyệt đến server</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Kiến thức lập trình
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.32.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.bcc7e9405c3d3cb732a7311965dda94f6ae5bcc3030b1c75796c4d2ed04912aa.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

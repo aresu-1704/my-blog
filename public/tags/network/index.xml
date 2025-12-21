@@ -1,12 +1,561 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>Network on Blog của Thuận An</title>
+        <title>Network on Kiến thức lập trình</title>
         <link>http://localhost:1313/tags/network/</link>
-        <description>Recent content in Network on Blog của Thuận An</description>
+        <description>Recent content in Network on Kiến thức lập trình</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>vi-vn</language>
-        <lastBuildDate>Sun, 21 Dec 2025 19:00:00 +0700</lastBuildDate><atom:link href="http://localhost:1313/tags/network/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 22 Dec 2025 01:01:00 +0700</lastBuildDate><atom:link href="http://localhost:1313/tags/network/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>WebSocket hoạt động ra sao ở tầng mạng? So sánh với HTTP Polling và SSE</title>
+        <link>http://localhost:1313/post/websocket-vs-polling-sse/</link>
+        <pubDate>Mon, 22 Dec 2025 01:01:00 +0700</pubDate>
+        
+        <guid>http://localhost:1313/post/websocket-vs-polling-sse/</guid>
+        <description>&lt;img src="http://localhost:1313/images/websocket.jpg" alt="Featured image of post WebSocket hoạt động ra sao ở tầng mạng? So sánh với HTTP Polling và SSE" /&gt;&lt;h2 id=&#34;http-truyền-thống-và-bài-toán-realtime&#34;&gt;HTTP truyền thống và bài toán realtime
+&lt;/h2&gt;&lt;p&gt;Khi mình mới bắt đầu làm chat app, điều đầu tiên nghĩ đến là dùng HTTP request-response thông thường. Client cứ 2 giây lại gửi một request lên server hỏi &amp;ldquo;có tin nhắn mới không?&amp;rdquo;. Server trả về danh sách tin nhắn mới nếu có, hoặc trả về empty array nếu không. Nghe có vẻ hợp lý, nhưng khi chạy thực tế thì thấy ngay vấn đề.&lt;/p&gt;
+&lt;p&gt;HTTP được thiết kế theo mô hình request-response. Client phải khởi tạo mọi giao tiếp. Server không thể tự ý gửi data xuống client khi có sự kiện mới. Điều này hoàn toàn OK với website thông thường, nhưng với ứng dụng realtime như chat, notification, live dashboard thì lại là một vấn đề lớn. User gửi tin nhắn đến bạn, nhưng bạn phải đợi đến khi client gửi request tiếp theo mới nhận được. Delay này có thể từ vài trăm milliseconds đến vài giây tùy thuộc vào polling interval.&lt;/p&gt;
+&lt;h2 id=&#34;http-polling---giải-pháp-tình-thế-đầu-tiên&#34;&gt;HTTP Polling - Giải pháp tình thế đầu tiên
+&lt;/h2&gt;&lt;p&gt;HTTP Polling chính là cách mình vừa mô tả. Client liên tục gửi request lên server theo một interval cố định, ví dụ mỗi 2 giây. Mỗi lần gửi request, nó hỏi server &amp;ldquo;có update không?&amp;rdquo;. Nếu có data mới, server trả về. Nếu không, server trả về empty response.&lt;/p&gt;
+&lt;p&gt;Vấn đề lớn nhất của polling chính là overhead khủng khiếp. Mỗi HTTP request bao gồm TCP handshake nếu connection không được reuse, HTTP headers, và processing time ở cả client lẫn server. Nếu bạn có 10,000 users và mỗi user poll mỗi 2 giây, đó là 5,000 requests mỗi giây đập vào server, trong khi 99% requests đó trả về empty response vì không có data mới.&lt;/p&gt;
+&lt;p&gt;Mình đã thử triển khai polling cho một chat app nhỏ với khoảng 100 concurrent users. Server CPU usage liên tục ở mức 40-50% chỉ để xử lý những requests không có gì. Network bandwidth cũng bị lãng phí vì HTTP headers thường lớn hơn actual payload nhiều lần. Request header có thể 500 bytes trong khi response chỉ là &lt;code&gt;{&amp;quot;messages&amp;quot;: []}&lt;/code&gt; (18 bytes).&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Client-side polling - cách làm tốn kém
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;function&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;startPolling&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;setInterval&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;async&lt;/span&gt; () =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;response&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;await&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;fetch&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/api/messages&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;await&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;response&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;json&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;messages&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#a6e22e&#34;&gt;updateUI&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;messages&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }, &lt;span style=&#34;color:#ae81ff&#34;&gt;2000&lt;/span&gt;); &lt;span style=&#34;color:#75715e&#34;&gt;// Poll mỗi 2 giây
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;long-polling---cải-thiện-nhưng-vẫn-hack&#34;&gt;Long Polling - Cải thiện nhưng vẫn hack
+&lt;/h2&gt;&lt;p&gt;Long Polling ra đời như một cải tiến của Polling. Thay vì server trả về ngay lập tức, server giữ request trong trạng thái pending cho đến khi có data mới hoặc timeout. Khi có event xảy ra, server mới respond và đóng connection. Client nhận response, xử lý data, rồi ngay lập tức tạo request mới.&lt;/p&gt;
+&lt;p&gt;Cơ chế này giảm số lượng requests đáng kể so với polling thông thường. Thay vì 5,000 requests/s với 10,000 users, giờ chỉ có requests khi thực sự có events. Tuy nhiên, Long Polling vẫn có những hạn chế nghiêm trọng.&lt;/p&gt;
+&lt;p&gt;Mỗi pending request chiếm giữ một thread hoặc connection ở server. Với mô hình thread-per-request như Java Servlets truyền thống, 10,000 concurrent users nghĩa là 10,000 threads đang chờ, tiêu tốn memory và context switching overhead. Hơn nữa, connection vẫn bị đóng và mở lại liên tục, không thực sự persistent.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Client-side long polling
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;async&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;function&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;longPoll&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;response&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;await&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;fetch&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/api/messages?timeout=30000&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;await&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;response&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;json&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;messages&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#a6e22e&#34;&gt;updateUI&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;messages&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    } &lt;span style=&#34;color:#66d9ef&#34;&gt;catch&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;error&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;error&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Polling error:&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;error&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// Ngay lập tức tạo request mới
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;longPoll&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;longPoll&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Server-side long polling với Java&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;@WebServlet&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/api/messages&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;MessagesServlet&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;extends&lt;/span&gt; HttpServlet {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;final&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;long&lt;/span&gt; TIMEOUT &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 30000;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;protected&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;doGet&lt;/span&gt;(HttpServletRequest req, HttpServletResponse resp) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;long&lt;/span&gt; startTime &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; System.&lt;span style=&#34;color:#a6e22e&#34;&gt;currentTimeMillis&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Message&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; messages &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ArrayList&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Chờ cho đến khi có message hoặc timeout&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (System.&lt;span style=&#34;color:#a6e22e&#34;&gt;currentTimeMillis&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; startTime &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; TIMEOUT) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            messages &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; messageQueue.&lt;span style=&#34;color:#a6e22e&#34;&gt;poll&lt;/span&gt;(userId);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;messages.&lt;span style=&#34;color:#a6e22e&#34;&gt;isEmpty&lt;/span&gt;()) &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Thread.&lt;span style=&#34;color:#a6e22e&#34;&gt;sleep&lt;/span&gt;(100); &lt;span style=&#34;color:#75715e&#34;&gt;// Đợi 100ms rồi check lại&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        resp.&lt;span style=&#34;color:#a6e22e&#34;&gt;setContentType&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;application/json&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        resp.&lt;span style=&#34;color:#a6e22e&#34;&gt;getWriter&lt;/span&gt;().&lt;span style=&#34;color:#a6e22e&#34;&gt;write&lt;/span&gt;(gson.&lt;span style=&#34;color:#a6e22e&#34;&gt;toJson&lt;/span&gt;(messages));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;server-sent-events---một-chiều-nhưng-hiệu-quả&#34;&gt;Server-Sent Events - Một chiều nhưng hiệu quả
+&lt;/h2&gt;&lt;p&gt;SSE (Server-Sent Events) là một bước tiến đáng kể, nhưng lại ít người biết đến. SSE cho phép server push data xuống client qua một HTTP connection duy nhất, persistent. Khác với Polling, connection được giữ mở và server có thể gửi events bất kỳ lúc nào.&lt;/p&gt;
+&lt;p&gt;Điểm hay của SSE là nó vô cùng đơn giản. Client chỉ cần tạo một &lt;code&gt;EventSource&lt;/code&gt; object, và server chỉ cần set header &lt;code&gt;Content-Type: text/event-stream&lt;/code&gt; rồi gửi data theo format đặc biệt. Browser tự động xử lý reconnection nếu connection bị đứt.&lt;/p&gt;
+&lt;p&gt;Tuy nhiên, SSE có một hạn chế lớn: nó chỉ là one-way communication. Server có thể push data xuống client, nhưng client muốn gửi data lên server thì vẫn phải tạo HTTP request riêng. Điều này OK với use cases như live notifications hay stock price updates (nơi client chỉ cần nhận data), nhưng không phù hợp với chat hoặc collaborative editing (nơi cần giao tiếp hai chiều liên tục).&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Client-side SSE - cực kỳ đơn giản
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;eventSource&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;EventSource&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/api/events&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;eventSource&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;onmessage&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;event&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;JSON&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;parse&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;event&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;updateUI&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;eventSource&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;onerror&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;error&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;error&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;SSE error:&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;error&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// Browser tự động reconnect
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Server-side SSE với Node.js
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;app&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;get&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/api/events&amp;#39;&lt;/span&gt;, (&lt;span style=&#34;color:#a6e22e&#34;&gt;req&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;res&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;res&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;setHeader&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Content-Type&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;text/event-stream&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;res&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;setHeader&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Cache-Control&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;no-cache&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;res&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;setHeader&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Connection&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;keep-alive&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// Gửi event định kỳ hoặc khi có data mới
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;sendEvent&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;res&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;write&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;`data: &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;JSON&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;stringify&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt;)&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;\n\n`&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    };
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// Lắng nghe events và push xuống client
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;eventEmitter&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;on&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;newMessage&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;sendEvent&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;req&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;on&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;close&amp;#39;&lt;/span&gt;, () =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;eventEmitter&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;off&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;newMessage&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;sendEvent&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    });
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;websocket---full-duplex-connection-thực-sự&#34;&gt;WebSocket - Full-duplex connection thực sự
+&lt;/h2&gt;&lt;p&gt;WebSocket là game changer. Thay vì hack HTTP để tạo ra persistent connection, WebSocket thiết kế lại từ đầu cho realtime communication. Nó bắt đầu như một HTTP request, nhưng sau handshake thành công, connection được upgrade thành một TCP socket thuần túy, chạy trên chính TCP connection đó.&lt;/p&gt;
+&lt;p&gt;Quá trình handshake của WebSocket khá thú vị. Client gửi một HTTP GET request với header đặc biệt &lt;code&gt;Upgrade: websocket&lt;/code&gt; và &lt;code&gt;Connection: Upgrade&lt;/code&gt;. Request này còn bao gồm một &lt;code&gt;Sec-WebSocket-Key&lt;/code&gt; được client random generate. Server nhận request, validate headers, tính toán &lt;code&gt;Sec-WebSocket-Accept&lt;/code&gt; bằng cách hash &lt;code&gt;Sec-WebSocket-Key&lt;/code&gt; với một magic string cố định theo spec, rồi trả về HTTP 101 Switching Protocols.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;GET /chat HTTP/1.1
+Host: example.com
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==
+Sec-WebSocket-Version: 13
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Server response:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;HTTP/1.1 101 Switching Protocols
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Sau handshake này, HTTP protocol chấm dứt. TCP connection vẫn mở nhưng giờ data được gửi theo WebSocket framing protocol. Không còn HTTP headers, không còn request-response model. Cả client và server đều có thể gửi data bất kỳ lúc nào mà không cần đợi phía kia khởi tạo.&lt;/p&gt;
+&lt;p&gt;Đây chính là ý nghĩa của full-duplex. Ở tầng mạng, TCP vốn đã là full-duplex (data có thể flow cả hai chiều đồng thời), nhưng HTTP lại áp đặt mô hình request-response lên nó. WebSocket gỡ bỏ giới hạn đó, cho phép application layer tận dụng hết khả năng của TCP.&lt;/p&gt;
+&lt;p&gt;Mỗi message trong WebSocket được đóng gói trong frames nhỏ. Frame header chỉ 2-14 bytes tùy payload size, vô cùng nhẹ so với HTTP headers hàng trăm bytes. Đối với message nhỏ như chat messages, overhead giảm từ 80-90% xuống còn vài phần trăm.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Client-side WebSocket
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ws&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;WebSocket&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ws://localhost:8080/chat&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;ws&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;onopen&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; () =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Connected&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;ws&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;send&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;JSON&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;stringify&lt;/span&gt;({ &lt;span style=&#34;color:#a6e22e&#34;&gt;type&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;join&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;room&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;general&amp;#39;&lt;/span&gt; }));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;ws&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;onmessage&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;event&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;message&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;JSON&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;parse&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;event&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;updateUI&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;message&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;ws&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;onerror&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;error&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;error&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;WebSocket error:&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;error&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;ws&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;onclose&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; () =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Connection closed&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// Tự reconnect nếu cần
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Gửi message
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;function&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;sendMessage&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;text&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;ws&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;send&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;JSON&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;stringify&lt;/span&gt;({ &lt;span style=&#34;color:#a6e22e&#34;&gt;type&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;message&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;text&lt;/span&gt; }));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Server-side WebSocket với Node.js và ws library
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;WebSocket&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;require&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ws&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;wss&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;WebSocket&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Server&lt;/span&gt;({ &lt;span style=&#34;color:#a6e22e&#34;&gt;port&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;wss&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;on&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;connection&amp;#39;&lt;/span&gt;, (&lt;span style=&#34;color:#a6e22e&#34;&gt;ws&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Client connected&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;ws&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;on&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;message&amp;#39;&lt;/span&gt;, (&lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;message&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;JSON&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;parse&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Broadcast đến tất cả clients
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;wss&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;clients&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;forEach&lt;/span&gt;((&lt;span style=&#34;color:#a6e22e&#34;&gt;client&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;client&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;readyState&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;===&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;WebSocket&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;OPEN&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#a6e22e&#34;&gt;client&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;send&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;JSON&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;stringify&lt;/span&gt;({
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#a6e22e&#34;&gt;user&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;message&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;user&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#a6e22e&#34;&gt;text&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;message&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;text&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#a6e22e&#34;&gt;timestamp&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; Date.&lt;span style=&#34;color:#a6e22e&#34;&gt;now&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                }));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        });
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    });
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;ws&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;on&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;close&amp;#39;&lt;/span&gt;, () =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Client disconnected&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    });
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Server-side WebSocket với Java (JSR 356)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; javax.websocket.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; javax.websocket.server.ServerEndpoint;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;@ServerEndpoint&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/chat&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ChatEndpoint&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; Set&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Session&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; sessions &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; HashSet&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;@OnOpen&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;onOpen&lt;/span&gt;(Session session) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        sessions.&lt;span style=&#34;color:#a6e22e&#34;&gt;add&lt;/span&gt;(session);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Client connected: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; session.&lt;span style=&#34;color:#a6e22e&#34;&gt;getId&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;@OnMessage&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;onMessage&lt;/span&gt;(String message, Session session) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Broadcast message đến tất cả clients&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (Session s : sessions) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (s.&lt;span style=&#34;color:#a6e22e&#34;&gt;isOpen&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                s.&lt;span style=&#34;color:#a6e22e&#34;&gt;getAsyncRemote&lt;/span&gt;().&lt;span style=&#34;color:#a6e22e&#34;&gt;sendText&lt;/span&gt;(message);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;@OnClose&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;onClose&lt;/span&gt;(Session session) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        sessions.&lt;span style=&#34;color:#a6e22e&#34;&gt;remove&lt;/span&gt;(session);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Client disconnected: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; session.&lt;span style=&#34;color:#a6e22e&#34;&gt;getId&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;so-sánh-từ-góc-nhìn-network-layer&#34;&gt;So sánh từ góc nhìn network layer
+&lt;/h2&gt;&lt;p&gt;Khi đặt ba cơ chế lên bàn cân, sự khác biệt ở tầng mạng rất rõ ràng. HTTP Polling tạo ra một connection mới cho mỗi request (hoặc reuse connection nếu dùng Keep-Alive), gửi full HTTP headers, nhận response, rồi đóng hoặc return connection về pool. Overhead của TCP handshake và HTTP parsing lặp đi lặp lại là không thể chấp nhận với scale lớn.&lt;/p&gt;
+&lt;p&gt;Long Polling cải thiện bằng cách giữ connection lâu hơn, nhưng request-response cycle vẫn tồn tại. Server phải hold connection trong trạng thái pending, tiêu tốn memory cho mỗi connection. Khi event xảy ra, connection đóng và client phải tạo request mới ngay lập tức, leading to một loạt TCP handshakes và HTTP overhead không cần thiết.&lt;/p&gt;
+&lt;p&gt;SSE giữ một connection persistent, tránh được overhead của connection establishment. Data được gửi qua cùng một TCP connection dưới dạng text stream với overhead tối thiểu. Tuy nhiên, giao tiếp vẫn là một chiều. Client gửi data lên server phải dùng HTTP requests riêng, không thể multiplex qua cùng connection.&lt;/p&gt;
+&lt;p&gt;WebSocket thắng áp đảo về mặt efficiency. Một TCP connection duy nhất được establish qua HTTP handshake, sau đó chuyển sang binary protocol với frame overhead chỉ 2-14 bytes. Không có HTTP headers cho mỗi message. Cả hai chiều đều có thể gửi data đồng thời mà không chờ đợi. Latency giảm vì không có request-response roundtrip.&lt;/p&gt;
+&lt;p&gt;Về resource usage phía server, WebSocket có vẻ tốn kém vì mỗi connection cần một socket descriptor và một ít memory cho buffers. Nhưng khi so sánh với Long Polling (mỗi client cũng chiếm một connection đang pending), WebSocket thực ra hiệu quả hơn vì bạn không cần continuously tạo request mới và handle HTTP protocol overhead.&lt;/p&gt;
+&lt;h2 id=&#34;độ-trễ-và-user-experience&#34;&gt;Độ trễ và user experience
+&lt;/h2&gt;&lt;p&gt;Độ trễ là yếu tố quyết định user experience trong realtime apps. Với Polling, worst-case latency bằng polling interval. Nếu bạn poll mỗi 2 giây, user có thể phải đợi gần 2 giây để thấy update. Giảm interval xuống 500ms thì cải thiện latency nhưng lại tăng server load gấp 4 lần.&lt;/p&gt;
+&lt;p&gt;Long Polling về lý thuyết có latency thấp vì server respond ngay khi có event. Nhưng trong thực tế, việc đóng connection và tạo request mới mất thời gian. Client phải đợi previous request complete, parse response, rồi mới tạo request tiếp theo. Nếu events xảy ra liên tục, client có thể miss events vì đang trong quá trình tạo request mới.&lt;/p&gt;
+&lt;p&gt;SSE có latency gần như realtime vì connection luôn mở và server push ngay khi có event. Nhưng hướng ngược lại vẫn phải qua HTTP request, add latency cho two-way interactions.&lt;/p&gt;
+&lt;p&gt;WebSocket đạt latency thấp nhất. Message được gửi trực tiếp qua TCP socket mà không qua HTTP processing. Không có connection setup, không có request queuing. Khi user nhấn send, message đến server trong vài chục milliseconds tùy network conditions, và response về ngay lập tức.&lt;/p&gt;
+&lt;p&gt;Mình đã benchmark ba cơ chế này trên cùng một chat application. Với 1000 concurrent users gửi messages với tần suất trung bình 1 message/phút, Polling (2s interval) có average latency 1.2s và server CPU usage 45%. Long Polling giảm latency xuống 200ms nhưng CPU vẫn ở 30% do connection handling. WebSocket chỉ có latency 50ms với CPU usage dưới 10%. Sự khác biệt không thể rõ ràng hơn.&lt;/p&gt;
+&lt;h2 id=&#34;tình-huống-thực-tế-và-lựa-chọn-công-nghệ&#34;&gt;Tình huống thực tế và lựa chọn công nghệ
+&lt;/h2&gt;&lt;p&gt;Chat application realtime là use case rõ ràng nhất cho WebSocket. User cần thấy messages ngay lập tức, và cả hai phía đều liên tục gửi data. WebSocket cung cấp latency thấp nhất và bandwidth efficiency tốt nhất. Mình đã develop một chat app với WebSocket và experience mượt mà như native messaging apps. Messages đến trong vòng 100ms, typing indicators work perfectly, và server handle được vài nghìn concurrent connections mà không vấn đề gì.&lt;/p&gt;
+&lt;p&gt;Live dashboard và monitoring systems cũng benefit nhiều từ WebSocket hoặc SSE. Nếu dashboard chỉ cần hiển thị data mà không gửi commands lên server, SSE là lựa chọn đơn giản và hiệu quả. Nhưng nếu user cần interact với dashboard (filter data, send commands), WebSocket linh hoạt hơn vì two-way communication.&lt;/p&gt;
+&lt;p&gt;Notification systems có thể dùng SSE hoặc WebSocket. SSE đơn giản hơn và browser support tốt. Nhưng nếu app đã dùng WebSocket cho features khác, việc reuse connection cho notifications sẽ tiết kiệm resources hơn maintain hai loại connections riêng biệt.&lt;/p&gt;
+&lt;p&gt;Collaborative editing tools như Google Docs absolutely cần WebSocket. Mỗi keystroke phải được sync với latency cực thấp. Operational Transform hoặc CRDT algorithms require continuous two-way sync. Polling hoặc SSE đơn giản không đủ nhanh.&lt;/p&gt;
+&lt;p&gt;Gaming và multiplayer apps cũng vậy. Player actions cần được reflect ngay lập tức. WebSocket cung cấp low-latency two-way channel cần thiết. Thậm chí nhiều games chuyển sang WebRTC cho peer-to-peer connections, nhưng signaling vẫn qua WebSocket.&lt;/p&gt;
+&lt;p&gt;Còn những trường hợp nào nên dùng Polling? Thực ra rất ít. Một case hợp lý là khi bạn cần support legacy browsers hoặc corporate firewalls block WebSocket. HTTP Polling luôn work vì nó chỉ là regular HTTP requests. Nhưng đó là trade-off bạn phải chấp nhận cho compatibility, không phải vì performance.&lt;/p&gt;
+&lt;h2 id=&#34;khi-nào-nên-dùng-cái-nào&#34;&gt;Khi nào nên dùng cái nào
+&lt;/h2&gt;&lt;p&gt;Sau nhiều năm làm việc với realtime systems, mình rút ra được kinh nghiệm sau. Nếu ứng dụng cần two-way realtime communication với latency thấp, WebSocket là lựa chọn mặc định. Chat, gaming, collaborative tools, live trading platforms đều thuộc category này.&lt;/p&gt;
+&lt;p&gt;Nếu ứng dụng chỉ cần server push data xuống client mà không cần client gửi data liên tục, SSE là option đơn giản và đủ dùng. Live notifications, stock tickers, news feeds, monitoring dashboards chỉ hiển thị data đều work tốt với SSE. Bonus là SSE tự động reconnect khi connection drop, bạn không cần code thêm.&lt;/p&gt;
+&lt;p&gt;Polling chỉ nên dùng khi không có lựa chọn nào khác. Legacy systems, environments không support WebSocket, hoặc khi update frequency thực sự thấp (vài phút một lần) thì Polling acceptable. Nhưng hãy nhớ rằng nó không scale well và waste resources.&lt;/p&gt;
+&lt;p&gt;Một pattern mình thường dùng là hybrid approach. WebSocket cho primary realtime features, fallback về Long Polling nếu WebSocket không available (do firewall hoặc proxy). Libraries như Socket.IO đã implement sẵn auto-fallback này. Start với WebSocket, nếu handshake fail, try Long Polling, cuối cùng mới xuống Polling thông thường.&lt;/p&gt;
+&lt;h2 id=&#34;kết-luận&#34;&gt;Kết luận
+&lt;/h2&gt;&lt;p&gt;WebSocket không phải là silver bullet cho mọi vấn đề, nhưng nó chắc chắn là best solution cho realtime communication. Việc hiểu rõ cách WebSocket hoạt động ở tầng mạng, từ HTTP handshake đến TCP full-duplex connection, giúp bạn debug issues và optimize performance hiệu quả hơn.&lt;/p&gt;
+&lt;p&gt;HTTP Polling và Long Polling là những giải pháp tình thế từ thời WebSocket chưa được support rộng rãi. Giờ đây với browser support gần như universal, chúng ta không còn lý do để chịu đựng overhead và latency của Polling nữa. SSE là middle ground tốt cho one-way communication, đơn giản hơn WebSocket nhưng vẫn efficient.&lt;/p&gt;
+&lt;p&gt;Khi thiết kế realtime systems, hãy nghĩ về data flow direction, latency requirements, và scale expectations. Những yếu tố này sẽ guide bạn đến đúng technology choice. Đừng ngại implement và benchmark các options khác nhau. Real-world performance thường khác xa theoretical analysis, và chỉ có testing mới cho bạn con số chính xác.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;Tham khảo:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;RFC 6455 (WebSocket Protocol)&lt;/li&gt;
+&lt;li&gt;MDN Web Docs: WebSocket API&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;High Performance Browser Networking&amp;rdquo; - Ilya Grigorik&lt;/li&gt;
+&lt;li&gt;Socket.IO Documentation&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
+        <title>Java Socket Programming: TCP vs UDP trong ứng dụng thực tế</title>
+        <link>http://localhost:1313/post/java-tcp-udp/</link>
+        <pubDate>Mon, 22 Dec 2025 00:44:00 +0700</pubDate>
+        
+        <guid>http://localhost:1313/post/java-tcp-udp/</guid>
+        <description>&lt;img src="http://localhost:1313/images/java-tcp-udp.jpg" alt="Featured image of post Java Socket Programming: TCP vs UDP trong ứng dụng thực tế" /&gt;&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu
+&lt;/h2&gt;&lt;p&gt;Hồi học môn mạng máy tính, mình cứ nghĩ TCP và UDP chỉ khác nhau ở chỗ một cái reliable một cái không thôi. Nhưng khi code thực tế mới thấy sự khác biệt lớn hơn thế nhiều. Bài này mình sẽ đi sâu vào cả network layer lẫn Java implementation để hiểu tại sao có những ứng dụng phải dùng TCP, có những ứng dụng lại chỉ chạy tốt với UDP.&lt;/p&gt;
+&lt;h2 id=&#34;tcp-transmission-control-protocol&#34;&gt;TCP: Transmission Control Protocol
+&lt;/h2&gt;&lt;h3 id=&#34;tcp-handshake---cái-bắt-tay-3-bước-tốn-thời-gian&#34;&gt;TCP Handshake - Cái bắt tay 3 bước tốn thời gian
+&lt;/h3&gt;&lt;p&gt;Trước khi gửi bất kỳ data nào, TCP phải thiết lập kết nối qua 3-way handshake. Client gửi một segment với cờ SYN kèm theo sequence number ngẫu nhiên (gọi là ISN - Initial Sequence Number). Server nhận được thì gửi lại SYN-ACK, vừa xác nhận ISN của client vừa gửi ISN của chính nó. Cuối cùng client gửi ACK để xác nhận ISN của server.&lt;/p&gt;
+&lt;p align=&#34;center&#34;&gt;
+  &lt;img src=&#34;http://localhost:1313/images/tcp-3-way.png&#34; alt=&#34;JavaScript Client-Side&#34; /&gt;
+&lt;/p&gt;
+&lt;p align=&#34;center&#34;&gt;
+  &lt;em&gt;TCP 3 bước bắt tay&lt;/em&gt;
+&lt;/p&gt;
+&lt;p&gt;Nghe có vẻ đơn giản nhưng quá trình này tốn &lt;strong&gt;1.5 RTT&lt;/strong&gt; (Round-Trip Time). Nếu client và server ở xa nhau thì latency này khá đáng kể. Chưa kể cả hai bên phải giữ connection state trong memory. Khi đóng kết nối lại phải 4-way handshake nữa, thêm 2 RTT nữa.&lt;/p&gt;
+&lt;h3 id=&#34;tcp-đảm-bảo-reliable-như-thế-nào&#34;&gt;TCP đảm bảo reliable như thế nào?
+&lt;/h3&gt;&lt;p&gt;TCP không tin tưởng network layer. Nó tự implement reliability bằng cách đánh số thứ tự cho từng byte data. Khi receiver nhận được data, nó gửi ACK packet ngược lại để báo &amp;ldquo;tao đã nhận đến byte số X rồi&amp;rdquo;. Sender sẽ giữ data trong buffer cho đến khi nhận được ACK.&lt;/p&gt;
+&lt;p&gt;Nếu sender không nhận được ACK sau một khoảng thời gian (gọi là RTO - Retransmission Timeout), nó sẽ gửi lại data đó. Có một trick tối ưu là &lt;strong&gt;Fast Retransmit&lt;/strong&gt;: nếu sender nhận được 3 duplicate ACK liên tiếp, nó biết ngay là packet bị mất và gửi lại luôn thay vì đợi timeout.&lt;/p&gt;
+&lt;p&gt;Chi phí của reliability này là gì? Mỗi ACK packet tạo overhead, retransmission gây delay, và buffer memory cho unacknowledged data khá tốn tài nguyên.&lt;/p&gt;
+&lt;h3 id=&#34;ordering---data-đến-đúng-thứ-tự&#34;&gt;Ordering - Data đến đúng thứ tự
+&lt;/h3&gt;&lt;p&gt;Giả sử bạn gửi 3 packets qua network, packet 2 đi chậm hơn packet 3. TCP ở receiver sẽ sắp xếp lại theo sequence number và buffer packet 3 cho đến khi packet 2 đến. Application layer nhận data theo đúng thứ tự đã gửi, không bao giờ bị lộn xộn.&lt;/p&gt;
+&lt;p&gt;Điều này quan trọng với những ứng dụng như chat (tin nhắn phải hiện theo thứ tự), file transfer (byte sequence phải đúng), nhưng lại gây vấn đề cho real-time app (mình sẽ nói sau).&lt;/p&gt;
+&lt;h3 id=&#34;congestion-control---tcp-biết-điều&#34;&gt;Congestion Control - TCP &amp;ldquo;biết điều&amp;rdquo;
+&lt;/h3&gt;&lt;p&gt;TCP có khả năng tự điều chỉnh tốc độ gửi dựa trên tình trạng mạng. Ban đầu nó bắt đầu chậm với congestion window (cwnd) = 1 MSS, sau đó tăng gấp đôi mỗi RTT (&lt;strong&gt;Slow Start&lt;/strong&gt;). Khi đạt đến threshold, nó chuyển sang tăng tuyến tính (&lt;strong&gt;Congestion Avoidance&lt;/strong&gt;).&lt;/p&gt;
+&lt;p&gt;Nếu phát hiện packet loss (qua timeout hoặc duplicate ACK), TCP giảm cwnd xuống. Điều này giúp TCP &amp;ldquo;công bằng&amp;rdquo; với các connection khác trên mạng, nhưng lại làm throughput giảm khi mạng tắc nghẽn - không tốt cho ứng dụng streaming hay gaming.&lt;/p&gt;
+&lt;h2 id=&#34;udp-user-datagram-protocol&#34;&gt;UDP: User Datagram Protocol
+&lt;/h2&gt;&lt;h3 id=&#34;udp---gửi-thẳng-không-cần-hỏi-han&#34;&gt;UDP - Gửi thẳng không cần hỏi han
+&lt;/h3&gt;&lt;p&gt;UDP khác TCP từ triết lý thiết kế. Nó không có khái niệm &amp;ldquo;connection&amp;rdquo;. Bạn muốn gửi data? Đóng gói vào datagram và ném đi thôi, không cần handshake, không cần ACK, không cần biết bên kia có nhận được hay không.&lt;/p&gt;
+&lt;p&gt;Mỗi datagram của UDP hoàn toàn độc lập. Không có sequence number, không có connection state, không có gì cả. Đơn giản và nhanh.&lt;/p&gt;
+&lt;h3 id=&#34;tại-sao-udp-lại-nhanh&#34;&gt;Tại sao UDP lại nhanh?
+&lt;/h3&gt;&lt;p&gt;Thứ nhất, không mất thời gian thiết lập kết nối. Ngay khi bắt đầu chương trình, UDP gửi data được luôn. TCP phải đợi 1.5 RTT mới bắt đầu được.&lt;/p&gt;
+&lt;p&gt;Thứ hai, header của UDP chỉ 8 bytes so với 20-60 bytes của TCP. Ít overhead hơn nghĩa là bandwidth hiệu quả hơn.&lt;/p&gt;
+&lt;p&gt;Thứ ba, không có retransmission. Packet mất thì mất, UDP không quan tâm. Application nhận được gì thì nhận, không nhận được thì thôi. Không có ACK nghĩa là latency cực thấp.&lt;/p&gt;
+&lt;p&gt;Thứ tư, UDP không có congestion control. Nó gửi với tốc độ cố định mà application muốn, không tự động giảm tốc khi mạng tắc.&lt;/p&gt;
+&lt;h3 id=&#34;đánh-đổi-của-udp&#34;&gt;Đánh đổi của UDP
+&lt;/h3&gt;&lt;p&gt;Reliability bay hơi hết. Packet có thể mất, có thể bị duplicate, UDP chẳng quan tâm. Application muốn reliability thì phải tự code.&lt;/p&gt;
+&lt;p&gt;Ordering cũng không có. Datagram có thể đến lộn xộn thứ tự. Bạn gửi packet 1, 2, 3 nhưng receiver có thể nhận 1, 3, 2. Application phải tự handle nếu cần.&lt;/p&gt;
+&lt;p&gt;Flow control không tồn tại. Sender có thể gửi nhanh hơn receiver xử lý được, dẫn đến tràn buffer và mất data.&lt;/p&gt;
+&lt;p&gt;Congestion control cũng không có. UDP có thể gây tắc nghẽn mạng mà không biết. Nếu quan tâm đến fairness với các connection khác, application phải tự implement.&lt;/p&gt;
+&lt;h2 id=&#34;socket-programming-trong-java&#34;&gt;Socket Programming trong Java
+&lt;/h2&gt;&lt;h3 id=&#34;tcp-socket---connection-oriented&#34;&gt;TCP Socket - Connection-oriented
+&lt;/h3&gt;&lt;p&gt;TCP trong Java dùng class &lt;code&gt;Socket&lt;/code&gt; (client) và &lt;code&gt;ServerSocket&lt;/code&gt; (server). Cái hay của TCP Socket là nó cho ta stream-based API, đọc ghi như file vậy.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Server side:&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.net.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.io.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;TCPServer&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;(String&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; args) &lt;span style=&#34;color:#66d9ef&#34;&gt;throws&lt;/span&gt; IOException {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Tạo ServerSocket lắng nghe trên port 8080&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        ServerSocket serverSocket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ServerSocket(8080);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Server listening on port 8080&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Accept connection (blocking call - chờ cho đến khi có client)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Socket clientSocket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; serverSocket.&lt;span style=&#34;color:#a6e22e&#34;&gt;accept&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Client connected: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; clientSocket.&lt;span style=&#34;color:#a6e22e&#34;&gt;getRemoteSocketAddress&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Stream để đọc/ghi dữ liệu - giống như đọc/ghi file&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        BufferedReader in &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; BufferedReader(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; InputStreamReader(clientSocket.&lt;span style=&#34;color:#a6e22e&#34;&gt;getInputStream&lt;/span&gt;())
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        PrintWriter out &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; PrintWriter(clientSocket.&lt;span style=&#34;color:#a6e22e&#34;&gt;getOutputStream&lt;/span&gt;(), &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Nhận message từ client&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String message &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; in.&lt;span style=&#34;color:#a6e22e&#34;&gt;readLine&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Received: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; message);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Gửi phản hồi&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        out.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Echo: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; message);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Đóng kết nối&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        clientSocket.&lt;span style=&#34;color:#a6e22e&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        serverSocket.&lt;span style=&#34;color:#a6e22e&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Client side:&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.net.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.io.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;TCPClient&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;(String&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; args) &lt;span style=&#34;color:#66d9ef&#34;&gt;throws&lt;/span&gt; IOException {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Kết nối đến server - lúc này 3-way handshake diễn ra&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Socket socket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Socket(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;localhost&amp;#34;&lt;/span&gt;, 8080);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Connected to server&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Stream để đọc/ghi&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        PrintWriter out &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; PrintWriter(socket.&lt;span style=&#34;color:#a6e22e&#34;&gt;getOutputStream&lt;/span&gt;(), &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        BufferedReader in &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; BufferedReader(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; InputStreamReader(socket.&lt;span style=&#34;color:#a6e22e&#34;&gt;getInputStream&lt;/span&gt;())
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Gửi message&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        out.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Hello Server&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Nhận phản hồi&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String response &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; in.&lt;span style=&#34;color:#a6e22e&#34;&gt;readLine&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Server response: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; response);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Đóng socket&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        socket.&lt;span style=&#34;color:#a6e22e&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Chú ý rằng &lt;code&gt;accept()&lt;/code&gt; và &lt;code&gt;read()&lt;/code&gt; đều là &lt;strong&gt;blocking call&lt;/strong&gt;. Thread sẽ dừng lại đợi cho đến khi có client kết nối hoặc có data đến. Trong production, ta thường dùng multi-threading hoặc NIO để handle nhiều clients.&lt;/p&gt;
+&lt;h3 id=&#34;udp-socket---connectionless&#34;&gt;UDP Socket - Connectionless
+&lt;/h3&gt;&lt;p&gt;UDP dùng &lt;code&gt;DatagramSocket&lt;/code&gt; cho cả client lẫn server. Khác với TCP, ta không gọi &lt;code&gt;connect()&lt;/code&gt; hay &lt;code&gt;accept()&lt;/code&gt;. Muốn gửi data thì pack vào &lt;code&gt;DatagramPacket&lt;/code&gt; và &lt;code&gt;send()&lt;/code&gt; thôi.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Server side:&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.net.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;UDPServer&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;(String&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; args) &lt;span style=&#34;color:#66d9ef&#34;&gt;throws&lt;/span&gt; Exception {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Tạo DatagramSocket bind vào port 9090&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        DatagramSocket socket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; DatagramSocket(9090);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;UDP Server started on port 9090&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; receiveBuffer &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;1024&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;// Nhận datagram - blocking nhưng không cần accept trước&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            DatagramPacket receivePacket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; DatagramPacket(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                receiveBuffer, receiveBuffer.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            socket.&lt;span style=&#34;color:#a6e22e&#34;&gt;receive&lt;/span&gt;(receivePacket);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            String message &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; String(receivePacket.&lt;span style=&#34;color:#a6e22e&#34;&gt;getData&lt;/span&gt;(), 0, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                receivePacket.&lt;span style=&#34;color:#a6e22e&#34;&gt;getLength&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Received: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; message);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;// Lấy địa chỉ client từ packet vừa nhận&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            InetAddress clientAddress &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; receivePacket.&lt;span style=&#34;color:#a6e22e&#34;&gt;getAddress&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; clientPort &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; receivePacket.&lt;span style=&#34;color:#a6e22e&#34;&gt;getPort&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;// Gửi phản hồi&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            String response &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Echo: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; message;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; sendData &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; response.&lt;span style=&#34;color:#a6e22e&#34;&gt;getBytes&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            DatagramPacket sendPacket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; DatagramPacket(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                sendData, sendData.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;, clientAddress, clientPort
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            socket.&lt;span style=&#34;color:#a6e22e&#34;&gt;send&lt;/span&gt;(sendPacket);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Client side:&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.net.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;UDPClient&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;(String&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; args) &lt;span style=&#34;color:#66d9ef&#34;&gt;throws&lt;/span&gt; Exception {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Tạo DatagramSocket - không cần connect&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        DatagramSocket socket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; DatagramSocket();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Chuẩn bị data để gửi&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String message &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Hello UDP Server&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; sendData &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; message.&lt;span style=&#34;color:#a6e22e&#34;&gt;getBytes&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Tạo packet với địa chỉ đích&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        InetAddress serverAddress &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; InetAddress.&lt;span style=&#34;color:#a6e22e&#34;&gt;getByName&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;localhost&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        DatagramPacket sendPacket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; DatagramPacket(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            sendData, sendData.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;, serverAddress, 9090
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Gửi datagram - không đảm bảo sẽ đến&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        socket.&lt;span style=&#34;color:#a6e22e&#34;&gt;send&lt;/span&gt;(sendPacket);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Sent: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; message);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Nhận phản hồi&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; receiveBuffer &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;1024&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        DatagramPacket receivePacket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; DatagramPacket(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            receiveBuffer, receiveBuffer.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        socket.&lt;span style=&#34;color:#a6e22e&#34;&gt;receive&lt;/span&gt;(receivePacket);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String response &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; String(receivePacket.&lt;span style=&#34;color:#a6e22e&#34;&gt;getData&lt;/span&gt;(), 0, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            receivePacket.&lt;span style=&#34;color:#a6e22e&#34;&gt;getLength&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Server response: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; response);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        socket.&lt;span style=&#34;color:#a6e22e&#34;&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Điều lưu ý với UDP là phải chỉ định kích thước buffer trước. Mỗi datagram có giới hạn 64KB (thực tế thường dùng dưới 1500 bytes để tránh IP fragmentation).&lt;/p&gt;
+&lt;h3 id=&#34;so-sánh-nhanh&#34;&gt;So sánh nhanh
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;Tiêu chí&lt;/th&gt;
+          &lt;th&gt;TCP Socket&lt;/th&gt;
+          &lt;th&gt;UDP DatagramSocket&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;API&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;Socket&lt;/code&gt;, &lt;code&gt;ServerSocket&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;DatagramSocket&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;Connection&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;Cần &lt;code&gt;connect()&lt;/code&gt; và &lt;code&gt;accept()&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;Không cần&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;Data model&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;Stream (InputStream/OutputStream)&lt;/td&gt;
+          &lt;td&gt;Message (DatagramPacket)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;Reliability&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;Đảm bảo delivery&lt;/td&gt;
+          &lt;td&gt;Best effort&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;Ordering&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;Đảm bảo thứ tự&lt;/td&gt;
+          &lt;td&gt;Không đảm bảo&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;Overhead&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;Header 20-60 bytes&lt;/td&gt;
+          &lt;td&gt;Header 8 bytes&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;Use case&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;HTTP, File transfer, Chat&lt;/td&gt;
+          &lt;td&gt;DNS, Gaming, Streaming&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;phân-tích-tình-huống-thực-tế&#34;&gt;Phân tích tình huống thực tế
+&lt;/h2&gt;&lt;h3 id=&#34;chat-application&#34;&gt;Chat Application
+&lt;/h3&gt;&lt;p&gt;Nếu bạn làm một app chat như Messenger hay Telegram, chọn gì? Câu trả lời là TCP, và lý do rất đơn giản: tin nhắn không được phép mất.&lt;/p&gt;
+&lt;p&gt;Tưởng tượng bạn gửi &amp;ldquo;Hẹn gặp lúc 7h nhé&amp;rdquo; nhưng message mất giữa đường và người kia không nhận được. Đó là disaster. TCP đảm bảo mọi message đều đến đích. Hơn nữa, tin nhắn phải hiển thị đúng thứ tự. Nếu bạn gửi &amp;ldquo;Alo&amp;rdquo; rồi &amp;ldquo;Khỏe không?&amp;rdquo;, người nhận thấy &amp;ldquo;Khỏe không?&amp;rdquo; trước &amp;ldquo;Alo&amp;rdquo; thì trông rất weird.&lt;/p&gt;
+&lt;p&gt;Latency của chat app thường không quá critical. Delay 100-500ms là chấp nhận được. User không cần realtime như game, chậm vài trăm ms không ai để ý. Vì vậy overhead của TCP (3-way handshake, ACK) là acceptable trade-off.&lt;/p&gt;
+&lt;p&gt;Thêm một lợi ích nữa: TCP connection state giúp ta biết user online hay offline. WebSocket (protocol chạy trên TCP) duy trì long-lived connection, server có thể push notification xuống client ngay lập tức.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Server pattern cho chat: một thread per client&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ServerSocket serverSocket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ServerSocket(8080);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Socket client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; serverSocket.&lt;span style=&#34;color:#a6e22e&#34;&gt;accept&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Thread(&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ChatHandler(client)).&lt;span style=&#34;color:#a6e22e&#34;&gt;start&lt;/span&gt;(); &lt;span style=&#34;color:#75715e&#34;&gt;// handle client riêng&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;game-online-real-time-multiplayer&#34;&gt;Game Online (Real-time Multiplayer)
+&lt;/h3&gt;&lt;p&gt;Game online là trường hợp ngược lại hoàn toàn. Ở đây, &lt;strong&gt;latency là king&lt;/strong&gt;. Bạn chơi một game FPS và nhấn shoot, nếu action delay 200ms thì game chơi như shit. UDP là lựa chọn duy nhất.&lt;/p&gt;
+&lt;p&gt;Trong game, client liên tục gửi player position đến server với tần suất 20-60 lần/giây. Nếu dùng TCP, mỗi packet cần ACK - đó là overhead khủng khiếp. Worse hơn nữa là &lt;strong&gt;head-of-line blocking&lt;/strong&gt;: nếu packet 100 bị mất, TCP sẽ block packet 101, 102 cho đến khi retransmit packet 100 thành công. Nhưng trong game, vị trí ở frame 100 đã stale rồi, frame 102 mới là dữ liệu fresh.&lt;/p&gt;
+&lt;p&gt;UDP gửi packet và quên đi. Packet mất? No problem, vài frame sau sẽ có update mới. Game player sẽ thấy nhân vật giật một chút nhưng không bị lag nặng như TCP.&lt;/p&gt;
+&lt;p&gt;Tất nhiên, UDP không reliable nên ta phải tự code logic xử lý:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Client-side prediction&lt;/strong&gt;: Client dự đoán vị trí của mình trước khi server confirm, để movement mượt mà. Khi server gửi state thực về, client reconcile lại.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Redundancy&lt;/strong&gt;: Những event quan trọng (như player tử vong) được gửi nhiều lần để đảm bảo server nhận được.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Sequence number&lt;/strong&gt; ở application level để detect out-of-order packets.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Client gửi vị trí liên tục&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;DatagramSocket socket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; DatagramSocket();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (gameRunning) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    String position &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;POS:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; x &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;,&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; y &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;,&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; timestamp;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; position.&lt;span style=&#34;color:#a6e22e&#34;&gt;getBytes&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    socket.&lt;span style=&#34;color:#a6e22e&#34;&gt;send&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; DatagramPacket(data, data.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;, serverAddr, port));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Thread.&lt;span style=&#34;color:#a6e22e&#34;&gt;sleep&lt;/span&gt;(16); &lt;span style=&#34;color:#75715e&#34;&gt;// ~60 FPS&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Một pattern hay là &lt;strong&gt;hybrid approach&lt;/strong&gt;: dùng UDP cho player movement (frequent, ephemeral), nhưng dùng TCP cho chat, inventory, và critical events (infrequent, important).&lt;/p&gt;
+&lt;h3 id=&#34;video-streaming&#34;&gt;Video Streaming
+&lt;/h3&gt;&lt;p&gt;Streaming video phức tạp hơn vì có hai trường hợp khác nhau: Live streaming và Video on Demand (VOD).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Live streaming&lt;/strong&gt; (Twitch, Zoom) cần latency thấp. Bạn không thể buffer 30 giây vì đó là live stream. UDP là lựa chọn tốt hơn. Nếu mất vài frames video thì chỉ thấy artifact nhỏ trong vài milliseconds, không critical. Data cũ không có giá trị - nếu packet bị delay thì client không cần nữa vì frame mới đã đến.&lt;/p&gt;
+&lt;p&gt;Trong thực tế, live streaming dùng &lt;strong&gt;RTP (Real-time Transport Protocol)&lt;/strong&gt; chạy trên UDP. WebRTC (dùng cho peer-to-peer streaming) cũng dùng UDP. RTMP (protocol cũ dùng TCP) đã bị deprecated vì latency quá cao.&lt;/p&gt;
+&lt;p&gt;Để xử lý packet loss, live streaming thường dùng &lt;strong&gt;Forward Error Correction (FEC)&lt;/strong&gt;: thêm redundant data vào stream để có thể recover lost packets mà không cần retransmission.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;VOD&lt;/strong&gt; (YouTube, Netflix) lại khác. Client có thể buffer trước 5-30 giây nên latency không quan trọng. Thay vào đó, chất lượng video phải perfect - không ai chấp nhận artifact trong phim họ đang xem. TCP là lựa chọn đúng đắn.&lt;/p&gt;
+&lt;p&gt;HLS (HTTP Live Streaming) và DASH đều dùng HTTP/TCP. Video được chia thành segments nhỏ (2-10 giây), client request từng segment qua HTTP. Nếu bandwidth giảm, client tự động switch xuống quality thấp hơn (&lt;strong&gt;adaptive streaming&lt;/strong&gt;). Reliable delivery của TCP đảm bảo mỗi segment đến đầy đủ.&lt;/p&gt;
+&lt;p&gt;Thêm nữa, TCP-based streaming tương thích tốt với infrastructure hiện tại: CDN, proxy, firewall đều support HTTP sẵn rồi.&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;Tiêu chí&lt;/th&gt;
+          &lt;th&gt;Live Streaming (UDP)&lt;/th&gt;
+          &lt;th&gt;VOD (TCP)&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;Latency&lt;/td&gt;
+          &lt;td&gt;&amp;lt; 1s&lt;/td&gt;
+          &lt;td&gt;5-30s buffer OK&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;Quality&lt;/td&gt;
+          &lt;td&gt;Chấp nhận mất frames&lt;/td&gt;
+          &lt;td&gt;Perfect delivery&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;Protocol&lt;/td&gt;
+          &lt;td&gt;RTP, WebRTC&lt;/td&gt;
+          &lt;td&gt;HLS, DASH&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;Example&lt;/td&gt;
+          &lt;td&gt;Twitch, Zoom&lt;/td&gt;
+          &lt;td&gt;YouTube, Netflix&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;kết-luận-khi-nào-dùng-cái-nào&#34;&gt;Kết luận: Khi nào dùng cái nào?
+&lt;/h2&gt;&lt;h3 id=&#34;dùng-tcp-khi&#34;&gt;Dùng TCP khi
+&lt;/h3&gt;&lt;p&gt;Ứng dụng cần &lt;strong&gt;reliability và correctness&lt;/strong&gt; hơn là speed. File transfer, REST API, database connections, email, financial transactions - tất cả đều cần data đến đầy đủ và đúng thứ tự. Latency cao hơn một chút là chấp nhận được để đổi lấy guarantee.&lt;/p&gt;
+&lt;p&gt;Một lợi ích khác là infrastructure support. Firewall, proxy, CDN đều được thiết kế để handle TCP/HTTP tốt. Nếu app của bạn cần đi qua corporate firewall, TCP gần như chắc chắn work.&lt;/p&gt;
+&lt;h3 id=&#34;dùng-udp-khi&#34;&gt;Dùng UDP khi
+&lt;/h3&gt;&lt;p&gt;Ứng dụng cần &lt;strong&gt;low latency&lt;/strong&gt; và real-time data. VoIP, video conferencing, online gaming, live streaming, IoT sensor data - những thứ này cần data fresh hơn là data complete. Stale data không có giá trị, chậm còn tệ hơn mất data.&lt;/p&gt;
+&lt;p&gt;Tất nhiên bạn phải tự xử lý reliability nếu cần. Protocols như QUIC (dùng cho HTTP/3) và RTP chạy trên UDP nhưng tự implement một số tính năng của TCP ở application layer.&lt;/p&gt;
+&lt;h3 id=&#34;xu-hướng-hiện-đại-quic&#34;&gt;Xu hướng hiện đại: QUIC
+&lt;/h3&gt;&lt;p&gt;Google phát triển &lt;strong&gt;QUIC&lt;/strong&gt; (Quick UDP Internet Connections) và hiện HTTP/3 chạy trên QUIC over UDP. QUIC kết hợp ưu điểm của cả hai bên: reliability của TCP nhưng latency thấp hơn.&lt;/p&gt;
+&lt;p&gt;QUIC có multiplexing mà không bị head-of-line blocking (vấn đề lớn của TCP), support 0-RTT connection establishment (không cần 3-way handshake), và tích hợp sẵn TLS encryption.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Lesson learned&lt;/strong&gt;: Không có protocol &amp;ldquo;tốt nhất cho mọi trường hợp&amp;rdquo;. Có protocol &amp;ldquo;phù hợp nhất với use case của bạn&amp;rdquo;. Hiểu rõ trade-offs để đưa ra quyết định đúng.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;Tham khảo:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;RFC 793 (TCP), RFC 768 (UDP)&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;Computer Networking: A Top-Down Approach&amp;rdquo; - Kurose &amp;amp; Ross&lt;/li&gt;
+&lt;li&gt;Java Network Programming (O&amp;rsquo;Reilly)&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
         <title>Java Client–Server</title>
         <link>http://localhost:1313/post/java-client-server/</link>
         <pubDate>Sun, 21 Dec 2025 19:00:00 +0700</pubDate>

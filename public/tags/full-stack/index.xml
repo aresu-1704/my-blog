@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>Full-Stack on Blog của Thuận An</title>
+        <title>Full-Stack on Kiến thức lập trình</title>
         <link>http://localhost:1313/tags/full-stack/</link>
-        <description>Recent content in Full-Stack on Blog của Thuận An</description>
+        <description>Recent content in Full-Stack on Kiến thức lập trình</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>vi-vn</language>
         <lastBuildDate>Mon, 22 Dec 2025 00:23:10 +0700</lastBuildDate><atom:link href="http://localhost:1313/tags/full-stack/index.xml" rel="self" type="application/rss+xml" /><item>
@@ -42,6 +42,9 @@
 &lt;p&gt;&lt;strong&gt;Giới hạn:&lt;/strong&gt; Không thể đọc/ghi file trực tiếp trên máy tính người dùng (vì lý do bảo mật), không thể kết nối trực tiếp vào Database.&lt;/p&gt;
 &lt;p align=&#34;center&#34;&gt;
   &lt;img src=&#34;http://localhost:1313/images/client-side-js.jpg&#34; alt=&#34;JavaScript Client-Side&#34; /&gt;
+&lt;/p&gt;
+&lt;p align=&#34;center&#34;&gt;
+  &lt;em&gt;Mô hình Javascript ở phía khách&lt;/em&gt;
 &lt;/p&gt;
 &lt;h3 id=&#34;b-javascript-tại-server-nodejs&#34;&gt;B. JavaScript tại Server (Node.js)
 &lt;/h3&gt;&lt;p&gt;Tại đây, JS chạy trên môi trường Node.js (một runtime sử dụng V8 Engine của Google nhưng tách khỏi trình duyệt).&lt;/p&gt;
@@ -176,7 +179,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;html&lt;/span&gt;&amp;gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;bước-3-chạy-thử-nghiệm&#34;&gt;Bước 3: Chạy thử nghiệm
 &lt;/h3&gt;&lt;ol&gt;
-&lt;li&gt;Tại terminal, chạy server: &lt;code&gt;node server.js&lt;/code&gt; (Bạn sẽ thấy dòng: &lt;em&gt;Server đang chạy tại http://localhost:3000&lt;/em&gt;)&lt;/li&gt;
+&lt;li&gt;Tại terminal, chạy server: &lt;code&gt;node server.js&lt;/code&gt; (Bạn sẽ thấy dòng: &lt;em&gt;Server đang chạy tại &lt;a class=&#34;link&#34; href=&#34;http://localhost:3000&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://localhost:3000&lt;/a&gt;&lt;/em&gt;)&lt;/li&gt;
 &lt;li&gt;Mở file &lt;code&gt;index.html&lt;/code&gt; trực tiếp bằng trình duyệt.&lt;/li&gt;
 &lt;li&gt;Bấm nút &lt;strong&gt;&amp;ldquo;Gửi lời chào tới Server&amp;rdquo;&lt;/strong&gt;.&lt;/li&gt;
 &lt;/ol&gt;

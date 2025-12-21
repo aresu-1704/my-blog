@@ -1,6 +1,6 @@
 +++
 title = "Java Client–Server"
-date = 2025-12-21T19:00:00+07:00
+date = 2025-12-16T19:00:00+07:00
 draft = false
 categories = ["Programming", "Java", "Networking"]
 tags = ["Java", "Client-Server", "TCP/IP", "Socket", "Network"]

@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="vi-vn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Phân tích sâu về sự chuyển đổi từ blocking I/O sang non-blocking I/O trong Java. Hiểu rõ Java NIO, Selector, Multiplexing và cách chúng thay đổi kiến trúc server hiện đại">
+<title>Từ Blocking I/O đến Non-blocking I/O: Java NIO thay đổi cách Server xử lý mạng như thế nào?</title>
+
+<link rel='canonical' href='http://localhost:1313/post/java-nio-blocking-nonblocking/'>
+
+<link rel="stylesheet" href="/scss/style.min.6074b3f881d887398809e454b84ee6668c1a2f5c01bbffe38339b724acdda96e.css"><meta property='og:title' content="Từ Blocking I/O đến Non-blocking I/O: Java NIO thay đổi cách Server xử lý mạng như thế nào?">
+<meta property='og:description' content="Phân tích sâu về sự chuyển đổi từ blocking I/O sang non-blocking I/O trong Java. Hiểu rõ Java NIO, Selector, Multiplexing và cách chúng thay đổi kiến trúc server hiện đại">
+<meta property='og:url' content='http://localhost:1313/post/java-nio-blocking-nonblocking/'>
+<meta property='og:site_name' content='Kiến thức lập trình'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Java' /><meta property='article:tag' content='NIO' /><meta property='article:tag' content='I/O' /><meta property='article:tag' content='Concurrency' /><meta property='article:tag' content='Server' /><meta property='article:tag' content='Network Programming' /><meta property='article:tag' content='Performance' /><meta property='article:published_time' content='2025-12-22T01:30:00&#43;07:00'/><meta property='article:modified_time' content='2025-12-22T01:30:00&#43;07:00'/><meta property='og:image' content='http://localhost:1313/images/java-nio.jpg' />
+<meta name="twitter:title" content="Từ Blocking I/O đến Non-blocking I/O: Java NIO thay đổi cách Server xử lý mạng như thế nào?">
+<meta name="twitter:description" content="Phân tích sâu về sự chuyển đổi từ blocking I/O sang non-blocking I/O trong Java. Hiểu rõ Java NIO, Selector, Multiplexing và cách chúng thay đổi kiến trúc server hiện đại"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='http://localhost:1313/images/java-nio.jpg' />
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column compact"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_f2c6dce42be5aaca.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Kiến thức lập trình</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/research/' >
+                
+                
+                
+                <span>Research</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/portfolio/' >
+                
+                
+                
+                <span>Portfolio</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/resume/' >
+                
+                
+                
+                <span>Résumé</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about-me/' >
+                
+                
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/contact/' >
+                
+                
+                
+                <span>Contact</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/post/java-nio-blocking-nonblocking/">
+                
+                    <img src="/images/java-nio.jpg" loading="lazy" alt="Featured image of post Từ Blocking I/O đến Non-blocking I/O: Java NIO thay đổi cách Server xử lý mạng như thế nào?" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/java/" >
+                Java
+            </a>
+        
+            <a href="/categories/backend/" >
+                Backend
+            </a>
+        
+            <a href="/categories/system-design/" >
+                System Design
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/java-nio-blocking-nonblocking/">Từ Blocking I/O đến Non-blocking I/O: Java NIO thay đổi cách Server xử lý mạng như thế nào?</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Phân tích sâu về sự chuyển đổi từ blocking I/O sang non-blocking I/O trong Java. Hiểu rõ Java NIO, Selector, Multiplexing và cách chúng thay đổi kiến trúc server hiện đại
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published" datetime='2025-12-22T01:30:00&#43;07:00'>Dec 22, 2025</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    11 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="khi-một-thread-chỉ-phục-vụ-một-kết-nối">Khi một thread chỉ phục vụ một kết nối
+</h2><p>Hồi mới bắt đầu viết server Java, mình làm theo mô hình đơn giản nhất: mỗi khi có client kết nối, tạo một thread mới để xử lý. ServerSocket accept connection, spawn một thread, thread đó đọc request, xử lý business logic, gửi response, rồi kết thúc. Nghe logic và dễ hiểu. Code cũng straightforward, không phức tạp gì.</p>
+<p>Vấn đề chỉ bộc lộ khi số lượng concurrent connections tăng lên. Với mô hình blocking I/O truyền thống, mỗi khi thread gọi <code>socket.read()</code> hoặc <code>socket.write()</code>, nó bị block cho đến khi operation hoàn thành. Nếu client chậm, network congested, hoặc đơn giản là client đang suy nghĩ, thread ở server cứ ngồi đó chờ. Không làm gì cả, chỉ chờ. CPU không tốn nhiều, nhưng thread thì chiếm memory và system resources.</p>
+<p>Khi có mười, hai mươi concurrent connections thì vẫn OK. Nhưng khi lên hàng trăm, hàng nghìn connections, việc tạo ra cùng số lượng threads bắt đầu thành vấn đề nghiêm trọng. Mỗi thread trong Java chiếm khoảng 1MB stack memory mặc định. Một nghìn threads nghĩa là 1GB RAM chỉ cho stacks, chưa kể heap memory và các overhead khác. Worse hơn là context switching giữa hàng nghìn threads làm CPU thrashing, performance sụt giảm thảm hại thay vì tăng.</p>
+<p>Mình từng deploy một server nhỏ xử lý WebSocket connections. Ban đầu test với vài trăm clients thì mọi thứ ổn. Nhưng khi lên production với vài nghìn concurrent users, server bắt đầu lag, response time tăng vọt, rồi cuối cùng crash với OutOfMemoryError. Monitoring cho thấy số lượng threads vượt quá mười nghìn. JVM không thể tạo thêm threads nữa. Đó là lúc mình nhận ra mô hình thread-per-connection không scale.</p>
+<h2 id="vấn-đề-không-phải-ở-thread-mà-ở-blocking">Vấn đề không phải ở thread, mà ở blocking
+</h2><p>Cái khiến mô hình truyền thống không hiệu quả không phải là việc dùng threads, mà là việc threads bị block vô nghĩa. Hãy nghĩ về điều này: trong phần lớn thời gian, một connection đang chờ data từ network. Client gửi HTTP request, nhưng dữ liệu đến server qua network không phải tức thì. Nó đi qua routers, switches, có thể bị delay vì bandwidth limitation hoặc network congestion. ở phía server, thread gọi <code>inputStream.read()</code> và bị block cho đến khi có đủ data.</p>
+<p>Trong thời gian chờ đợi này, thread không làm gì hữu ích. Nó không consume CPU, nhưng nó vẫn tồn tại, chiếm memory, và là một entry trong JVM&rsquo;s thread table. OS scheduler vẫn phải consider nó khi scheduling. Nếu có một nghìn threads đang block chờ I/O, đó là một nghìn threads không productive nhưng vẫn tốn resources.</p>
+<p>Điều mình cần không phải là một thread cho mỗi connection. Điều mình cần là khả năng để một thread xử lý nhiều connections. Nhưng làm sao để một thread biết connection nào đang có data ready để đọc mà không bị block checking từng connection một? Đó là lúc Java NIO xuất hiện.</p>
+<h2 id="java-nio-và-ý-tưởng-non-blocking-io">Java NIO và ý tưởng non-blocking I/O
+</h2><p>Java NIO (New I/O, hoặc Non-blocking I/O) ra đời trong Java 1.4 với một mindset hoàn toàn khác. Thay vì thread block khi chờ I/O, NIO cho phép thread check xem I/O operation có thể thực hiện được không trước khi thực sự làm. Nếu không ready, thread không cần wait, nó có thể làm việc khác hoặc check connection khác.</p>
+<p>Cốt lõi của NIO là ba khái niệm: Channels, Buffers và Selectors. Channel trong NIO giống như socket trong blocking I/O, nhưng nó có thể configure thành non-blocking mode. Buffer là vùng nhớ để đọc/ghi data. Nhưng component quan trọng nhất là Selector.</p>
+<p>Selector cho phép một thread duy nhất monitor nhiều channels cùng lúc. Bạn register các channels với Selector, chỉ định operations bạn quan tâm (read, write, accept, connect). Khi gọi <code>selector.select()</code>, method này sẽ block cho đến khi ít nhất một channel ready cho operation đã register. Quan trọng là nó chỉ trả về khi có event xảy ra, không phải check polling liên tục.</p>
+<p>Điều này tạo ra một paradigm shift hoàn toàn. Thay vì thread chờ từng connection, giờ một thread có thể chờ bất kỳ connection nào trong nhóm ready. Khi có connection ready, thread xử lý nó, rồi quay lại chờ tiếp. Một thread có thể handle hàng nghìn connections mà không cần tạo ra hàng nghìn threads.</p>
+<h2 id="multiplexing-ở-tầng-os">Multiplexing ở tầng OS
+</h2><p>Để hiểu tại sao Selector hiệu quả, cần nhìn xuống OS level. Trên Linux, NIO Selector sử dụng epoll (hoặc select/poll trên các systems cũ hơn). Trên Windows, nó dùng I/O Completion Ports. Đây là các system calls cho phép application monitor nhiều file descriptors (sockets) cùng lúc.</p>
+<p>Epoll hoạt động rất hiệu quả. Thay vì kernel phải scan qua tất cả file descriptors mỗi lần check (như select/poll làm), epoll maintain một event list. Khi có I/O event xảy ra, kernel add file descriptor vào ready list. Application chỉ cần check ready list này, không cần scan hết tất cả descriptors. Complexity là O(1) cho số lượng ready events, không phải O(n) cho tổng số connections.</p>
+<p>Điều này có nghĩa là server có thể maintain hàng chục nghìn connections mà overhead minimal. Kernel sẽ notify application chỉ khi có connections thực sự có events. Application không waste CPU cycles checking connections không có gì mới.</p>
+<h2 id="code-pattern-của-nio-server">Code pattern của NIO server
+</h2><p>Triển khai một NIO server khác khá nhiều so với blocking I/O server. Thay vì vòng lặp accept-spawn-thread, NIO server có một event loop chính. Thread này chạy vòng lặp vô hạn, gọi <code>selector.select()</code> để chờ events, rồi process từng event khi chúng arrive.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Selector selector <span style="color:#f92672">=</span> Selector.<span style="color:#a6e22e">open</span>();
+</span></span><span style="display:flex;"><span>ServerSocketChannel serverChannel <span style="color:#f92672">=</span> ServerSocketChannel.<span style="color:#a6e22e">open</span>();
+</span></span><span style="display:flex;"><span>serverChannel.<span style="color:#a6e22e">configureBlocking</span>(<span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>serverChannel.<span style="color:#a6e22e">bind</span>(<span style="color:#66d9ef">new</span> InetSocketAddress(8080));
+</span></span><span style="display:flex;"><span>serverChannel.<span style="color:#a6e22e">register</span>(selector, SelectionKey.<span style="color:#a6e22e">OP_ACCEPT</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> (<span style="color:#66d9ef">true</span>) {
+</span></span><span style="display:flex;"><span>    selector.<span style="color:#a6e22e">select</span>(); <span style="color:#75715e">// Block cho đến khi có events</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    Set<span style="color:#f92672">&lt;</span>SelectionKey<span style="color:#f92672">&gt;</span> selectedKeys <span style="color:#f92672">=</span> selector.<span style="color:#a6e22e">selectedKeys</span>();
+</span></span><span style="display:flex;"><span>    Iterator<span style="color:#f92672">&lt;</span>SelectionKey<span style="color:#f92672">&gt;</span> iterator <span style="color:#f92672">=</span> selectedKeys.<span style="color:#a6e22e">iterator</span>();
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> (iterator.<span style="color:#a6e22e">hasNext</span>()) {
+</span></span><span style="display:flex;"><span>        SelectionKey key <span style="color:#f92672">=</span> iterator.<span style="color:#a6e22e">next</span>();
+</span></span><span style="display:flex;"><span>        iterator.<span style="color:#a6e22e">remove</span>();
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (key.<span style="color:#a6e22e">isAcceptable</span>()) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Client mới kết nối</span>
+</span></span><span style="display:flex;"><span>            ServerSocketChannel server <span style="color:#f92672">=</span> (ServerSocketChannel) key.<span style="color:#a6e22e">channel</span>();
+</span></span><span style="display:flex;"><span>            SocketChannel client <span style="color:#f92672">=</span> server.<span style="color:#a6e22e">accept</span>();
+</span></span><span style="display:flex;"><span>            client.<span style="color:#a6e22e">configureBlocking</span>(<span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>            client.<span style="color:#a6e22e">register</span>(selector, SelectionKey.<span style="color:#a6e22e">OP_READ</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (key.<span style="color:#a6e22e">isReadable</span>()) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Client có data để đọc</span>
+</span></span><span style="display:flex;"><span>            SocketChannel client <span style="color:#f92672">=</span> (SocketChannel) key.<span style="color:#a6e22e">channel</span>();
+</span></span><span style="display:flex;"><span>            ByteBuffer buffer <span style="color:#f92672">=</span> ByteBuffer.<span style="color:#a6e22e">allocate</span>(1024);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> bytesRead <span style="color:#f92672">=</span> client.<span style="color:#a6e22e">read</span>(buffer);
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (bytesRead <span style="color:#f92672">==</span> <span style="color:#f92672">-</span>1) {
+</span></span><span style="display:flex;"><span>                client.<span style="color:#a6e22e">close</span>();
+</span></span><span style="display:flex;"><span>            } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// Xử lý data</span>
+</span></span><span style="display:flex;"><span>                buffer.<span style="color:#a6e22e">flip</span>();
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// ... business logic ...</span>
+</span></span><span style="display:flex;"><span>                key.<span style="color:#a6e22e">interestOps</span>(SelectionKey.<span style="color:#a6e22e">OP_WRITE</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (key.<span style="color:#a6e22e">isWritable</span>()) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Client ready để nhận response</span>
+</span></span><span style="display:flex;"><span>            SocketChannel client <span style="color:#f92672">=</span> (SocketChannel) key.<span style="color:#a6e22e">channel</span>();
+</span></span><span style="display:flex;"><span>            ByteBuffer response <span style="color:#f92672">=</span> getResponseBuffer(key);
+</span></span><span style="display:flex;"><span>            client.<span style="color:#a6e22e">write</span>(response);
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>response.<span style="color:#a6e22e">hasRemaining</span>()) {
+</span></span><span style="display:flex;"><span>                key.<span style="color:#a6e22e">interestOps</span>(SelectionKey.<span style="color:#a6e22e">OP_READ</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Code này trông khác lạ nếu bạn quen với blocking I/O. Không có threads riêng cho mỗi connection. Không có blocking reads/writes. Thay vào đó, toàn bộ logic được organize theo events. Khi có event, xử lý event đó, rồi quay lại chờ event tiếp theo.</p>
+<p>Cái giá phải trả là complexity. Blocking I/O code dễ đọc, dễ debug, flow tuyến tính. NIO code phức tạp hơn nhiều. Logic phân mảnh theo các event handlers khác nhau. State management trở nên tricky vì không có thread riêng duy trì state cho mỗi connection. Bạn phải attach state vào SelectionKey hoặc maintain external map.</p>
+<h2 id="event-driven-architecture-và-callback-hell">Event-driven architecture và callback hell
+</h2><p>Mô hình NIO về bản chất là event-driven. Thay vì imperative &ldquo;đọc request, xử lý, gửi response&rdquo; theo sequence, NIO làm việc theo reactive pattern &ldquo;khi có event X, làm Y&rdquo;. Điều này khá giống với JavaScript event loop trong Node.js hoặc browser.</p>
+<p>Trong JavaScript, bạn register event handlers cho các events khác nhau. Click event, timer callback, AJAX response. Browser&rsquo;s event loop continuously check for events và execute corresponding handlers. NIO Selector hoạt động tương tự, nhưng ở Java và với network I/O events.</p>
+<p>Pattern này powerful nhưng cũng có những pitfalls. Khi logic phức tạp, bạn có thể rơi vào &ldquo;callback hell&rdquo; - nested callbacks khó maintain. Trong NIO, nếu operation yêu cầu multiple round-trips (send request, wait response, process, send follow-up), code có thể trở nên convoluted. Bạn phải manually track state cho mỗi stage của operation.</p>
+<p>Để giải quyết, nhiều frameworks build abstraction layers lên trên NIO. Netty, Java&rsquo;s built-in AsynchronousSocketChannel, reactive libraries như Project Reactor hay RxJava. Chúng provide higher-level APIs để work với async I/O mà không cần deal trực tiếp với low-level Selector và SelectionKeys.</p>
+<h2 id="scalability-và-resource-utilization">Scalability và resource utilization
+</h2><p>Benefit lớn nhất của NIO là scalability. Với blocking I/O và thread-per-connection, server limited bởi số lượng threads có thể tạo ra. Hầu hết JVMs cap ở vài nghìn threads trước khi performance degradation nghiêm trọng hoặc OutOfMemoryError.</p>
+<p>Với NIO, giới hạn không phải threads mà là file descriptors. Trên Linux, mỗi process có limit số file descriptors có thể open (thường configure qua ulimit). Limit này có thể tăng lên hàng chục hoặc hàng trăm nghìn. Một NIO server với một hoặc vài threads có thể handle tens of thousands of concurrent connections.</p>
+<p>Mình từng refactor server WebSocket từ blocking I/O sang NIO. Before refactor, server với 4GB RAM max out ở khoảng 3000 concurrent connections. After refactor sử dụng NIO, cùng 4GB RAM, server handle được 50,000 connections. Memory usage chủ yếu là buffers cho data và connection metadata, không phải thread stacks. CPU usage thấp hơn vì ít context switching.</p>
+<p>Tất nhiên, để đạt được performance này cần tune cẩn thận. Buffer sizes, selector threads count, business logic processing strategy. Nếu business logic heavy và chạy trong selector thread, nó sẽ block event loop và làm giảm throughput. Best practice là selector thread chỉ handle I/O, delegate business logic cho worker thread pool.</p>
+<h2 id="nio-trong-các-frameworks-hiện-đại">NIO trong các frameworks hiện đại
+</h2><p>Hầu hết các framework và application servers Java hiện đại đều sử dụng NIO underneath. Netty là một NIO framework phổ biến nhất, được dùng bởi vô số projects: Elasticsearch, Cassandra, gRPC Java implementation, Play Framework, và nhiều nữa. Netty abstract complexity của NIO, provide event-driven API dễ dùng hơn, và optimize performance đến mức extreme.</p>
+<p>Apache Tomcat từ version 8.5 dùng NIO connector mặc định. Jetty cũng vậy. Spring WebFlux, reactive web framework của Spring, build trên Project Reactor và support NIO-based servers như Netty hoặc Undertow. Tất cả nhằm achieve non-blocking I/O cho better scalability.</p>
+<p>Node.js mà nhiều người so sánh với Java về performance cũng sử dụng event loop tương tự. Libuv, library mà Node.js dựa vào, dùng epoll/kqueue/IOCP tùy platform, giống như Java NIO Selector. Mindset là giống nhau: một hoặc vài threads monitor nhiều connections, process events as they arrive.</p>
+<p>Ngay cả khi không directly code với NIO, hiểu về nó giúp bạn appreciate các frameworks đang dùng. Khi config Netty hoặc tune Tomcat NIO connector, biết cách chúng hoạt động underneath giúp bạn make informed decisions về thread pool sizes, buffer configurations, backlog settings.</p>
+<h2 id="trade-offs-và-khi-nào-nên-dùng">Trade-offs và khi nào nên dùng
+</h2><p>NIO không phải silver bullet. Nó tốt cho I/O-bound applications với nhiều concurrent connections nhưng mỗi request không đòi hỏi nhiều computing. Ví dụ điển hình là proxy servers, API gateways, WebSocket servers, chat applications. Những use cases này phần lớn thời gian là wait for I/O, ít CPU-intensive work.</p>
+<p>Nếu application của bạn CPU-bound, ví dụ image processing hoặc complex calculations, NIO không giúp được nhiều. Vấn đề không phải I/O wait mà là computation time. Khi đó, thread pool với blocking I/O hoặc parallel processing frameworks như Fork/Join có thể phù hợp hơn.</p>
+<p>NIO cũng khó debug và test hơn. Race conditions, state management bugs trong event-driven code notoriously tricky. Blocking I/O code với one thread per request dễ reason về behavior. Mỗi request có execution path riêng, dễ trace. NIO code nhiều requests share threads, harder to track what&rsquo;s happening.</p>
+<p>Development time cũng là concern. Viết NIO code from scratch tốn nhiều thời gian hơn blocking I/O. Phải handle buffers, partial reads/writes, state management. Nếu scale requirements không cao, simplicity của blocking I/O có thể worthwhile trade-off.</p>
+<h2 id="từ-nio-đến-nio2-và-tương-lai">Từ NIO đến NIO.2 và tương lai
+</h2><p>Java 7 introduced NIO.2 (hay còn gọi là AIO - Asynchronous I/O) với AsynchronousSocketChannel và AsynchronousServerSocketChannel. Khác với NIO&rsquo;s selector-based approach, NIO.2 dùng callback hoặc Future-based API. Bạn initiate I/O operation và provide callback sẽ được gọi khi operation completes.</p>
+<p>NIO.2 abstraction level cao hơn NIO, easier to use trong một số cases. Nhưng nó không replace NIO hoàn toàn. Netty vẫn dùng NIO selector approach vì performance và control. NIO.2 có thể convenient nhưng đôi khi overhead higher.</p>
+<p>Tương lai của Java I/O đang hướng tới Project Loom. Loom introduce virtual threads (fibers), lightweight threads managed bởi JVM thay vì OS. Với virtual threads, bạn có thể viết code theo blocking style nhưng underneath runtime schedule virtual threads efficiently, không tạo OS threads cho mỗi connection. IDE là thread-per-request simplicity với NIO-level scalability.</p>
+<p>Khi Loom stable và widely adopted, có thể sẽ shift lại về blocking-style code nhưng với different runtime. Cho đến lúc đó, NIO vẫn là foundation của high-performance Java servers.</p>
+<h2 id="kết-luận">Kết luận
+</h2><p>Java NIO không chỉ là một API mới, mà là một paradigm shift trong cách design server applications. Nó force developers nghĩ về I/O theo event-driven model thay vì sequential blocking model. Trade-off là complexity tăng, nhưng reward là khả năng scale lên orders of magnitude về số concurrent connections.</p>
+<p>Hiểu NIO giúp bạn appreciate các frameworks modern đang dùng. Netty, Spring WebFlux, reactive programming - tất cả build trên nền tảng này. Ngay cả khi không code trực tiếp với Selector và Channels, concepts của non-blocking I/O, event loops, multiplexing vẫn relevant cho system design.</p>
+<p>Blocking I/O vẫn có chỗ đứng cho applications đơn giản, low concurrency requirements. Nhưng khi scale là mục tiêu, khi số concurrent connections lên hàng nghìn hoặc tens of thousands, NIO là answer. Đó không phải chỉ là optimization technique, mà là mindset khác về cách server interact với network.</p>
+<hr>
+<p><strong>Tham khảo:</strong></p>
+<ul>
+<li>&ldquo;Java NIO&rdquo; - Ron Hitchens</li>
+<li>&ldquo;Netty in Action&rdquo; - Norman Maurer &amp; Marvin Allen Wolfthal</li>
+<li>Java NIO Documentation - Oracle</li>
+<li>&ldquo;Scalable I/O in Java&rdquo; - Doug Lea</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/java/">Java</a>
+        
+            <a href="/tags/nio/">NIO</a>
+        
+            <a href="/tags/i/o/">I/O</a>
+        
+            <a href="/tags/concurrency/">Concurrency</a>
+        
+            <a href="/tags/server/">Server</a>
+        
+            <a href="/tags/network-programming/">Network Programming</a>
+        
+            <a href="/tags/performance/">Performance</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/post/https-mitm-security/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="/images/https-security.jpg" loading="lazy" data-key="" data-hash="/images/https-security.jpg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Bảo mật mạng trong ứng dụng Java &amp; JavaScript: từ HTTPS đến Man-in-the-Middle</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/post/java-tcp-udp/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="/images/java-tcp-udp.jpg" loading="lazy" data-key="" data-hash="/images/java-tcp-udp.jpg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Java Socket Programming: TCP vs UDP trong ứng dụng thực tế</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/post/advanced-chat-tcp-java/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="/images/multi-thread-example.jpg" loading="lazy" data-key="" data-hash="/images/multi-thread-example.jpg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Ứng dụng Chat sử dụng TCP trong Java (Phần 2)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/post/simple-chat-tcp-java/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="/images/simple-chat-room.jpg" loading="lazy" data-key="" data-hash="/images/simple-chat-room.jpg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Ứng dụng Chat sử dụng TCP trong Java (Phần 1)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/post/java-client-server/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="/images/java-socket-programming-process.jpg" loading="lazy" data-key="" data-hash="/images/java-socket-programming-process.jpg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Java Client–Server</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Kiến thức lập trình
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.32.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.bcc7e9405c3d3cb732a7311965dda94f6ae5bcc3030b1c75796c4d2ed04912aa.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
