@@ -6,7 +6,63 @@
         <description>Recent content in Tags on Kiến thức lập trình</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>vi-vn</language>
-        <lastBuildDate>Mon, 22 Dec 2025 01:20:00 +0700</lastBuildDate><atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 22 Dec 2025 01:30:00 +0700</lastBuildDate><atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Concurrency</title>
+        <link>http://localhost:1313/tags/concurrency/</link>
+        <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
+        
+        <guid>http://localhost:1313/tags/concurrency/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>I/O</title>
+        <link>http://localhost:1313/tags/i/o/</link>
+        <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
+        
+        <guid>http://localhost:1313/tags/i/o/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Java</title>
+        <link>http://localhost:1313/tags/java/</link>
+        <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
+        
+        <guid>http://localhost:1313/tags/java/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Network Programming</title>
+        <link>http://localhost:1313/tags/network-programming/</link>
+        <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
+        
+        <guid>http://localhost:1313/tags/network-programming/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>NIO</title>
+        <link>http://localhost:1313/tags/nio/</link>
+        <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
+        
+        <guid>http://localhost:1313/tags/nio/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Performance</title>
+        <link>http://localhost:1313/tags/performance/</link>
+        <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
+        
+        <guid>http://localhost:1313/tags/performance/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Server</title>
+        <link>http://localhost:1313/tags/server/</link>
+        <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
+        
+        <guid>http://localhost:1313/tags/server/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>Encryption</title>
         <link>http://localhost:1313/tags/encryption/</link>
         <pubDate>Mon, 22 Dec 2025 01:20:00 +0700</pubDate>
@@ -20,14 +76,6 @@
         <pubDate>Mon, 22 Dec 2025 01:20:00 +0700</pubDate>
         
         <guid>http://localhost:1313/tags/https/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>Java</title>
-        <link>http://localhost:1313/tags/java/</link>
-        <pubDate>Mon, 22 Dec 2025 01:20:00 +0700</pubDate>
-        
-        <guid>http://localhost:1313/tags/java/</guid>
         <description></description>
         </item>
         <item>
@@ -193,7 +241,7 @@
         <item>
         <title>TCP/IP</title>
         <link>http://localhost:1313/tags/tcp/ip/</link>
-        <pubDate>Sun, 21 Dec 2025 19:00:00 +0700</pubDate>
+        <pubDate>Sat, 20 Dec 2025 19:00:00 +0700</pubDate>
         
         <guid>http://localhost:1313/tags/tcp/ip/</guid>
         <description></description>

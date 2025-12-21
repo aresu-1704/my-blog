@@ -6,12 +6,28 @@
         <description>Recent content in Categories on Kiến thức lập trình</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>vi-vn</language>
-        <lastBuildDate>Mon, 22 Dec 2025 01:20:00 +0700</lastBuildDate><atom:link href="http://localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 22 Dec 2025 01:30:00 +0700</lastBuildDate><atom:link href="http://localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Backend</title>
+        <link>http://localhost:1313/categories/backend/</link>
+        <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
+        
+        <guid>http://localhost:1313/categories/backend/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>Java</title>
         <link>http://localhost:1313/categories/java/</link>
-        <pubDate>Mon, 22 Dec 2025 01:20:00 +0700</pubDate>
+        <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
         
         <guid>http://localhost:1313/categories/java/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>System Design</title>
+        <link>http://localhost:1313/categories/system-design/</link>
+        <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
+        
+        <guid>http://localhost:1313/categories/system-design/</guid>
         <description></description>
         </item>
         <item>
