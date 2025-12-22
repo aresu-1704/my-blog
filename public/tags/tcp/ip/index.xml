@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>TCP/IP on THUẬN AN IT BLOG</title>
-    <link>http://localhost:1313/tags/tcp/ip/</link>
+    <link>//localhost:1313/tags/tcp/ip/</link>
     <description>Recent content in TCP/IP on THUẬN AN IT BLOG</description>
     <generator>Hugo</generator>
     <language>vi-vn</language>
     <lastBuildDate>Sat, 20 Dec 2025 19:00:00 +0700</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/tcp/ip/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="//localhost:1313/tags/tcp/ip/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Ứng dụng Chat sử dụng TCP trong Java (Phần 2)</title>
-      <link>http://localhost:1313/post/advanced-chat-tcp-java/</link>
+      <link>//localhost:1313/post/advanced-chat-tcp-java/</link>
       <pubDate>Sat, 20 Dec 2025 19:00:00 +0700</pubDate>
-      <guid>http://localhost:1313/post/advanced-chat-tcp-java/</guid>
+      <guid>//localhost:1313/post/advanced-chat-tcp-java/</guid>
       <description>&lt;p&gt;Trong phần trước, chúng ta đã kết nối được Client và Server. Tuy nhiên, nó có một điểm yếu chết người: &lt;strong&gt;Blocking I/O&lt;/strong&gt;. Khi code chạy lệnh &lt;code&gt;readLine()&lt;/code&gt;, chương trình bị &amp;ldquo;đơ&amp;rdquo; để chờ tin nhắn, khiến bạn không thể gõ tin nhắn gửi đi trong lúc đang chờ nhận.&lt;/p&gt;&#xA;&lt;p&gt;Để giải quyết, chúng ta cần sử dụng &lt;strong&gt;Threads (Luồng)&lt;/strong&gt;.&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Server&lt;/strong&gt;: Cần một luồng chính để đón khách, và mỗi khi có khách (Client) mới, server sẽ tạo riêng một luồng con (Worker Thread) để phục vụ vị khách đó.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Client&lt;/strong&gt;: Cần tách việc &amp;ldquo;Gửi tin&amp;rdquo; và &amp;ldquo;Nhận tin&amp;rdquo; ra làm 2 luồng chạy song song.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;Dưới đây là mã nguồn chi tiết cho một hệ thống &lt;strong&gt;Chat Room hoàn chỉnh&lt;/strong&gt;.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Ứng dụng Chat sử dụng TCP trong Java (Phần 1)</title>
-      <link>http://localhost:1313/post/simple-chat-tcp-java/</link>
+      <link>//localhost:1313/post/simple-chat-tcp-java/</link>
       <pubDate>Thu, 18 Dec 2025 19:00:00 +0700</pubDate>
-      <guid>http://localhost:1313/post/simple-chat-tcp-java/</guid>
+      <guid>//localhost:1313/post/simple-chat-tcp-java/</guid>
       <description>&lt;p&gt;Trong lập trình mạng (Network Programming), việc xây dựng một ứng dụng Chat là bài tập &amp;ldquo;Hello World&amp;rdquo; kinh điển nhất để hiểu về giao thức TCP/IP. Trong bài viết này, chúng ta sẽ cùng nhau xây dựng một ứng dụng Chat Console (cửa sổ dòng lệnh) đơn giản giữa một Client và một Server sử dụng Java Sockets.&lt;/p&gt;&#xA;&lt;h2 id=&#34;1-kiến-trúc-client-server-với-tcp&#34;&gt;1. Kiến trúc Client-Server với TCP&lt;/h2&gt;&#xA;&lt;p&gt;Trước khi đi vào code, hãy hình dung cách hai máy tính nói chuyện với nhau. &lt;strong&gt;TCP&lt;/strong&gt; (Transmission Control Protocol) là giao thức hướng kết nối (connection-oriented), nghĩa là một &amp;ldquo;đường ống&amp;rdquo; ổn định phải được thiết lập trước khi dữ liệu được gửi đi.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Java Client–Server</title>
-      <link>http://localhost:1313/post/java-client-server/</link>
+      <link>//localhost:1313/post/java-client-server/</link>
       <pubDate>Tue, 16 Dec 2025 19:00:00 +0700</pubDate>
-      <guid>http://localhost:1313/post/java-client-server/</guid>
+      <guid>//localhost:1313/post/java-client-server/</guid>
       <description>&lt;p&gt;Networking (Lập trình mạng) là trái tim của hầu hết các ứng dụng hiện đại, từ Web server, chat app cho đến các game online. Trong bài viết này, chúng ta sẽ đi sâu vào mô hình Client–Server sử dụng Java. Mình sẽ hướng dẫn bạn từ khái niệm cơ bản nhất cho đến việc viết code một ứng dụng chat đơn giản giữa hai máy tính.&lt;/p&gt;&#xA;&lt;h2 id=&#34;1-mô-hình-client-server-là-gì&#34;&gt;1. Mô hình Client-Server là gì?&lt;/h2&gt;&#xA;&lt;p&gt;Trước khi viết code, chúng ta cần hiểu kiến trúc này hoạt động như thế nào.&lt;/p&gt;</description>
     </item>
   </channel>

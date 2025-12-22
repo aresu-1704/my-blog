@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Same-Origin Policy on THUẬN AN IT BLOG</title>
-    <link>http://localhost:1313/tags/same-origin-policy/</link>
+    <link>//localhost:1313/tags/same-origin-policy/</link>
     <description>Recent content in Same-Origin Policy on THUẬN AN IT BLOG</description>
     <generator>Hugo</generator>
     <language>vi-vn</language>
     <lastBuildDate>Mon, 22 Dec 2025 01:11:00 +0700</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/same-origin-policy/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="//localhost:1313/tags/same-origin-policy/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>CORS và Same-Origin Policy dưới góc nhìn mạng máy tính (JavaScript)</title>
-      <link>http://localhost:1313/post/cors-same-origin-policy/</link>
+      <link>//localhost:1313/post/cors-same-origin-policy/</link>
       <pubDate>Mon, 22 Dec 2025 01:11:00 +0700</pubDate>
-      <guid>http://localhost:1313/post/cors-same-origin-policy/</guid>
+      <guid>//localhost:1313/post/cors-same-origin-policy/</guid>
       <description>&lt;h2 id=&#34;khi-trình-duyệt-trở-thành-bức-tường-bảo-vệ&#34;&gt;Khi trình duyệt trở thành bức tường bảo vệ&lt;/h2&gt;&#xA;&lt;p&gt;Hồi mới học web development, mình thường gặp lỗi này khi gọi API từ frontend: &amp;ldquo;Access to fetch at &amp;lsquo;&lt;a href=&#34;https://api.example.com&#34;&gt;https://api.example.com&lt;/a&gt;&amp;rsquo; from origin &amp;lsquo;http://localhost:3000&amp;rsquo; has been blocked by CORS policy&amp;rdquo;. Lúc đầu nghĩ đây là lỗi code, sửa mãi không được. Rồi mình test API bằng Postman thì thấy nó chạy ngon lành. Càng confused hơn, API hoạt động tốt mà sao trình duyệt lại chặn?&lt;/p&gt;</description>
     </item>
   </channel>

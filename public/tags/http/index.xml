@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>HTTP on THUẬN AN IT BLOG</title>
-    <link>http://localhost:1313/tags/http/</link>
+    <link>//localhost:1313/tags/http/</link>
     <description>Recent content in HTTP on THUẬN AN IT BLOG</description>
     <generator>Hugo</generator>
     <language>vi-vn</language>
     <lastBuildDate>Mon, 22 Dec 2025 01:11:00 +0700</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/http/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="//localhost:1313/tags/http/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>CORS và Same-Origin Policy dưới góc nhìn mạng máy tính (JavaScript)</title>
-      <link>http://localhost:1313/post/cors-same-origin-policy/</link>
+      <link>//localhost:1313/post/cors-same-origin-policy/</link>
       <pubDate>Mon, 22 Dec 2025 01:11:00 +0700</pubDate>
-      <guid>http://localhost:1313/post/cors-same-origin-policy/</guid>
+      <guid>//localhost:1313/post/cors-same-origin-policy/</guid>
       <description>&lt;h2 id=&#34;khi-trình-duyệt-trở-thành-bức-tường-bảo-vệ&#34;&gt;Khi trình duyệt trở thành bức tường bảo vệ&lt;/h2&gt;&#xA;&lt;p&gt;Hồi mới học web development, mình thường gặp lỗi này khi gọi API từ frontend: &amp;ldquo;Access to fetch at &amp;lsquo;&lt;a href=&#34;https://api.example.com&#34;&gt;https://api.example.com&lt;/a&gt;&amp;rsquo; from origin &amp;lsquo;http://localhost:3000&amp;rsquo; has been blocked by CORS policy&amp;rdquo;. Lúc đầu nghĩ đây là lỗi code, sửa mãi không được. Rồi mình test API bằng Postman thì thấy nó chạy ngon lành. Càng confused hơn, API hoạt động tốt mà sao trình duyệt lại chặn?&lt;/p&gt;</description>
     </item>
     <item>
       <title>WebSocket hoạt động ra sao ở tầng mạng? So sánh với HTTP Polling và SSE</title>
-      <link>http://localhost:1313/post/websocket-vs-polling-sse/</link>
+      <link>//localhost:1313/post/websocket-vs-polling-sse/</link>
       <pubDate>Mon, 22 Dec 2025 01:01:00 +0700</pubDate>
-      <guid>http://localhost:1313/post/websocket-vs-polling-sse/</guid>
-      <description>&lt;h2 id=&#34;http-truyền-thống-và-bài-toán-realtime&#34;&gt;HTTP truyền thống và bài toán realtime&lt;/h2&gt;&#xA;&lt;p&gt;Khi mình mới bắt đầu làm chat app, điều đầu tiên nghĩ đến là dùng HTTP request-response thông thường. Client cứ 2 giây lại gửi một request lên server hỏi &amp;ldquo;có tin nhắn mới không?&amp;rdquo;. Server trả về danh sách tin nhắn mới nếu có, hoặc trả về empty array nếu không. Nghe có vẻ hợp lý, nhưng khi chạy thực tế thì thấy ngay vấn đề.&lt;/p&gt;</description>
+      <guid>//localhost:1313/post/websocket-vs-polling-sse/</guid>
+      <description>&lt;h2 id=&#34;http-truyền-thống-và-bài-toán-thời-gian-thực&#34;&gt;HTTP truyền thống và bài toán thời gian thực&lt;/h2&gt;&#xA;&lt;p&gt;Khi mới bắt đầu làm ứng dụng chat, điều đầu tiên nghĩ đến là dùng HTTP yêu cầu-phản hồi thông thường. Client cứ 2 giây lại gửi một yêu cầu lên server hỏi &amp;ldquo;có tin nhắn mới không?&amp;rdquo;. Server trả về danh sách tin nhắn mới nếu có, hoặc trả về mảng rỗng nếu không. Nghe có vẻ hợp lý, nhưng khi chạy thực tế thì thấy ngay vấn đề.&lt;/p&gt;</description>
     </item>
     <item>
       <title>JavaScript trong mô hình Client–Server: Từ trình duyệt đến server</title>
-      <link>http://localhost:1313/post/js-client-server/</link>
+      <link>//localhost:1313/post/js-client-server/</link>
       <pubDate>Mon, 22 Dec 2025 00:23:10 +0700</pubDate>
-      <guid>http://localhost:1313/post/js-client-server/</guid>
+      <guid>//localhost:1313/post/js-client-server/</guid>
       <description>&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu&lt;/h2&gt;&#xA;&lt;p&gt;Trước đây, JavaScript (JS) chỉ được biết đến như một ngôn ngữ &amp;ldquo;trang trí&amp;rdquo; cho giao diện web (Front-end). Nhưng với sự ra đời của &lt;strong&gt;Node.js&lt;/strong&gt;, JavaScript đã vươn mình trở thành một ngôn ngữ &lt;strong&gt;Full-stack&lt;/strong&gt;, hoạt động mạnh mẽ ở cả phía Client (người dùng) và Server (máy chủ).&lt;/p&gt;&#xA;&lt;p&gt;Bài viết này sẽ mổ xẻ cách JavaScript vận hành trong mô hình Client-Server và hướng dẫn bạn xây dựng một ứng dụng demo đơn giản để thấy rõ sự kết nối này.&lt;/p&gt;</description>
     </item>
   </channel>

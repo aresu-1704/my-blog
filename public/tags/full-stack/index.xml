@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Full-Stack on THUẬN AN IT BLOG</title>
-    <link>http://localhost:1313/tags/full-stack/</link>
+    <link>//localhost:1313/tags/full-stack/</link>
     <description>Recent content in Full-Stack on THUẬN AN IT BLOG</description>
     <generator>Hugo</generator>
     <language>vi-vn</language>
     <lastBuildDate>Mon, 22 Dec 2025 00:23:10 +0700</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/full-stack/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="//localhost:1313/tags/full-stack/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>JavaScript trong mô hình Client–Server: Từ trình duyệt đến server</title>
-      <link>http://localhost:1313/post/js-client-server/</link>
+      <link>//localhost:1313/post/js-client-server/</link>
       <pubDate>Mon, 22 Dec 2025 00:23:10 +0700</pubDate>
-      <guid>http://localhost:1313/post/js-client-server/</guid>
+      <guid>//localhost:1313/post/js-client-server/</guid>
       <description>&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu&lt;/h2&gt;&#xA;&lt;p&gt;Trước đây, JavaScript (JS) chỉ được biết đến như một ngôn ngữ &amp;ldquo;trang trí&amp;rdquo; cho giao diện web (Front-end). Nhưng với sự ra đời của &lt;strong&gt;Node.js&lt;/strong&gt;, JavaScript đã vươn mình trở thành một ngôn ngữ &lt;strong&gt;Full-stack&lt;/strong&gt;, hoạt động mạnh mẽ ở cả phía Client (người dùng) và Server (máy chủ).&lt;/p&gt;&#xA;&lt;p&gt;Bài viết này sẽ mổ xẻ cách JavaScript vận hành trong mô hình Client-Server và hướng dẫn bạn xây dựng một ứng dụng demo đơn giản để thấy rõ sự kết nối này.&lt;/p&gt;</description>
     </item>
   </channel>

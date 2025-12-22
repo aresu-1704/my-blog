@@ -2,24 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Network Programming on THUẬN AN IT BLOG</title>
-    <link>http://localhost:1313/categories/network-programming/</link>
+    <link>//localhost:1313/categories/network-programming/</link>
     <description>Recent content in Network Programming on THUẬN AN IT BLOG</description>
     <generator>Hugo</generator>
     <language>vi-vn</language>
     <lastBuildDate>Mon, 22 Dec 2025 01:01:00 +0700</lastBuildDate>
-    <atom:link href="http://localhost:1313/categories/network-programming/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="//localhost:1313/categories/network-programming/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>WebSocket hoạt động ra sao ở tầng mạng? So sánh với HTTP Polling và SSE</title>
-      <link>http://localhost:1313/post/websocket-vs-polling-sse/</link>
+      <link>//localhost:1313/post/websocket-vs-polling-sse/</link>
       <pubDate>Mon, 22 Dec 2025 01:01:00 +0700</pubDate>
-      <guid>http://localhost:1313/post/websocket-vs-polling-sse/</guid>
-      <description>&lt;h2 id=&#34;http-truyền-thống-và-bài-toán-realtime&#34;&gt;HTTP truyền thống và bài toán realtime&lt;/h2&gt;&#xA;&lt;p&gt;Khi mình mới bắt đầu làm chat app, điều đầu tiên nghĩ đến là dùng HTTP request-response thông thường. Client cứ 2 giây lại gửi một request lên server hỏi &amp;ldquo;có tin nhắn mới không?&amp;rdquo;. Server trả về danh sách tin nhắn mới nếu có, hoặc trả về empty array nếu không. Nghe có vẻ hợp lý, nhưng khi chạy thực tế thì thấy ngay vấn đề.&lt;/p&gt;</description>
+      <guid>//localhost:1313/post/websocket-vs-polling-sse/</guid>
+      <description>&lt;h2 id=&#34;http-truyền-thống-và-bài-toán-thời-gian-thực&#34;&gt;HTTP truyền thống và bài toán thời gian thực&lt;/h2&gt;&#xA;&lt;p&gt;Khi mới bắt đầu làm ứng dụng chat, điều đầu tiên nghĩ đến là dùng HTTP yêu cầu-phản hồi thông thường. Client cứ 2 giây lại gửi một yêu cầu lên server hỏi &amp;ldquo;có tin nhắn mới không?&amp;rdquo;. Server trả về danh sách tin nhắn mới nếu có, hoặc trả về mảng rỗng nếu không. Nghe có vẻ hợp lý, nhưng khi chạy thực tế thì thấy ngay vấn đề.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Java Socket Programming: TCP vs UDP trong ứng dụng thực tế</title>
-      <link>http://localhost:1313/post/java-tcp-udp/</link>
+      <link>//localhost:1313/post/java-tcp-udp/</link>
       <pubDate>Mon, 22 Dec 2025 00:44:00 +0700</pubDate>
-      <guid>http://localhost:1313/post/java-tcp-udp/</guid>
+      <guid>//localhost:1313/post/java-tcp-udp/</guid>
       <description>&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu&lt;/h2&gt;&#xA;&lt;p&gt;Hồi học môn mạng máy tính, mình cứ nghĩ TCP và UDP chỉ khác nhau ở chỗ một cái reliable một cái không thôi. Nhưng khi code thực tế mới thấy sự khác biệt lớn hơn thế nhiều. Bài này mình sẽ đi sâu vào cả network layer lẫn Java implementation để hiểu tại sao có những ứng dụng phải dùng TCP, có những ứng dụng lại chỉ chạy tốt với UDP.&lt;/p&gt;</description>
     </item>
   </channel>

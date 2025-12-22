@@ -2,101 +2,101 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>THUẬN AN IT BLOG</title>
-    <link>http://localhost:1313/</link>
+    <link>//localhost:1313/</link>
     <description>Recent content on THUẬN AN IT BLOG</description>
     <generator>Hugo</generator>
     <language>vi-vn</language>
     <lastBuildDate>Mon, 22 Dec 2025 01:30:00 +0700</lastBuildDate>
-    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="//localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Từ Blocking I/O đến Non-blocking I/O: Java NIO thay đổi cách Server xử lý mạng như thế nào?</title>
-      <link>http://localhost:1313/post/java-nio-blocking-nonblocking/</link>
+      <link>//localhost:1313/post/java-nio-blocking-nonblocking/</link>
       <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
-      <guid>http://localhost:1313/post/java-nio-blocking-nonblocking/</guid>
-      <description>&lt;h2 id=&#34;khi-một-thread-chỉ-phục-vụ-một-kết-nối&#34;&gt;Khi một thread chỉ phục vụ một kết nối&lt;/h2&gt;&#xA;&lt;p&gt;Mô hình server Java đơn giản nhất hoạt động theo kiểu thread-per-connection: mỗi khi có client kết nối, server tạo một thread mới để xử lý. ServerSocket chấp nhận kết nối, khởi tạo thread mới, thread đó đọc request, xử lý business logic, gửi response, rồi kết thúc. Cách tiếp cận này có logic rõ ràng và code dễ hiểu, không phức tạp.&lt;/p&gt;</description>
+      <guid>//localhost:1313/post/java-nio-blocking-nonblocking/</guid>
+      <description>&lt;h2 id=&#34;khi-một-thread-chỉ-phục-vụ-một-kết-nối&#34;&gt;Khi một thread chỉ phục vụ một kết nối&lt;/h2&gt;&#xA;&lt;p&gt;Mô hình server Java đơn giản nhất hoạt động theo kiểu một thread cho một kết nối: mỗi khi có client kết nối, server tạo một thread mới để xử lý. ServerSocket chấp nhận kết nối, khởi tạo thread mới, thread đó đọc yêu cầu, xử lý logic nghiệp vụ, gửi kết quả trả về, rồi kết thúc. Cách tiếp cận này có logic rõ ràng và code dễ hiểu, không phức tạp.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Bảo mật mạng trong ứng dụng Java &amp; JavaScript: từ HTTPS đến Man-in-the-Middle</title>
-      <link>http://localhost:1313/post/https-mitm-security/</link>
+      <link>//localhost:1313/post/https-mitm-security/</link>
       <pubDate>Mon, 22 Dec 2025 01:20:00 +0700</pubDate>
-      <guid>http://localhost:1313/post/https-mitm-security/</guid>
+      <guid>//localhost:1313/post/https-mitm-security/</guid>
       <description>&lt;h2 id=&#34;https---hơn-cả-một-chữ-s&#34;&gt;HTTPS - Hơn cả một chữ S&lt;/h2&gt;&#xA;&lt;p&gt;Khi mình mới bắt đầu làm web, thường nghĩ HTTPS chỉ là HTTP thêm bảo mật, một tính năng &amp;ldquo;tốt là có&amp;rdquo; cho các website ngân hàng hay thương mại điện tử. Website blog cá nhân hay landing page đơn giản dùng HTTP cũng không sao. Nhưng càng đi sâu vào bảo mật mạng, mình mới thấy suy nghĩ đó ngây thơ đến mức nào.&lt;/p&gt;</description>
     </item>
     <item>
       <title>CORS và Same-Origin Policy dưới góc nhìn mạng máy tính (JavaScript)</title>
-      <link>http://localhost:1313/post/cors-same-origin-policy/</link>
+      <link>//localhost:1313/post/cors-same-origin-policy/</link>
       <pubDate>Mon, 22 Dec 2025 01:11:00 +0700</pubDate>
-      <guid>http://localhost:1313/post/cors-same-origin-policy/</guid>
+      <guid>//localhost:1313/post/cors-same-origin-policy/</guid>
       <description>&lt;h2 id=&#34;khi-trình-duyệt-trở-thành-bức-tường-bảo-vệ&#34;&gt;Khi trình duyệt trở thành bức tường bảo vệ&lt;/h2&gt;&#xA;&lt;p&gt;Hồi mới học web development, mình thường gặp lỗi này khi gọi API từ frontend: &amp;ldquo;Access to fetch at &amp;lsquo;&lt;a href=&#34;https://api.example.com&#34;&gt;https://api.example.com&lt;/a&gt;&amp;rsquo; from origin &amp;lsquo;http://localhost:3000&amp;rsquo; has been blocked by CORS policy&amp;rdquo;. Lúc đầu nghĩ đây là lỗi code, sửa mãi không được. Rồi mình test API bằng Postman thì thấy nó chạy ngon lành. Càng confused hơn, API hoạt động tốt mà sao trình duyệt lại chặn?&lt;/p&gt;</description>
     </item>
     <item>
       <title>WebSocket hoạt động ra sao ở tầng mạng? So sánh với HTTP Polling và SSE</title>
-      <link>http://localhost:1313/post/websocket-vs-polling-sse/</link>
+      <link>//localhost:1313/post/websocket-vs-polling-sse/</link>
       <pubDate>Mon, 22 Dec 2025 01:01:00 +0700</pubDate>
-      <guid>http://localhost:1313/post/websocket-vs-polling-sse/</guid>
-      <description>&lt;h2 id=&#34;http-truyền-thống-và-bài-toán-realtime&#34;&gt;HTTP truyền thống và bài toán realtime&lt;/h2&gt;&#xA;&lt;p&gt;Khi mình mới bắt đầu làm chat app, điều đầu tiên nghĩ đến là dùng HTTP request-response thông thường. Client cứ 2 giây lại gửi một request lên server hỏi &amp;ldquo;có tin nhắn mới không?&amp;rdquo;. Server trả về danh sách tin nhắn mới nếu có, hoặc trả về empty array nếu không. Nghe có vẻ hợp lý, nhưng khi chạy thực tế thì thấy ngay vấn đề.&lt;/p&gt;</description>
+      <guid>//localhost:1313/post/websocket-vs-polling-sse/</guid>
+      <description>&lt;h2 id=&#34;http-truyền-thống-và-bài-toán-thời-gian-thực&#34;&gt;HTTP truyền thống và bài toán thời gian thực&lt;/h2&gt;&#xA;&lt;p&gt;Khi mới bắt đầu làm ứng dụng chat, điều đầu tiên nghĩ đến là dùng HTTP yêu cầu-phản hồi thông thường. Client cứ 2 giây lại gửi một yêu cầu lên server hỏi &amp;ldquo;có tin nhắn mới không?&amp;rdquo;. Server trả về danh sách tin nhắn mới nếu có, hoặc trả về mảng rỗng nếu không. Nghe có vẻ hợp lý, nhưng khi chạy thực tế thì thấy ngay vấn đề.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Java Socket Programming: TCP vs UDP trong ứng dụng thực tế</title>
-      <link>http://localhost:1313/post/java-tcp-udp/</link>
+      <link>//localhost:1313/post/java-tcp-udp/</link>
       <pubDate>Mon, 22 Dec 2025 00:44:00 +0700</pubDate>
-      <guid>http://localhost:1313/post/java-tcp-udp/</guid>
+      <guid>//localhost:1313/post/java-tcp-udp/</guid>
       <description>&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu&lt;/h2&gt;&#xA;&lt;p&gt;Hồi học môn mạng máy tính, mình cứ nghĩ TCP và UDP chỉ khác nhau ở chỗ một cái reliable một cái không thôi. Nhưng khi code thực tế mới thấy sự khác biệt lớn hơn thế nhiều. Bài này mình sẽ đi sâu vào cả network layer lẫn Java implementation để hiểu tại sao có những ứng dụng phải dùng TCP, có những ứng dụng lại chỉ chạy tốt với UDP.&lt;/p&gt;</description>
     </item>
     <item>
       <title>JavaScript trong mô hình Client–Server: Từ trình duyệt đến server</title>
-      <link>http://localhost:1313/post/js-client-server/</link>
+      <link>//localhost:1313/post/js-client-server/</link>
       <pubDate>Mon, 22 Dec 2025 00:23:10 +0700</pubDate>
-      <guid>http://localhost:1313/post/js-client-server/</guid>
+      <guid>//localhost:1313/post/js-client-server/</guid>
       <description>&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu&lt;/h2&gt;&#xA;&lt;p&gt;Trước đây, JavaScript (JS) chỉ được biết đến như một ngôn ngữ &amp;ldquo;trang trí&amp;rdquo; cho giao diện web (Front-end). Nhưng với sự ra đời của &lt;strong&gt;Node.js&lt;/strong&gt;, JavaScript đã vươn mình trở thành một ngôn ngữ &lt;strong&gt;Full-stack&lt;/strong&gt;, hoạt động mạnh mẽ ở cả phía Client (người dùng) và Server (máy chủ).&lt;/p&gt;&#xA;&lt;p&gt;Bài viết này sẽ mổ xẻ cách JavaScript vận hành trong mô hình Client-Server và hướng dẫn bạn xây dựng một ứng dụng demo đơn giản để thấy rõ sự kết nối này.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Ứng dụng Chat sử dụng TCP trong Java (Phần 2)</title>
-      <link>http://localhost:1313/post/advanced-chat-tcp-java/</link>
+      <link>//localhost:1313/post/advanced-chat-tcp-java/</link>
       <pubDate>Sat, 20 Dec 2025 19:00:00 +0700</pubDate>
-      <guid>http://localhost:1313/post/advanced-chat-tcp-java/</guid>
+      <guid>//localhost:1313/post/advanced-chat-tcp-java/</guid>
       <description>&lt;p&gt;Trong phần trước, chúng ta đã kết nối được Client và Server. Tuy nhiên, nó có một điểm yếu chết người: &lt;strong&gt;Blocking I/O&lt;/strong&gt;. Khi code chạy lệnh &lt;code&gt;readLine()&lt;/code&gt;, chương trình bị &amp;ldquo;đơ&amp;rdquo; để chờ tin nhắn, khiến bạn không thể gõ tin nhắn gửi đi trong lúc đang chờ nhận.&lt;/p&gt;&#xA;&lt;p&gt;Để giải quyết, chúng ta cần sử dụng &lt;strong&gt;Threads (Luồng)&lt;/strong&gt;.&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Server&lt;/strong&gt;: Cần một luồng chính để đón khách, và mỗi khi có khách (Client) mới, server sẽ tạo riêng một luồng con (Worker Thread) để phục vụ vị khách đó.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Client&lt;/strong&gt;: Cần tách việc &amp;ldquo;Gửi tin&amp;rdquo; và &amp;ldquo;Nhận tin&amp;rdquo; ra làm 2 luồng chạy song song.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;Dưới đây là mã nguồn chi tiết cho một hệ thống &lt;strong&gt;Chat Room hoàn chỉnh&lt;/strong&gt;.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Ứng dụng Chat sử dụng TCP trong Java (Phần 1)</title>
-      <link>http://localhost:1313/post/simple-chat-tcp-java/</link>
+      <link>//localhost:1313/post/simple-chat-tcp-java/</link>
       <pubDate>Thu, 18 Dec 2025 19:00:00 +0700</pubDate>
-      <guid>http://localhost:1313/post/simple-chat-tcp-java/</guid>
+      <guid>//localhost:1313/post/simple-chat-tcp-java/</guid>
       <description>&lt;p&gt;Trong lập trình mạng (Network Programming), việc xây dựng một ứng dụng Chat là bài tập &amp;ldquo;Hello World&amp;rdquo; kinh điển nhất để hiểu về giao thức TCP/IP. Trong bài viết này, chúng ta sẽ cùng nhau xây dựng một ứng dụng Chat Console (cửa sổ dòng lệnh) đơn giản giữa một Client và một Server sử dụng Java Sockets.&lt;/p&gt;&#xA;&lt;h2 id=&#34;1-kiến-trúc-client-server-với-tcp&#34;&gt;1. Kiến trúc Client-Server với TCP&lt;/h2&gt;&#xA;&lt;p&gt;Trước khi đi vào code, hãy hình dung cách hai máy tính nói chuyện với nhau. &lt;strong&gt;TCP&lt;/strong&gt; (Transmission Control Protocol) là giao thức hướng kết nối (connection-oriented), nghĩa là một &amp;ldquo;đường ống&amp;rdquo; ổn định phải được thiết lập trước khi dữ liệu được gửi đi.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Java Client–Server</title>
-      <link>http://localhost:1313/post/java-client-server/</link>
+      <link>//localhost:1313/post/java-client-server/</link>
       <pubDate>Tue, 16 Dec 2025 19:00:00 +0700</pubDate>
-      <guid>http://localhost:1313/post/java-client-server/</guid>
+      <guid>//localhost:1313/post/java-client-server/</guid>
       <description>&lt;p&gt;Networking (Lập trình mạng) là trái tim của hầu hết các ứng dụng hiện đại, từ Web server, chat app cho đến các game online. Trong bài viết này, chúng ta sẽ đi sâu vào mô hình Client–Server sử dụng Java. Mình sẽ hướng dẫn bạn từ khái niệm cơ bản nhất cho đến việc viết code một ứng dụng chat đơn giản giữa hai máy tính.&lt;/p&gt;&#xA;&lt;h2 id=&#34;1-mô-hình-client-server-là-gì&#34;&gt;1. Mô hình Client-Server là gì?&lt;/h2&gt;&#xA;&lt;p&gt;Trước khi viết code, chúng ta cần hiểu kiến trúc này hoạt động như thế nào.&lt;/p&gt;</description>
     </item>
     <item>
       <title></title>
-      <link>http://localhost:1313/about/</link>
+      <link>//localhost:1313/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/about/</guid>
-      <description>&lt;h1 style=&#34;font-size: 3.5em; font-weight: bold; margin-bottom: 1em;&#34;&gt;VỀ BẢN THÂN TÔI&lt;/h1&gt;&#xA;&lt;div style=&#34;text-align: center; margin: 2rem 0;&#34;&gt;&#xA;  &lt;img src=&#34;http://localhost:1313/images/about-me.jpg&#34; alt=&#34;Lý Thuận An&#34; style=&#34;max-width: 600px; width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);&#34;&gt;&#xA;&lt;/div&gt;&#xA;&lt;h2 id=&#34;đôi-nét-về-bản-thân-tôi&#34;&gt;Đôi nét về bản thân tôi&lt;/h2&gt;&#xA;&lt;p&gt;Mình là &lt;strong&gt;Lý Thuận An&lt;/strong&gt;, đang theo học năm cuối chuyên ngành Trí tuệ nhân tạo tại Đại học Công nghệ TP.HCM (HUTECH). Quá trình học tập với GPA 3.8/4.0 và danh hiệu sinh viên tiêu biểu năm học 2022-2023 không phải là điểm đến, mà là minh chứng cho cách tiếp cận mà mình đã chọn: luôn đào sâu để hiểu bản chất của vấn đề thay vì chỉ học theo tutorial có sẵn.&lt;/p&gt;</description>
+      <guid>//localhost:1313/about/</guid>
+      <description>&lt;h1 style=&#34;font-size: 3.5em; font-weight: bold; margin-bottom: 1em;&#34;&gt;VỀ BẢN THÂN TÔI&lt;/h1&gt;&#xA;&lt;div style=&#34;text-align: center; margin: 2rem 0;&#34;&gt;&#xA;  &lt;img src=&#34;//localhost:1313/images/about-me.jpg&#34; alt=&#34;Lý Thuận An&#34; style=&#34;max-width: 600px; width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);&#34;&gt;&#xA;&lt;/div&gt;&#xA;&lt;h2 id=&#34;đôi-nét-về-bản-thân-tôi&#34;&gt;Đôi nét về bản thân tôi&lt;/h2&gt;&#xA;&lt;p&gt;Mình là &lt;strong&gt;Lý Thuận An&lt;/strong&gt;, đang theo học năm cuối chuyên ngành Trí tuệ nhân tạo tại Đại học Công nghệ TP.HCM (HUTECH). Quá trình học tập với GPA 3.8/4.0 và danh hiệu sinh viên tiêu biểu năm học 2022-2023 không phải là điểm đến, mà là minh chứng cho cách tiếp cận mà mình đã chọn: luôn đào sâu để hiểu bản chất của vấn đề thay vì chỉ học theo tutorial có sẵn.&lt;/p&gt;</description>
     </item>
     <item>
       <title></title>
-      <link>http://localhost:1313/contact/</link>
+      <link>//localhost:1313/contact/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/contact/</guid>
+      <guid>//localhost:1313/contact/</guid>
       <description>&lt;div style=&#34;max-width: 800px; margin: 0 auto;&#34;&gt;&#xA;&lt;h1 style=&#34;font-size: 3.5em; font-weight: bold; margin-bottom: 1em;&#34;&gt;LIÊN HỆ&lt;/h1&gt;&#xA;&lt;div style=&#34;display: flex; gap: 60px; align-items: flex-start; flex-wrap: wrap;&#34;&gt;&#xA;&lt;div style=&#34;flex: 1; min-width: 300px;&#34;&gt;&#xA;&lt;h2 id=&#34;thuận-an&#34;&gt;THUẬN AN&lt;/h2&gt;&#xA;&lt;div style=&#34;margin: 20px 0;&#34;&gt;&#xA;&lt;p style=&#34;display: flex; align-items: center; gap: 10px; margin: 10px 0;&#34;&gt;&#xA;&lt;svg width=&#34;24&#34; height=&#34;24&#34; fill=&#34;currentColor&#34; viewBox=&#34;0 0 24 24&#34; style=&#34;color: #4a9d8f;&#34;&gt;&#xA;&lt;path d=&#34;M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z&#34;/&gt;&#xA;&lt;/svg&gt;&#xA;&lt;a href=&#34;mailto:anly1704@gmail.com&#34; style=&#34;color: #333; text-decoration: none;&#34;&gt;anly1704@gmail.com&lt;/a&gt;&#xA;&lt;/p&gt;&#xA;&lt;p style=&#34;display: flex; align-items: center; gap: 10px; margin: 10px 0;&#34;&gt;&#xA;&lt;svg width=&#34;24&#34; height=&#34;24&#34; fill=&#34;currentColor&#34; viewBox=&#34;0 0 24 24&#34; style=&#34;color: #4a9d8f;&#34;&gt;&#xA;&lt;path d=&#34;M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z&#34;/&gt;&#xA;&lt;/svg&gt;&#xA;&lt;span&gt;+84 769 339 058&lt;/span&gt;&#xA;&lt;/p&gt;</description>
     </item>
     <item>
       <title></title>
-      <link>http://localhost:1313/portfolio/</link>
+      <link>//localhost:1313/portfolio/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/portfolio/</guid>
+      <guid>//localhost:1313/portfolio/</guid>
       <description>&lt;h1 style=&#34;font-size: 3.5em; font-weight: bold; margin-bottom: 1em;&#34;&gt;NHỮNG DỰ ÁN CỦA TÔI&lt;/h1&gt;&#xA;&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu&lt;/h2&gt;&#xA;&lt;p&gt;Các dự án dưới đây phản ánh quá trình tôi tiếp cận bài toán kỹ thuật từ góc nhìn thực tế: từ việc thu thập và xử lý dữ liệu, thiết kế kiến trúc hệ thống, đến triển khai và tối ưu cho môi trường sản xuất. Mỗi dự án không chỉ là một bài tập công nghệ, mà là một nỗ lực nhằm giải quyết nhu cầu cụ thể trong nông nghiệp, an ninh, mạng xã hội và giải trí.&lt;/p&gt;</description>
     </item>
     <item>
       <title></title>
-      <link>http://localhost:1313/research/</link>
+      <link>//localhost:1313/research/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/research/</guid>
+      <guid>//localhost:1313/research/</guid>
       <description>&lt;h1 style=&#34;font-size: 3.5em; font-weight: bold; margin-bottom: 1em;&#34;&gt;CÁC CÔNG TRÌNH NGHIÊN CỨU&lt;/h1&gt;&#xA;&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu&lt;/h2&gt;&#xA;&lt;p&gt;Trang này tổng hợp các nghiên cứu và công trình khoa học của tôi trong lĩnh vực Thị giác máy tính, Học sâu và ứng dụng Trí tuệ nhân tạo. Mỗi nghiên cứu đều hướng đến việc giải quyết các bài toán thực tế, đặc biệt là trong bối cảnh Việt Nam, với mục tiêu thu hẹp khoảng cách giữa lý thuyết và triển khai ứng dụng.&lt;/p&gt;</description>
     </item>
   </channel>

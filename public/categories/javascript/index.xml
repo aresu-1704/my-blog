@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>JavaScript on THUẬN AN IT BLOG</title>
-    <link>http://localhost:1313/categories/javascript/</link>
+    <link>//localhost:1313/categories/javascript/</link>
     <description>Recent content in JavaScript on THUẬN AN IT BLOG</description>
     <generator>Hugo</generator>
     <language>vi-vn</language>
     <lastBuildDate>Mon, 22 Dec 2025 01:20:00 +0700</lastBuildDate>
-    <atom:link href="http://localhost:1313/categories/javascript/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="//localhost:1313/categories/javascript/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Bảo mật mạng trong ứng dụng Java &amp; JavaScript: từ HTTPS đến Man-in-the-Middle</title>
-      <link>http://localhost:1313/post/https-mitm-security/</link>
+      <link>//localhost:1313/post/https-mitm-security/</link>
       <pubDate>Mon, 22 Dec 2025 01:20:00 +0700</pubDate>
-      <guid>http://localhost:1313/post/https-mitm-security/</guid>
+      <guid>//localhost:1313/post/https-mitm-security/</guid>
       <description>&lt;h2 id=&#34;https---hơn-cả-một-chữ-s&#34;&gt;HTTPS - Hơn cả một chữ S&lt;/h2&gt;&#xA;&lt;p&gt;Khi mình mới bắt đầu làm web, thường nghĩ HTTPS chỉ là HTTP thêm bảo mật, một tính năng &amp;ldquo;tốt là có&amp;rdquo; cho các website ngân hàng hay thương mại điện tử. Website blog cá nhân hay landing page đơn giản dùng HTTP cũng không sao. Nhưng càng đi sâu vào bảo mật mạng, mình mới thấy suy nghĩ đó ngây thơ đến mức nào.&lt;/p&gt;</description>
     </item>
     <item>
       <title>CORS và Same-Origin Policy dưới góc nhìn mạng máy tính (JavaScript)</title>
-      <link>http://localhost:1313/post/cors-same-origin-policy/</link>
+      <link>//localhost:1313/post/cors-same-origin-policy/</link>
       <pubDate>Mon, 22 Dec 2025 01:11:00 +0700</pubDate>
-      <guid>http://localhost:1313/post/cors-same-origin-policy/</guid>
+      <guid>//localhost:1313/post/cors-same-origin-policy/</guid>
       <description>&lt;h2 id=&#34;khi-trình-duyệt-trở-thành-bức-tường-bảo-vệ&#34;&gt;Khi trình duyệt trở thành bức tường bảo vệ&lt;/h2&gt;&#xA;&lt;p&gt;Hồi mới học web development, mình thường gặp lỗi này khi gọi API từ frontend: &amp;ldquo;Access to fetch at &amp;lsquo;&lt;a href=&#34;https://api.example.com&#34;&gt;https://api.example.com&lt;/a&gt;&amp;rsquo; from origin &amp;lsquo;http://localhost:3000&amp;rsquo; has been blocked by CORS policy&amp;rdquo;. Lúc đầu nghĩ đây là lỗi code, sửa mãi không được. Rồi mình test API bằng Postman thì thấy nó chạy ngon lành. Càng confused hơn, API hoạt động tốt mà sao trình duyệt lại chặn?&lt;/p&gt;</description>
     </item>
     <item>
       <title>JavaScript trong mô hình Client–Server: Từ trình duyệt đến server</title>
-      <link>http://localhost:1313/post/js-client-server/</link>
+      <link>//localhost:1313/post/js-client-server/</link>
       <pubDate>Mon, 22 Dec 2025 00:23:10 +0700</pubDate>
-      <guid>http://localhost:1313/post/js-client-server/</guid>
+      <guid>//localhost:1313/post/js-client-server/</guid>
       <description>&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu&lt;/h2&gt;&#xA;&lt;p&gt;Trước đây, JavaScript (JS) chỉ được biết đến như một ngôn ngữ &amp;ldquo;trang trí&amp;rdquo; cho giao diện web (Front-end). Nhưng với sự ra đời của &lt;strong&gt;Node.js&lt;/strong&gt;, JavaScript đã vươn mình trở thành một ngôn ngữ &lt;strong&gt;Full-stack&lt;/strong&gt;, hoạt động mạnh mẽ ở cả phía Client (người dùng) và Server (máy chủ).&lt;/p&gt;&#xA;&lt;p&gt;Bài viết này sẽ mổ xẻ cách JavaScript vận hành trong mô hình Client-Server và hướng dẫn bạn xây dựng một ứng dụng demo đơn giản để thấy rõ sự kết nối này.&lt;/p&gt;</description>
     </item>
   </channel>
