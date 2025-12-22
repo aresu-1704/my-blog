@@ -1,3 +1,7 @@
++++
+title = "CONTACT"
++++
+
 <div style="max-width: 800px; margin: 0 auto;">
 
 <h1 style="font-size: 3.5em; font-weight: bold; margin-bottom: 1em;">LIÊN HỆ</h1>

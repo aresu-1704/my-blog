@@ -1,3 +1,7 @@
++++
+title = "RESEARCH"
++++
+
 <h1 style="font-size: 3.5em; font-weight: bold; margin-bottom: 1em;">CÁC CÔNG TRÌNH NGHIÊN CỨU</h1>
 
 ## Giới thiệu

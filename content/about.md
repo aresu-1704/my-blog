@@ -1,3 +1,6 @@
++++
+title = "ABOUT"
++++
 <h1 style="font-size: 3.5em; font-weight: bold; margin-bottom: 1em;">VỀ BẢN THÂN TÔI</h1>
 
 <div style="text-align: center; margin: 2rem 0;">
