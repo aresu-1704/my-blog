@@ -6,57 +6,8 @@
     <description>Recent content in Tags on THUẬN AN IT BLOG</description>
     <generator>Hugo</generator>
     <language>vi-vn</language>
-    <lastBuildDate>Mon, 22 Dec 2025 01:30:00 +0700</lastBuildDate>
+    <lastBuildDate>Mon, 22 Dec 2025 01:20:00 +0700</lastBuildDate>
     <atom:link href="//localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Concurrency</title>
-      <link>//localhost:1313/tags/concurrency/</link>
-      <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
-      <guid>//localhost:1313/tags/concurrency/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>I/O</title>
-      <link>//localhost:1313/tags/i/o/</link>
-      <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
-      <guid>//localhost:1313/tags/i/o/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Java</title>
-      <link>//localhost:1313/tags/java/</link>
-      <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
-      <guid>//localhost:1313/tags/java/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Network Programming</title>
-      <link>//localhost:1313/tags/network-programming/</link>
-      <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
-      <guid>//localhost:1313/tags/network-programming/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>NIO</title>
-      <link>//localhost:1313/tags/nio/</link>
-      <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
-      <guid>//localhost:1313/tags/nio/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Performance</title>
-      <link>//localhost:1313/tags/performance/</link>
-      <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
-      <guid>//localhost:1313/tags/performance/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Server</title>
-      <link>//localhost:1313/tags/server/</link>
-      <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
-      <guid>//localhost:1313/tags/server/</guid>
-      <description></description>
-    </item>
     <item>
       <title>Encryption</title>
       <link>//localhost:1313/tags/encryption/</link>
@@ -69,6 +20,13 @@
       <link>//localhost:1313/tags/https/</link>
       <pubDate>Mon, 22 Dec 2025 01:20:00 +0700</pubDate>
       <guid>//localhost:1313/tags/https/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Java</title>
+      <link>//localhost:1313/tags/java/</link>
+      <pubDate>Mon, 22 Dec 2025 01:20:00 +0700</pubDate>
+      <guid>//localhost:1313/tags/java/</guid>
       <description></description>
     </item>
     <item>
@@ -216,6 +174,48 @@
       <link>//localhost:1313/tags/tcp/ip/</link>
       <pubDate>Sat, 20 Dec 2025 19:00:00 +0700</pubDate>
       <guid>//localhost:1313/tags/tcp/ip/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Concurrency</title>
+      <link>//localhost:1313/tags/concurrency/</link>
+      <pubDate>Tue, 16 Dec 2025 01:30:00 +0700</pubDate>
+      <guid>//localhost:1313/tags/concurrency/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>I/O</title>
+      <link>//localhost:1313/tags/i/o/</link>
+      <pubDate>Tue, 16 Dec 2025 01:30:00 +0700</pubDate>
+      <guid>//localhost:1313/tags/i/o/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Network Programming</title>
+      <link>//localhost:1313/tags/network-programming/</link>
+      <pubDate>Tue, 16 Dec 2025 01:30:00 +0700</pubDate>
+      <guid>//localhost:1313/tags/network-programming/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>NIO</title>
+      <link>//localhost:1313/tags/nio/</link>
+      <pubDate>Tue, 16 Dec 2025 01:30:00 +0700</pubDate>
+      <guid>//localhost:1313/tags/nio/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Performance</title>
+      <link>//localhost:1313/tags/performance/</link>
+      <pubDate>Tue, 16 Dec 2025 01:30:00 +0700</pubDate>
+      <guid>//localhost:1313/tags/performance/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Server</title>
+      <link>//localhost:1313/tags/server/</link>
+      <pubDate>Tue, 16 Dec 2025 01:30:00 +0700</pubDate>
+      <guid>//localhost:1313/tags/server/</guid>
       <description></description>
     </item>
   </channel>

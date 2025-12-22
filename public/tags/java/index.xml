@@ -6,21 +6,14 @@
     <description>Recent content in Java on THUẬN AN IT BLOG</description>
     <generator>Hugo</generator>
     <language>vi-vn</language>
-    <lastBuildDate>Mon, 22 Dec 2025 01:30:00 +0700</lastBuildDate>
+    <lastBuildDate>Mon, 22 Dec 2025 01:20:00 +0700</lastBuildDate>
     <atom:link href="//localhost:1313/tags/java/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Từ Blocking I/O đến Non-blocking I/O: Java NIO thay đổi cách Server xử lý mạng như thế nào?</title>
-      <link>//localhost:1313/post/java-nio-blocking-nonblocking/</link>
-      <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
-      <guid>//localhost:1313/post/java-nio-blocking-nonblocking/</guid>
-      <description>&lt;h2 id=&#34;khi-một-thread-chỉ-phục-vụ-một-kết-nối&#34;&gt;Khi một thread chỉ phục vụ một kết nối&lt;/h2&gt;&#xA;&lt;p&gt;Mô hình server Java đơn giản nhất hoạt động theo kiểu một thread cho một kết nối: mỗi khi có client kết nối, server tạo một thread mới để xử lý. ServerSocket chấp nhận kết nối, khởi tạo thread mới, thread đó đọc yêu cầu, xử lý logic nghiệp vụ, gửi kết quả trả về, rồi kết thúc. Cách tiếp cận này có logic rõ ràng và code dễ hiểu, không phức tạp.&lt;/p&gt;</description>
-    </item>
     <item>
       <title>Bảo mật mạng trong ứng dụng Java &amp; JavaScript: từ HTTPS đến Man-in-the-Middle</title>
       <link>//localhost:1313/post/https-mitm-security/</link>
       <pubDate>Mon, 22 Dec 2025 01:20:00 +0700</pubDate>
       <guid>//localhost:1313/post/https-mitm-security/</guid>
-      <description>&lt;h2 id=&#34;https---hơn-cả-một-chữ-s&#34;&gt;HTTPS - Hơn cả một chữ S&lt;/h2&gt;&#xA;&lt;p&gt;Khi mình mới bắt đầu làm web, thường nghĩ HTTPS chỉ là HTTP thêm bảo mật, một tính năng &amp;ldquo;tốt là có&amp;rdquo; cho các website ngân hàng hay thương mại điện tử. Website blog cá nhân hay landing page đơn giản dùng HTTP cũng không sao. Nhưng càng đi sâu vào bảo mật mạng, mình mới thấy suy nghĩ đó ngây thơ đến mức nào.&lt;/p&gt;</description>
+      <description>&lt;h2 id=&#34;https---hơn-cả-một-chữ-s&#34;&gt;HTTPS - Hơn cả một chữ S&lt;/h2&gt;&#xA;&lt;p&gt;Khi mình mới bắt đầu làm web, thường nghĩ HTTPS chỉ là HTTP thêm bảo mật, một tính năng &amp;ldquo;tốt là có&amp;rdquo; cho các website ngân hàng hay thương mại điện tử. Website blog cá nhân hay trang giới thiệu đơn giản dùng HTTP cũng không sao. Nhưng càng đi sâu vào bảo mật mạng, mình mới thấy suy nghĩ đó ngây thơ đến mức nào.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Java Socket Programming: TCP vs UDP trong ứng dụng thực tế</title>
@@ -49,6 +42,13 @@
       <pubDate>Tue, 16 Dec 2025 19:00:00 +0700</pubDate>
       <guid>//localhost:1313/post/java-client-server/</guid>
       <description>&lt;p&gt;Networking (Lập trình mạng) là trái tim của hầu hết các ứng dụng hiện đại, từ Web server, chat app cho đến các game online. Trong bài viết này, chúng ta sẽ đi sâu vào mô hình Client–Server sử dụng Java. Mình sẽ hướng dẫn bạn từ khái niệm cơ bản nhất cho đến việc viết code một ứng dụng chat đơn giản giữa hai máy tính.&lt;/p&gt;&#xA;&lt;h2 id=&#34;1-mô-hình-client-server-là-gì&#34;&gt;1. Mô hình Client-Server là gì?&lt;/h2&gt;&#xA;&lt;p&gt;Trước khi viết code, chúng ta cần hiểu kiến trúc này hoạt động như thế nào.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Từ Blocking I/O đến Non-blocking I/O: Java NIO thay đổi cách Server xử lý mạng như thế nào?</title>
+      <link>//localhost:1313/post/java-nio-blocking-nonblocking/</link>
+      <pubDate>Tue, 16 Dec 2025 01:30:00 +0700</pubDate>
+      <guid>//localhost:1313/post/java-nio-blocking-nonblocking/</guid>
+      <description>&lt;h2 id=&#34;khi-một-thread-chỉ-phục-vụ-một-kết-nối&#34;&gt;Khi một thread chỉ phục vụ một kết nối&lt;/h2&gt;&#xA;&lt;p&gt;Mô hình server Java đơn giản nhất hoạt động theo kiểu một thread cho một kết nối: mỗi khi có client kết nối, server tạo một thread mới để xử lý. ServerSocket chấp nhận kết nối, khởi tạo thread mới, thread đó đọc yêu cầu, xử lý logic nghiệp vụ, gửi kết quả trả về, rồi kết thúc. Cách tiếp cận này có logic rõ ràng và code dễ hiểu, không phức tạp.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

@@ -6,12 +6,12 @@
     <description>Recent content in Performance on THUẬN AN IT BLOG</description>
     <generator>Hugo</generator>
     <language>vi-vn</language>
-    <lastBuildDate>Mon, 22 Dec 2025 01:30:00 +0700</lastBuildDate>
+    <lastBuildDate>Tue, 16 Dec 2025 01:30:00 +0700</lastBuildDate>
     <atom:link href="//localhost:1313/tags/performance/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Từ Blocking I/O đến Non-blocking I/O: Java NIO thay đổi cách Server xử lý mạng như thế nào?</title>
       <link>//localhost:1313/post/java-nio-blocking-nonblocking/</link>
-      <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
+      <pubDate>Tue, 16 Dec 2025 01:30:00 +0700</pubDate>
       <guid>//localhost:1313/post/java-nio-blocking-nonblocking/</guid>
       <description>&lt;h2 id=&#34;khi-một-thread-chỉ-phục-vụ-một-kết-nối&#34;&gt;Khi một thread chỉ phục vụ một kết nối&lt;/h2&gt;&#xA;&lt;p&gt;Mô hình server Java đơn giản nhất hoạt động theo kiểu một thread cho một kết nối: mỗi khi có client kết nối, server tạo một thread mới để xử lý. ServerSocket chấp nhận kết nối, khởi tạo thread mới, thread đó đọc yêu cầu, xử lý logic nghiệp vụ, gửi kết quả trả về, rồi kết thúc. Cách tiếp cận này có logic rõ ràng và code dễ hiểu, không phức tạp.&lt;/p&gt;</description>
     </item>

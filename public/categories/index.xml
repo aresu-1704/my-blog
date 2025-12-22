@@ -6,27 +6,13 @@
     <description>Recent content in Categories on THUẬN AN IT BLOG</description>
     <generator>Hugo</generator>
     <language>vi-vn</language>
-    <lastBuildDate>Mon, 22 Dec 2025 01:30:00 +0700</lastBuildDate>
+    <lastBuildDate>Mon, 22 Dec 2025 01:20:00 +0700</lastBuildDate>
     <atom:link href="//localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Backend</title>
-      <link>//localhost:1313/categories/backend/</link>
-      <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
-      <guid>//localhost:1313/categories/backend/</guid>
-      <description></description>
-    </item>
     <item>
       <title>Java</title>
       <link>//localhost:1313/categories/java/</link>
-      <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
+      <pubDate>Mon, 22 Dec 2025 01:20:00 +0700</pubDate>
       <guid>//localhost:1313/categories/java/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>System Design</title>
-      <link>//localhost:1313/categories/system-design/</link>
-      <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
-      <guid>//localhost:1313/categories/system-design/</guid>
       <description></description>
     </item>
     <item>
@@ -83,6 +69,20 @@
       <link>//localhost:1313/categories/programming/</link>
       <pubDate>Mon, 22 Dec 2025 00:23:10 +0700</pubDate>
       <guid>//localhost:1313/categories/programming/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Backend</title>
+      <link>//localhost:1313/categories/backend/</link>
+      <pubDate>Tue, 16 Dec 2025 01:30:00 +0700</pubDate>
+      <guid>//localhost:1313/categories/backend/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>System Design</title>
+      <link>//localhost:1313/categories/system-design/</link>
+      <pubDate>Tue, 16 Dec 2025 01:30:00 +0700</pubDate>
+      <guid>//localhost:1313/categories/system-design/</guid>
       <description></description>
     </item>
   </channel>
