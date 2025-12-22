@@ -1,5 +1,6 @@
 +++
 title = "CONTACT"
+date = 2025-12-22T01:20:00+07:00
 +++
 
 <div style="max-width: 800px; margin: 0 auto;">
