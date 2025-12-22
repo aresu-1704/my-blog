@@ -1,0 +1,106 @@
+{{ define "main" }}
+<div class="container mx-auto px-4 py-8">
+  <div class="grid grid-cols-1 lg:grid-cols-10 gap-8">
+    <!-- Left Column: Posts List (70%) -->
+    <div class="lg:col-span-7">
+      <h1 class="text-4xl font-bold mb-2 text-white">{{ .Title }}</h1>
+      <p class="text-gray-400 mb-8">{{ .Pages.Len }} bài viết</p>
+
+      <!-- Posts List -->
+      <div id="posts-container" class="space-y-6">
+        {{ range .Pages.ByDate.Reverse }}
+        <article
+          class="post-item bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6 hover:shadow-xl hover:border-cyan-500 transition-all duration-300"
+        >
+          <!-- Post Image -->
+          {{ if .Params.image }}
+          <div class="mb-4 -mx-6 -mt-6">
+            <img
+              src="{{ .Params.image | relURL }}"
+              alt="{{ .Title }}"
+              class="w-full h-80 object-cover rounded-t-lg"
+            />
+          </div>
+          {{ end }}
+
+          <h2 class="text-2xl font-bold mb-2">
+            <a
+              href="{{ .Permalink }}"
+              class="text-cyan-400 hover:text-cyan-300 transition-colors"
+            >
+              {{ .Title }}
+            </a>
+          </h2>
+
+          <div
+            class="text-sm text-gray-400 mb-3 flex flex-wrap items-center gap-4"
+          >
+            <!-- Date -->
+            <span class="flex items-center">
+              <svg
+                class="w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+              {{ .Date.Format "02/01/2006" }}
+            </span>
+
+            <!-- Categories -->
+            {{ if .Params.categories }}
+            <span class="flex items-center flex-wrap gap-2">
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                ></path>
+              </svg>
+              {{ range $index, $category := .Params.categories }} {{ if $index
+              }}, {{ end }}
+              <a
+                href="/categories/{{ $category | urlize }}"
+                class="text-cyan-400 hover:text-cyan-300"
+                >{{ $category }}</a
+              >
+              {{ end }}
+            </span>
+            {{ end }}
+          </div>
+
+          <!-- Description -->
+          {{ if .Description }}
+          <p class="text-gray-300 mb-3">{{ .Description }}</p>
+          {{ else }}
+          <p class="text-gray-300 mb-3">{{ .Summary }}</p>
+          {{ end }}
+
+          <a
+            href="{{ .Permalink }}"
+            class="inline-block text-cyan-400 hover:text-cyan-300 font-semibold"
+          >
+            Đọc thêm →
+          </a>
+        </article>
+        {{ end }}
+      </div>
+    </div>
+
+    <!-- Right Column: Sidebar (30%) -->
+    <div class="lg:col-span-3">{{ partial "sidebar.html" . }}</div>
+  </div>
+</div>
+{{ end }}

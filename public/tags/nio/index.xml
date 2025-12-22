@@ -1,130 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-    <channel>
-        <title>NIO on Kiến thức lập trình</title>
-        <link>http://localhost:1313/tags/nio/</link>
-        <description>Recent content in NIO on Kiến thức lập trình</description>
-        <generator>Hugo -- gohugo.io</generator>
-        <language>vi-vn</language>
-        <lastBuildDate>Mon, 22 Dec 2025 01:30:00 +0700</lastBuildDate><atom:link href="http://localhost:1313/tags/nio/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>Từ Blocking I/O đến Non-blocking I/O: Java NIO thay đổi cách Server xử lý mạng như thế nào?</title>
-        <link>http://localhost:1313/post/java-nio-blocking-nonblocking/</link>
-        <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
-        
-        <guid>http://localhost:1313/post/java-nio-blocking-nonblocking/</guid>
-        <description>&lt;img src="http://localhost:1313/images/java-nio.jpg" alt="Featured image of post Từ Blocking I/O đến Non-blocking I/O: Java NIO thay đổi cách Server xử lý mạng như thế nào?" /&gt;&lt;h2 id=&#34;khi-một-thread-chỉ-phục-vụ-một-kết-nối&#34;&gt;Khi một thread chỉ phục vụ một kết nối
-&lt;/h2&gt;&lt;p&gt;Hồi mới bắt đầu viết server Java, mình làm theo mô hình đơn giản nhất: mỗi khi có client kết nối, tạo một thread mới để xử lý. ServerSocket accept connection, spawn một thread, thread đó đọc request, xử lý business logic, gửi response, rồi kết thúc. Nghe logic và dễ hiểu. Code cũng straightforward, không phức tạp gì.&lt;/p&gt;
-&lt;p&gt;Vấn đề chỉ bộc lộ khi số lượng concurrent connections tăng lên. Với mô hình blocking I/O truyền thống, mỗi khi thread gọi &lt;code&gt;socket.read()&lt;/code&gt; hoặc &lt;code&gt;socket.write()&lt;/code&gt;, nó bị block cho đến khi operation hoàn thành. Nếu client chậm, network congested, hoặc đơn giản là client đang suy nghĩ, thread ở server cứ ngồi đó chờ. Không làm gì cả, chỉ chờ. CPU không tốn nhiều, nhưng thread thì chiếm memory và system resources.&lt;/p&gt;
-&lt;p&gt;Khi có mười, hai mươi concurrent connections thì vẫn OK. Nhưng khi lên hàng trăm, hàng nghìn connections, việc tạo ra cùng số lượng threads bắt đầu thành vấn đề nghiêm trọng. Mỗi thread trong Java chiếm khoảng 1MB stack memory mặc định. Một nghìn threads nghĩa là 1GB RAM chỉ cho stacks, chưa kể heap memory và các overhead khác. Worse hơn là context switching giữa hàng nghìn threads làm CPU thrashing, performance sụt giảm thảm hại thay vì tăng.&lt;/p&gt;
-&lt;p&gt;Mình từng deploy một server nhỏ xử lý WebSocket connections. Ban đầu test với vài trăm clients thì mọi thứ ổn. Nhưng khi lên production với vài nghìn concurrent users, server bắt đầu lag, response time tăng vọt, rồi cuối cùng crash với OutOfMemoryError. Monitoring cho thấy số lượng threads vượt quá mười nghìn. JVM không thể tạo thêm threads nữa. Đó là lúc mình nhận ra mô hình thread-per-connection không scale.&lt;/p&gt;
-&lt;h2 id=&#34;vấn-đề-không-phải-ở-thread-mà-ở-blocking&#34;&gt;Vấn đề không phải ở thread, mà ở blocking
-&lt;/h2&gt;&lt;p&gt;Cái khiến mô hình truyền thống không hiệu quả không phải là việc dùng threads, mà là việc threads bị block vô nghĩa. Hãy nghĩ về điều này: trong phần lớn thời gian, một connection đang chờ data từ network. Client gửi HTTP request, nhưng dữ liệu đến server qua network không phải tức thì. Nó đi qua routers, switches, có thể bị delay vì bandwidth limitation hoặc network congestion. ở phía server, thread gọi &lt;code&gt;inputStream.read()&lt;/code&gt; và bị block cho đến khi có đủ data.&lt;/p&gt;
-&lt;p&gt;Trong thời gian chờ đợi này, thread không làm gì hữu ích. Nó không consume CPU, nhưng nó vẫn tồn tại, chiếm memory, và là một entry trong JVM&amp;rsquo;s thread table. OS scheduler vẫn phải consider nó khi scheduling. Nếu có một nghìn threads đang block chờ I/O, đó là một nghìn threads không productive nhưng vẫn tốn resources.&lt;/p&gt;
-&lt;p&gt;Điều mình cần không phải là một thread cho mỗi connection. Điều mình cần là khả năng để một thread xử lý nhiều connections. Nhưng làm sao để một thread biết connection nào đang có data ready để đọc mà không bị block checking từng connection một? Đó là lúc Java NIO xuất hiện.&lt;/p&gt;
-&lt;h2 id=&#34;java-nio-và-ý-tưởng-non-blocking-io&#34;&gt;Java NIO và ý tưởng non-blocking I/O
-&lt;/h2&gt;&lt;p&gt;Java NIO (New I/O, hoặc Non-blocking I/O) ra đời trong Java 1.4 với một mindset hoàn toàn khác. Thay vì thread block khi chờ I/O, NIO cho phép thread check xem I/O operation có thể thực hiện được không trước khi thực sự làm. Nếu không ready, thread không cần wait, nó có thể làm việc khác hoặc check connection khác.&lt;/p&gt;
-&lt;p&gt;Cốt lõi của NIO là ba khái niệm: Channels, Buffers và Selectors. Channel trong NIO giống như socket trong blocking I/O, nhưng nó có thể configure thành non-blocking mode. Buffer là vùng nhớ để đọc/ghi data. Nhưng component quan trọng nhất là Selector.&lt;/p&gt;
-&lt;p&gt;Selector cho phép một thread duy nhất monitor nhiều channels cùng lúc. Bạn register các channels với Selector, chỉ định operations bạn quan tâm (read, write, accept, connect). Khi gọi &lt;code&gt;selector.select()&lt;/code&gt;, method này sẽ block cho đến khi ít nhất một channel ready cho operation đã register. Quan trọng là nó chỉ trả về khi có event xảy ra, không phải check polling liên tục.&lt;/p&gt;
-&lt;p&gt;Điều này tạo ra một paradigm shift hoàn toàn. Thay vì thread chờ từng connection, giờ một thread có thể chờ bất kỳ connection nào trong nhóm ready. Khi có connection ready, thread xử lý nó, rồi quay lại chờ tiếp. Một thread có thể handle hàng nghìn connections mà không cần tạo ra hàng nghìn threads.&lt;/p&gt;
-&lt;h2 id=&#34;multiplexing-ở-tầng-os&#34;&gt;Multiplexing ở tầng OS
-&lt;/h2&gt;&lt;p&gt;Để hiểu tại sao Selector hiệu quả, cần nhìn xuống OS level. Trên Linux, NIO Selector sử dụng epoll (hoặc select/poll trên các systems cũ hơn). Trên Windows, nó dùng I/O Completion Ports. Đây là các system calls cho phép application monitor nhiều file descriptors (sockets) cùng lúc.&lt;/p&gt;
-&lt;p&gt;Epoll hoạt động rất hiệu quả. Thay vì kernel phải scan qua tất cả file descriptors mỗi lần check (như select/poll làm), epoll maintain một event list. Khi có I/O event xảy ra, kernel add file descriptor vào ready list. Application chỉ cần check ready list này, không cần scan hết tất cả descriptors. Complexity là O(1) cho số lượng ready events, không phải O(n) cho tổng số connections.&lt;/p&gt;
-&lt;p&gt;Điều này có nghĩa là server có thể maintain hàng chục nghìn connections mà overhead minimal. Kernel sẽ notify application chỉ khi có connections thực sự có events. Application không waste CPU cycles checking connections không có gì mới.&lt;/p&gt;
-&lt;h2 id=&#34;code-pattern-của-nio-server&#34;&gt;Code pattern của NIO server
-&lt;/h2&gt;&lt;p&gt;Triển khai một NIO server khác khá nhiều so với blocking I/O server. Thay vì vòng lặp accept-spawn-thread, NIO server có một event loop chính. Thread này chạy vòng lặp vô hạn, gọi &lt;code&gt;selector.select()&lt;/code&gt; để chờ events, rồi process từng event khi chúng arrive.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Selector selector &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Selector.&lt;span style=&#34;color:#a6e22e&#34;&gt;open&lt;/span&gt;();
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ServerSocketChannel serverChannel &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; ServerSocketChannel.&lt;span style=&#34;color:#a6e22e&#34;&gt;open&lt;/span&gt;();
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;serverChannel.&lt;span style=&#34;color:#a6e22e&#34;&gt;configureBlocking&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;serverChannel.&lt;span style=&#34;color:#a6e22e&#34;&gt;bind&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; InetSocketAddress(8080));
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;serverChannel.&lt;span style=&#34;color:#a6e22e&#34;&gt;register&lt;/span&gt;(selector, SelectionKey.&lt;span style=&#34;color:#a6e22e&#34;&gt;OP_ACCEPT&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;) {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    selector.&lt;span style=&#34;color:#a6e22e&#34;&gt;select&lt;/span&gt;(); &lt;span style=&#34;color:#75715e&#34;&gt;// Block cho đến khi có events&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Set&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;SelectionKey&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; selectedKeys &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; selector.&lt;span style=&#34;color:#a6e22e&#34;&gt;selectedKeys&lt;/span&gt;();
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Iterator&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;SelectionKey&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; iterator &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; selectedKeys.&lt;span style=&#34;color:#a6e22e&#34;&gt;iterator&lt;/span&gt;();
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (iterator.&lt;span style=&#34;color:#a6e22e&#34;&gt;hasNext&lt;/span&gt;()) {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        SelectionKey key &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; iterator.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;();
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        iterator.&lt;span style=&#34;color:#a6e22e&#34;&gt;remove&lt;/span&gt;();
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (key.&lt;span style=&#34;color:#a6e22e&#34;&gt;isAcceptable&lt;/span&gt;()) {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;// Client mới kết nối&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            ServerSocketChannel server &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (ServerSocketChannel) key.&lt;span style=&#34;color:#a6e22e&#34;&gt;channel&lt;/span&gt;();
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            SocketChannel client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; server.&lt;span style=&#34;color:#a6e22e&#34;&gt;accept&lt;/span&gt;();
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            client.&lt;span style=&#34;color:#a6e22e&#34;&gt;configureBlocking&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            client.&lt;span style=&#34;color:#a6e22e&#34;&gt;register&lt;/span&gt;(selector, SelectionKey.&lt;span style=&#34;color:#a6e22e&#34;&gt;OP_READ&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (key.&lt;span style=&#34;color:#a6e22e&#34;&gt;isReadable&lt;/span&gt;()) {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;// Client có data để đọc&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            SocketChannel client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (SocketChannel) key.&lt;span style=&#34;color:#a6e22e&#34;&gt;channel&lt;/span&gt;();
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            ByteBuffer buffer &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; ByteBuffer.&lt;span style=&#34;color:#a6e22e&#34;&gt;allocate&lt;/span&gt;(1024);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; bytesRead &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client.&lt;span style=&#34;color:#a6e22e&#34;&gt;read&lt;/span&gt;(buffer);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (bytesRead &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;1) {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                client.&lt;span style=&#34;color:#a6e22e&#34;&gt;close&lt;/span&gt;();
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            } &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#75715e&#34;&gt;// Xử lý data&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                buffer.&lt;span style=&#34;color:#a6e22e&#34;&gt;flip&lt;/span&gt;();
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#75715e&#34;&gt;// ... business logic ...&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                key.&lt;span style=&#34;color:#a6e22e&#34;&gt;interestOps&lt;/span&gt;(SelectionKey.&lt;span style=&#34;color:#a6e22e&#34;&gt;OP_WRITE&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (key.&lt;span style=&#34;color:#a6e22e&#34;&gt;isWritable&lt;/span&gt;()) {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;// Client ready để nhận response&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            SocketChannel client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (SocketChannel) key.&lt;span style=&#34;color:#a6e22e&#34;&gt;channel&lt;/span&gt;();
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            ByteBuffer response &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; getResponseBuffer(key);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            client.&lt;span style=&#34;color:#a6e22e&#34;&gt;write&lt;/span&gt;(response);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;response.&lt;span style=&#34;color:#a6e22e&#34;&gt;hasRemaining&lt;/span&gt;()) {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                key.&lt;span style=&#34;color:#a6e22e&#34;&gt;interestOps&lt;/span&gt;(SelectionKey.&lt;span style=&#34;color:#a6e22e&#34;&gt;OP_READ&lt;/span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Code này trông khác lạ nếu bạn quen với blocking I/O. Không có threads riêng cho mỗi connection. Không có blocking reads/writes. Thay vào đó, toàn bộ logic được organize theo events. Khi có event, xử lý event đó, rồi quay lại chờ event tiếp theo.&lt;/p&gt;
-&lt;p&gt;Cái giá phải trả là complexity. Blocking I/O code dễ đọc, dễ debug, flow tuyến tính. NIO code phức tạp hơn nhiều. Logic phân mảnh theo các event handlers khác nhau. State management trở nên tricky vì không có thread riêng duy trì state cho mỗi connection. Bạn phải attach state vào SelectionKey hoặc maintain external map.&lt;/p&gt;
-&lt;h2 id=&#34;event-driven-architecture-và-callback-hell&#34;&gt;Event-driven architecture và callback hell
-&lt;/h2&gt;&lt;p&gt;Mô hình NIO về bản chất là event-driven. Thay vì imperative &amp;ldquo;đọc request, xử lý, gửi response&amp;rdquo; theo sequence, NIO làm việc theo reactive pattern &amp;ldquo;khi có event X, làm Y&amp;rdquo;. Điều này khá giống với JavaScript event loop trong Node.js hoặc browser.&lt;/p&gt;
-&lt;p&gt;Trong JavaScript, bạn register event handlers cho các events khác nhau. Click event, timer callback, AJAX response. Browser&amp;rsquo;s event loop continuously check for events và execute corresponding handlers. NIO Selector hoạt động tương tự, nhưng ở Java và với network I/O events.&lt;/p&gt;
-&lt;p&gt;Pattern này powerful nhưng cũng có những pitfalls. Khi logic phức tạp, bạn có thể rơi vào &amp;ldquo;callback hell&amp;rdquo; - nested callbacks khó maintain. Trong NIO, nếu operation yêu cầu multiple round-trips (send request, wait response, process, send follow-up), code có thể trở nên convoluted. Bạn phải manually track state cho mỗi stage của operation.&lt;/p&gt;
-&lt;p&gt;Để giải quyết, nhiều frameworks build abstraction layers lên trên NIO. Netty, Java&amp;rsquo;s built-in AsynchronousSocketChannel, reactive libraries như Project Reactor hay RxJava. Chúng provide higher-level APIs để work với async I/O mà không cần deal trực tiếp với low-level Selector và SelectionKeys.&lt;/p&gt;
-&lt;h2 id=&#34;scalability-và-resource-utilization&#34;&gt;Scalability và resource utilization
-&lt;/h2&gt;&lt;p&gt;Benefit lớn nhất của NIO là scalability. Với blocking I/O và thread-per-connection, server limited bởi số lượng threads có thể tạo ra. Hầu hết JVMs cap ở vài nghìn threads trước khi performance degradation nghiêm trọng hoặc OutOfMemoryError.&lt;/p&gt;
-&lt;p&gt;Với NIO, giới hạn không phải threads mà là file descriptors. Trên Linux, mỗi process có limit số file descriptors có thể open (thường configure qua ulimit). Limit này có thể tăng lên hàng chục hoặc hàng trăm nghìn. Một NIO server với một hoặc vài threads có thể handle tens of thousands of concurrent connections.&lt;/p&gt;
-&lt;p&gt;Mình từng refactor server WebSocket từ blocking I/O sang NIO. Before refactor, server với 4GB RAM max out ở khoảng 3000 concurrent connections. After refactor sử dụng NIO, cùng 4GB RAM, server handle được 50,000 connections. Memory usage chủ yếu là buffers cho data và connection metadata, không phải thread stacks. CPU usage thấp hơn vì ít context switching.&lt;/p&gt;
-&lt;p&gt;Tất nhiên, để đạt được performance này cần tune cẩn thận. Buffer sizes, selector threads count, business logic processing strategy. Nếu business logic heavy và chạy trong selector thread, nó sẽ block event loop và làm giảm throughput. Best practice là selector thread chỉ handle I/O, delegate business logic cho worker thread pool.&lt;/p&gt;
-&lt;h2 id=&#34;nio-trong-các-frameworks-hiện-đại&#34;&gt;NIO trong các frameworks hiện đại
-&lt;/h2&gt;&lt;p&gt;Hầu hết các framework và application servers Java hiện đại đều sử dụng NIO underneath. Netty là một NIO framework phổ biến nhất, được dùng bởi vô số projects: Elasticsearch, Cassandra, gRPC Java implementation, Play Framework, và nhiều nữa. Netty abstract complexity của NIO, provide event-driven API dễ dùng hơn, và optimize performance đến mức extreme.&lt;/p&gt;
-&lt;p&gt;Apache Tomcat từ version 8.5 dùng NIO connector mặc định. Jetty cũng vậy. Spring WebFlux, reactive web framework của Spring, build trên Project Reactor và support NIO-based servers như Netty hoặc Undertow. Tất cả nhằm achieve non-blocking I/O cho better scalability.&lt;/p&gt;
-&lt;p&gt;Node.js mà nhiều người so sánh với Java về performance cũng sử dụng event loop tương tự. Libuv, library mà Node.js dựa vào, dùng epoll/kqueue/IOCP tùy platform, giống như Java NIO Selector. Mindset là giống nhau: một hoặc vài threads monitor nhiều connections, process events as they arrive.&lt;/p&gt;
-&lt;p&gt;Ngay cả khi không directly code với NIO, hiểu về nó giúp bạn appreciate các frameworks đang dùng. Khi config Netty hoặc tune Tomcat NIO connector, biết cách chúng hoạt động underneath giúp bạn make informed decisions về thread pool sizes, buffer configurations, backlog settings.&lt;/p&gt;
-&lt;h2 id=&#34;trade-offs-và-khi-nào-nên-dùng&#34;&gt;Trade-offs và khi nào nên dùng
-&lt;/h2&gt;&lt;p&gt;NIO không phải silver bullet. Nó tốt cho I/O-bound applications với nhiều concurrent connections nhưng mỗi request không đòi hỏi nhiều computing. Ví dụ điển hình là proxy servers, API gateways, WebSocket servers, chat applications. Những use cases này phần lớn thời gian là wait for I/O, ít CPU-intensive work.&lt;/p&gt;
-&lt;p&gt;Nếu application của bạn CPU-bound, ví dụ image processing hoặc complex calculations, NIO không giúp được nhiều. Vấn đề không phải I/O wait mà là computation time. Khi đó, thread pool với blocking I/O hoặc parallel processing frameworks như Fork/Join có thể phù hợp hơn.&lt;/p&gt;
-&lt;p&gt;NIO cũng khó debug và test hơn. Race conditions, state management bugs trong event-driven code notoriously tricky. Blocking I/O code với one thread per request dễ reason về behavior. Mỗi request có execution path riêng, dễ trace. NIO code nhiều requests share threads, harder to track what&amp;rsquo;s happening.&lt;/p&gt;
-&lt;p&gt;Development time cũng là concern. Viết NIO code from scratch tốn nhiều thời gian hơn blocking I/O. Phải handle buffers, partial reads/writes, state management. Nếu scale requirements không cao, simplicity của blocking I/O có thể worthwhile trade-off.&lt;/p&gt;
-&lt;h2 id=&#34;từ-nio-đến-nio2-và-tương-lai&#34;&gt;Từ NIO đến NIO.2 và tương lai
-&lt;/h2&gt;&lt;p&gt;Java 7 introduced NIO.2 (hay còn gọi là AIO - Asynchronous I/O) với AsynchronousSocketChannel và AsynchronousServerSocketChannel. Khác với NIO&amp;rsquo;s selector-based approach, NIO.2 dùng callback hoặc Future-based API. Bạn initiate I/O operation và provide callback sẽ được gọi khi operation completes.&lt;/p&gt;
-&lt;p&gt;NIO.2 abstraction level cao hơn NIO, easier to use trong một số cases. Nhưng nó không replace NIO hoàn toàn. Netty vẫn dùng NIO selector approach vì performance và control. NIO.2 có thể convenient nhưng đôi khi overhead higher.&lt;/p&gt;
-&lt;p&gt;Tương lai của Java I/O đang hướng tới Project Loom. Loom introduce virtual threads (fibers), lightweight threads managed bởi JVM thay vì OS. Với virtual threads, bạn có thể viết code theo blocking style nhưng underneath runtime schedule virtual threads efficiently, không tạo OS threads cho mỗi connection. IDE là thread-per-request simplicity với NIO-level scalability.&lt;/p&gt;
-&lt;p&gt;Khi Loom stable và widely adopted, có thể sẽ shift lại về blocking-style code nhưng với different runtime. Cho đến lúc đó, NIO vẫn là foundation của high-performance Java servers.&lt;/p&gt;
-&lt;h2 id=&#34;kết-luận&#34;&gt;Kết luận
-&lt;/h2&gt;&lt;p&gt;Java NIO không chỉ là một API mới, mà là một paradigm shift trong cách design server applications. Nó force developers nghĩ về I/O theo event-driven model thay vì sequential blocking model. Trade-off là complexity tăng, nhưng reward là khả năng scale lên orders of magnitude về số concurrent connections.&lt;/p&gt;
-&lt;p&gt;Hiểu NIO giúp bạn appreciate các frameworks modern đang dùng. Netty, Spring WebFlux, reactive programming - tất cả build trên nền tảng này. Ngay cả khi không code trực tiếp với Selector và Channels, concepts của non-blocking I/O, event loops, multiplexing vẫn relevant cho system design.&lt;/p&gt;
-&lt;p&gt;Blocking I/O vẫn có chỗ đứng cho applications đơn giản, low concurrency requirements. Nhưng khi scale là mục tiêu, khi số concurrent connections lên hàng nghìn hoặc tens of thousands, NIO là answer. Đó không phải chỉ là optimization technique, mà là mindset khác về cách server interact với network.&lt;/p&gt;
-&lt;hr&gt;
-&lt;p&gt;&lt;strong&gt;Tham khảo:&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&amp;ldquo;Java NIO&amp;rdquo; - Ron Hitchens&lt;/li&gt;
-&lt;li&gt;&amp;ldquo;Netty in Action&amp;rdquo; - Norman Maurer &amp;amp; Marvin Allen Wolfthal&lt;/li&gt;
-&lt;li&gt;Java NIO Documentation - Oracle&lt;/li&gt;
-&lt;li&gt;&amp;ldquo;Scalable I/O in Java&amp;rdquo; - Doug Lea&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        </item>
-        
-    </channel>
+  <channel>
+    <title>NIO on THUẬN AN IT BLOG</title>
+    <link>http://localhost:1313/tags/nio/</link>
+    <description>Recent content in NIO on THUẬN AN IT BLOG</description>
+    <generator>Hugo</generator>
+    <language>vi-vn</language>
+    <lastBuildDate>Mon, 22 Dec 2025 01:30:00 +0700</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/nio/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Từ Blocking I/O đến Non-blocking I/O: Java NIO thay đổi cách Server xử lý mạng như thế nào?</title>
+      <link>http://localhost:1313/post/java-nio-blocking-nonblocking/</link>
+      <pubDate>Mon, 22 Dec 2025 01:30:00 +0700</pubDate>
+      <guid>http://localhost:1313/post/java-nio-blocking-nonblocking/</guid>
+      <description>&lt;h2 id=&#34;khi-một-thread-chỉ-phục-vụ-một-kết-nối&#34;&gt;Khi một thread chỉ phục vụ một kết nối&lt;/h2&gt;&#xA;&lt;p&gt;Hồi mới bắt đầu viết server Java, mình làm theo mô hình đơn giản nhất: mỗi khi có client kết nối, tạo một thread mới để xử lý. ServerSocket accept connection, spawn một thread, thread đó đọc request, xử lý business logic, gửi response, rồi kết thúc. Nghe logic và dễ hiểu. Code cũng straightforward, không phức tạp gì.&lt;/p&gt;&#xA;&lt;p&gt;Vấn đề chỉ bộc lộ khi số lượng concurrent connections tăng lên. Với mô hình blocking I/O truyền thống, mỗi khi thread gọi &lt;code&gt;socket.read()&lt;/code&gt; hoặc &lt;code&gt;socket.write()&lt;/code&gt;, nó bị block cho đến khi operation hoàn thành. Nếu client chậm, network congested, hoặc đơn giản là client đang suy nghĩ, thread ở server cứ ngồi đó chờ. Không làm gì cả, chỉ chờ. CPU không tốn nhiều, nhưng thread thì chiếm memory và system resources.&lt;/p&gt;</description>
+    </item>
+  </channel>
 </rss>

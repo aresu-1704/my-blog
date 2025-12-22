@@ -1,240 +1,483 @@
 <!DOCTYPE html>
-<html lang="vi-vn" dir="ltr">
-    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Phân tích sâu về cơ chế WebSocket, HTTP Polling và Server-Sent Events từ góc nhìn network layer. Hiểu rõ handshake, full-duplex connection và cách chọn công nghệ phù hợp cho ứng dụng realtime">
-<title>WebSocket hoạt động ra sao ở tầng mạng? So sánh với HTTP Polling và SSE</title>
+<html lang="en">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Phân tích sâu về cơ chế WebSocket, HTTP Polling và Server-Sent Events từ góc nhìn network layer. Hiểu rõ handshake, full-duplex connection và cách chọn công nghệ phù hợp cho ứng dụng realtime"
+    />
+    <title>
+      WebSocket hoạt động ra sao ở tầng mạng? So sánh với HTTP Polling và SSE - THUẬN AN IT BLOG
+    </title>
 
-<link rel='canonical' href='http://localhost:1313/post/websocket-vs-polling-sse/'>
+    
+    
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
+    
 
-<link rel="stylesheet" href="/scss/style.min.6074b3f881d887398809e454b84ee6668c1a2f5c01bbffe38339b724acdda96e.css"><meta property='og:title' content="WebSocket hoạt động ra sao ở tầng mạng? So sánh với HTTP Polling và SSE">
-<meta property='og:description' content="Phân tích sâu về cơ chế WebSocket, HTTP Polling và Server-Sent Events từ góc nhìn network layer. Hiểu rõ handshake, full-duplex connection và cách chọn công nghệ phù hợp cho ứng dụng realtime">
-<meta property='og:url' content='http://localhost:1313/post/websocket-vs-polling-sse/'>
-<meta property='og:site_name' content='Kiến thức lập trình'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='WebSocket' /><meta property='article:tag' content='HTTP' /><meta property='article:tag' content='SSE' /><meta property='article:tag' content='Realtime' /><meta property='article:tag' content='Network' /><meta property='article:tag' content='JavaScript' /><meta property='article:tag' content='Node.js' /><meta property='article:published_time' content='2025-12-22T01:01:00&#43;07:00'/><meta property='article:modified_time' content='2025-12-22T01:01:00&#43;07:00'/><meta property='og:image' content='http://localhost:1313/images/websocket.jpg' />
-<meta name="twitter:title" content="WebSocket hoạt động ra sao ở tầng mạng? So sánh với HTTP Polling và SSE">
-<meta name="twitter:description" content="Phân tích sâu về cơ chế WebSocket, HTTP Polling và Server-Sent Events từ góc nhìn network layer. Hiểu rõ handshake, full-duplex connection và cách chọn công nghệ phù hợp cho ứng dụng realtime"><meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content='http://localhost:1313/images/websocket.jpg' />
-    </head>
-    <body class="
-    article-page
-    ">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    
     <script>
-        (function() {
-            const colorSchemeKey = 'StackColorScheme';
-            if(!localStorage.getItem(colorSchemeKey)){
-                localStorage.setItem(colorSchemeKey, "auto");
-            }
-        })();
-    </script><script>
-    (function() {
-        const colorSchemeKey = 'StackColorScheme';
-        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
-        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
-
-        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
-            
-
-            document.documentElement.dataset.scheme = 'dark';
-        } else {
-            document.documentElement.dataset.scheme = 'light';
-        }
-    })();
-</script>
-<div class="container main-container flex on-phone--column compact"><aside class="sidebar left-sidebar sticky ">
-    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
-        <span class="hamburger-box">
-            <span class="hamburger-inner"></span>
-        </span>
-    </button>
-
-    <header>
-        
-            
-            <figure class="site-avatar">
-                <a href="/">
-                
-                    
-                    
-                    
-                        
-                        <img src="/img/avatar_hu_f2c6dce42be5aaca.png" width="300"
-                            height="300" class="site-logo" loading="lazy" alt="Avatar">
-                    
-                
-                </a>
-                
-            </figure>
-            
-        
-        
-        <div class="site-meta">
-            <h1 class="site-name"><a href="/">Kiến thức lập trình</a></h1>
-            <h2 class="site-description"></h2>
-        </div>
-    </header><ol class="menu" id="main-menu">
-        
-        
-        
-        <li >
-            <a href='/research/' >
-                
-                
-                
-                <span>Research</span>
-            </a>
-        </li>
-        
-        
-        <li >
-            <a href='/portfolio/' >
-                
-                
-                
-                <span>Portfolio</span>
-            </a>
-        </li>
-        
-        
-        <li >
-            <a href='/about/' >
-                
-                
-                
-                <span>About</span>
-            </a>
-        </li>
-        
-        
-        <li >
-            <a href='/contact/' >
-                
-                
-                
-                <span>Contact</span>
-            </a>
-        </li>
-        
-        <li class="menu-bottom-section">
-            <ol class="menu">
-
-                
-                    <li id="dark-mode-toggle">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="8" cy="12" r="2" />
-  <rect x="2" y="6" width="20" height="12" rx="6" />
-</svg>
-
-
-
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="16" cy="12" r="2" />
-  <rect x="2" y="6" width="20" height="12" rx="6" />
-</svg>
-
-
-
-                        <span>Dark Mode</span>
-                    </li>
-                
-            </ol>
-        </li>
-    </ol>
-</aside>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#f0f9ff",
+                100: "#e0f2fe",
+                200: "#bae6fd",
+                300: "#7dd3fc",
+                400: "#38bdf8",
+                500: "#0ea5e9",
+                600: "#0284c7",
+                700: "#0369a1",
+                800: "#075985",
+                900: "#0c4a6e",
+              },
+            },
+          },
+        },
+      };
+    </script>
 
     
-
-            <main class="main full-width">
-    <article class="has-image main-article">
-    <header class="article-header">
-        <div class="article-image">
-            <a href="/post/websocket-vs-polling-sse/">
-                
-                    <img src="/images/websocket.jpg" loading="lazy" alt="Featured image of post WebSocket hoạt động ra sao ở tầng mạng? So sánh với HTTP Polling và SSE" />
-                
-            </a>
-        </div>
+     
+    <link rel="stylesheet" href="http://localhost:1313/css/main.css" />
     
-
-    <div class="article-details">
+  </head>
+  <body class="bg-slate-900 text-gray-100">
     
-    <header class="article-category">
+    
+<nav class="bg-slate-950 border-b border-slate-800 shadow-lg sticky top-0 z-50">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      
+      <a
+        href="/"
+        class="text-xl font-bold text-cyan-400 hover:text-cyan-300 transition-colors"
+      >
+        THUẬN AN IT BLOG
+      </a>
+
+      
+      <div class="hidden md:flex items-center space-x-8">
         
-            <a href="/categories/network-programming/" >
+        <a
+          href="/"
+          class="text-gray-300 hover:text-cyan-400 transition-colors font-medium"
+        >
+          Home
+        </a>
+
+        
+        <div class="relative group">
+          <button
+            class="text-gray-300 hover:text-cyan-400 transition-colors font-medium flex items-center"
+          >
+            Categories
+            <svg
+              class="w-4 h-4 ml-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              ></path>
+            </svg>
+          </button>
+
+          
+          <div
+            class="absolute left-0 mt-2 w-48 bg-slate-800 border border-slate-700 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200"
+          >
+            <div class="py-2">
+              
+              <a
+                href="http://localhost:1313/categories/backend/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Backend
+                <span class="text-gray-500 text-sm">(1)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/java/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Java
+                <span class="text-gray-500 text-sm">(6)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/javascript/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                JavaScript
+                <span class="text-gray-500 text-sm">(3)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/network/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Network
+                <span class="text-gray-500 text-sm">(2)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/network-programming/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
                 Network Programming
-            </a>
-        
-            <a href="/categories/web-development/" >
+                <span class="text-gray-500 text-sm">(2)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/networking/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Networking
+                <span class="text-gray-500 text-sm">(4)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/programming/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Programming
+                <span class="text-gray-500 text-sm">(4)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/security/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Security
+                <span class="text-gray-500 text-sm">(1)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/system-design/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                System Design
+                <span class="text-gray-500 text-sm">(1)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/web-development/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
                 Web Development
-            </a>
-        
-    </header>
-    
+                <span class="text-gray-500 text-sm">(1)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/web-security/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Web Security
+                <span class="text-gray-500 text-sm">(1)</span>
+              </a>
+              
+            </div>
+          </div>
+        </div>
 
-    <div class="article-title-wrapper">
-        <h2 class="article-title">
-            <a href="/post/websocket-vs-polling-sse/">WebSocket hoạt động ra sao ở tầng mạng? So sánh với HTTP Polling và SSE</a>
-        </h2>
-    
         
-        <h3 class="article-subtitle">
-            Phân tích sâu về cơ chế WebSocket, HTTP Polling và Server-Sent Events từ góc nhìn network layer. Hiểu rõ handshake, full-duplex connection và cách chọn công nghệ phù hợp cho ứng dụng realtime
-        </h3>
-        
+        <a
+          href="/categories/"
+          class="text-gray-300 hover:text-cyan-400 transition-colors font-medium"
+        >
+          Tất cả danh mục
+        </a>
+      </div>
+
+      
+      <button
+        id="mobile-menu-button"
+        class="md:hidden text-gray-300 hover:text-cyan-400 focus:outline-none"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          ></path>
+        </svg>
+      </button>
     </div>
 
     
-    
-    
-    
-    <footer class="article-time">
+    <div id="mobile-menu" class="hidden md:hidden pb-4">
+      <a
+        href="/"
+        class="block py-2 text-gray-300 hover:text-cyan-400 transition-colors font-medium"
+      >
+        Home
+      </a>
+      <div class="py-2">
+        <div class="font-medium text-white mb-2">Categories:</div>
         
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
-  <circle cx="18" cy="18" r="4" />
-  <path d="M15 3v4" />
-  <path d="M7 3v4" />
-  <path d="M3 11h16" />
-  <path d="M18 16.496v1.504l1 1" />
-</svg>
-                <time class="article-time--published" datetime='2025-12-22T01:01:00&#43;07:00'>Dec 22, 2025</time>
-            </div>
+        <a
+          href="http://localhost:1313/categories/backend/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Backend
+          <span class="text-gray-500 text-sm">(1)</span>
+        </a>
         
+        <a
+          href="http://localhost:1313/categories/java/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Java
+          <span class="text-gray-500 text-sm">(6)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/javascript/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          JavaScript
+          <span class="text-gray-500 text-sm">(3)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/network/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Network
+          <span class="text-gray-500 text-sm">(2)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/network-programming/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Network Programming
+          <span class="text-gray-500 text-sm">(2)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/networking/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Networking
+          <span class="text-gray-500 text-sm">(4)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/programming/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Programming
+          <span class="text-gray-500 text-sm">(4)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/security/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Security
+          <span class="text-gray-500 text-sm">(1)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/system-design/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          System Design
+          <span class="text-gray-500 text-sm">(1)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/web-development/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Web Development
+          <span class="text-gray-500 text-sm">(1)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/web-security/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Web Security
+          <span class="text-gray-500 text-sm">(1)</span>
+        </a>
+        
+      </div>
+      <a
+        href="/categories/"
+        class="block py-2 text-gray-300 hover:text-cyan-400 transition-colors font-medium"
+      >
+        Tất cả danh mục
+      </a>
+    </div>
+  </div>
+</nav>
+
+
+<script>
+  document
+    .getElementById("mobile-menu-button")
+    .addEventListener("click", function () {
+      const menu = document.getElementById("mobile-menu");
+      menu.classList.toggle("hidden");
+    });
+</script>
+
+
+    
+    <main class="min-h-screen">
+<div class="container mx-auto px-4 py-8">
+  <div class="grid grid-cols-1 lg:grid-cols-10 gap-8">
+    
+    <div class="lg:col-span-7">
+      <article
+        class="bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-8"
+      >
+        
+        <header class="mb-8">
+          
+          
+          <div class="mb-6 -mx-8 -mt-8">
+            <img
+              src="images/websocket.jpg"
+              alt="WebSocket hoạt động ra sao ở tầng mạng? So sánh với HTTP Polling và SSE"
+              class="w-full h-64 object-cover rounded-t-lg"
+            />
+          </div>
+          
+
+          <h1 class="text-4xl font-bold mb-4 text-white">WebSocket hoạt động ra sao ở tầng mạng? So sánh với HTTP Polling và SSE</h1>
+
+          <div
+            class="flex flex-wrap items-center gap-4 text-sm text-gray-400 mb-4"
+          >
+            
+            <span class="flex items-center">
+              <svg
+                class="w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+              22/12/2025
+            </span>
+
+            
+            
+          </div>
+
+          
+          
+          <div class="flex flex-wrap gap-2 mb-4">
+            
+            <a
+              href="/categories/network-programming"
+              class="px-3 py-1 bg-cyan-900 bg-opacity-30 text-cyan-300 border border-cyan-600 rounded-full text-sm hover:bg-cyan-800 hover:bg-opacity-40 transition-colors"
+            >
+              Network Programming
+            </a>
+            
+            <a
+              href="/categories/web-development"
+              class="px-3 py-1 bg-cyan-900 bg-opacity-30 text-cyan-300 border border-cyan-600 rounded-full text-sm hover:bg-cyan-800 hover:bg-opacity-40 transition-colors"
+            >
+              Web Development
+            </a>
+            
+          </div>
+          
+
+          
+          
+          <div class="flex flex-wrap gap-2">
+            
+            <a
+              href="/tags/websocket"
+              class="px-3 py-1 bg-slate-700 text-gray-300 rounded-full text-sm hover:bg-slate-600 transition-colors"
+            >
+              #WebSocket
+            </a>
+            
+            <a
+              href="/tags/http"
+              class="px-3 py-1 bg-slate-700 text-gray-300 rounded-full text-sm hover:bg-slate-600 transition-colors"
+            >
+              #HTTP
+            </a>
+            
+            <a
+              href="/tags/sse"
+              class="px-3 py-1 bg-slate-700 text-gray-300 rounded-full text-sm hover:bg-slate-600 transition-colors"
+            >
+              #SSE
+            </a>
+            
+            <a
+              href="/tags/realtime"
+              class="px-3 py-1 bg-slate-700 text-gray-300 rounded-full text-sm hover:bg-slate-600 transition-colors"
+            >
+              #Realtime
+            </a>
+            
+            <a
+              href="/tags/network"
+              class="px-3 py-1 bg-slate-700 text-gray-300 rounded-full text-sm hover:bg-slate-600 transition-colors"
+            >
+              #Network
+            </a>
+            
+            <a
+              href="/tags/javascript"
+              class="px-3 py-1 bg-slate-700 text-gray-300 rounded-full text-sm hover:bg-slate-600 transition-colors"
+            >
+              #JavaScript
+            </a>
+            
+            <a
+              href="/tags/node.js"
+              class="px-3 py-1 bg-slate-700 text-gray-300 rounded-full text-sm hover:bg-slate-600 transition-colors"
+            >
+              #Node.js
+            </a>
+            
+          </div>
+          
+        </header>
 
         
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="12" cy="12" r="9" />
-  <polyline points="12 7 12 12 15 15" />
-</svg>
-
-
-
-                <time class="article-time--reading">
-                    13 minute read
-                </time>
-            </div>
-        
-    </footer>
-    
-
-    
-</div>
-
-</header>
-
-    <section class="article-content">
-    
-    
-    <h2 id="http-truyền-thống-và-bài-toán-realtime">HTTP truyền thống và bài toán realtime
-</h2><p>Khi mình mới bắt đầu làm chat app, điều đầu tiên nghĩ đến là dùng HTTP request-response thông thường. Client cứ 2 giây lại gửi một request lên server hỏi &ldquo;có tin nhắn mới không?&rdquo;. Server trả về danh sách tin nhắn mới nếu có, hoặc trả về empty array nếu không. Nghe có vẻ hợp lý, nhưng khi chạy thực tế thì thấy ngay vấn đề.</p>
+        <div
+          class="prose prose-invert max-w-none prose-headings:font-bold prose-headings:text-white prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:underline prose-img:rounded-lg prose-pre:bg-slate-950 prose-pre:border prose-pre:border-slate-700 prose-code:text-cyan-300 text-gray-300"
+        >
+          <h2 id="http-truyền-thống-và-bài-toán-realtime">HTTP truyền thống và bài toán realtime</h2>
+<p>Khi mình mới bắt đầu làm chat app, điều đầu tiên nghĩ đến là dùng HTTP request-response thông thường. Client cứ 2 giây lại gửi một request lên server hỏi &ldquo;có tin nhắn mới không?&rdquo;. Server trả về danh sách tin nhắn mới nếu có, hoặc trả về empty array nếu không. Nghe có vẻ hợp lý, nhưng khi chạy thực tế thì thấy ngay vấn đề.</p>
 <p>HTTP được thiết kế theo mô hình request-response. Client phải khởi tạo mọi giao tiếp. Server không thể tự ý gửi data xuống client khi có sự kiện mới. Điều này hoàn toàn OK với website thông thường, nhưng với ứng dụng realtime như chat, notification, live dashboard thì lại là một vấn đề lớn. User gửi tin nhắn đến bạn, nhưng bạn phải đợi đến khi client gửi request tiếp theo mới nhận được. Delay này có thể từ vài trăm milliseconds đến vài giây tùy thuộc vào polling interval.</p>
-<h2 id="http-polling---giải-pháp-tình-thế-đầu-tiên">HTTP Polling - Giải pháp tình thế đầu tiên
-</h2><p>HTTP Polling chính là cách mình vừa mô tả. Client liên tục gửi request lên server theo một interval cố định, ví dụ mỗi 2 giây. Mỗi lần gửi request, nó hỏi server &ldquo;có update không?&rdquo;. Nếu có data mới, server trả về. Nếu không, server trả về empty response.</p>
+<h2 id="http-polling---giải-pháp-tình-thế-đầu-tiên">HTTP Polling - Giải pháp tình thế đầu tiên</h2>
+<p>HTTP Polling chính là cách mình vừa mô tả. Client liên tục gửi request lên server theo một interval cố định, ví dụ mỗi 2 giây. Mỗi lần gửi request, nó hỏi server &ldquo;có update không?&rdquo;. Nếu có data mới, server trả về. Nếu không, server trả về empty response.</p>
 <p>Vấn đề lớn nhất của polling chính là overhead khủng khiếp. Mỗi HTTP request bao gồm TCP handshake nếu connection không được reuse, HTTP headers, và processing time ở cả client lẫn server. Nếu bạn có 10,000 users và mỗi user poll mỗi 2 giây, đó là 5,000 requests mỗi giây đập vào server, trong khi 99% requests đó trả về empty response vì không có data mới.</p>
 <p>Mình đã thử triển khai polling cho một chat app nhỏ với khoảng 100 concurrent users. Server CPU usage liên tục ở mức 40-50% chỉ để xử lý những requests không có gì. Network bandwidth cũng bị lãng phí vì HTTP headers thường lớn hơn actual payload nhiều lần. Request header có thể 500 bytes trong khi response chỉ là <code>{&quot;messages&quot;: []}</code> (18 bytes).</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#75715e">// Client-side polling - cách làm tốn kém
@@ -247,8 +490,8 @@
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }, <span style="color:#ae81ff">2000</span>); <span style="color:#75715e">// Poll mỗi 2 giây
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
-</span></span></code></pre></div><h2 id="long-polling---cải-thiện-nhưng-vẫn-hack">Long Polling - Cải thiện nhưng vẫn hack
-</h2><p>Long Polling ra đời như một cải tiến của Polling. Thay vì server trả về ngay lập tức, server giữ request trong trạng thái pending cho đến khi có data mới hoặc timeout. Khi có event xảy ra, server mới respond và đóng connection. Client nhận response, xử lý data, rồi ngay lập tức tạo request mới.</p>
+</span></span></code></pre></div><h2 id="long-polling---cải-thiện-nhưng-vẫn-hack">Long Polling - Cải thiện nhưng vẫn hack</h2>
+<p>Long Polling ra đời như một cải tiến của Polling. Thay vì server trả về ngay lập tức, server giữ request trong trạng thái pending cho đến khi có data mới hoặc timeout. Khi có event xảy ra, server mới respond và đóng connection. Client nhận response, xử lý data, rồi ngay lập tức tạo request mới.</p>
 <p>Cơ chế này giảm số lượng requests đáng kể so với polling thông thường. Thay vì 5,000 requests/s với 10,000 users, giờ chỉ có requests khi thực sự có events. Tuy nhiên, Long Polling vẫn có những hạn chế nghiêm trọng.</p>
 <p>Mỗi pending request chiếm giữ một thread hoặc connection ở server. Với mô hình thread-per-request như Java Servlets truyền thống, 10,000 concurrent users nghĩa là 10,000 threads đang chờ, tiêu tốn memory và context switching overhead. Hơn nữa, connection vẫn bị đóng và mở lại liên tục, không thực sự persistent.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#75715e">// Client-side long polling
@@ -287,8 +530,8 @@
 </span></span><span style="display:flex;"><span>        resp.<span style="color:#a6e22e">getWriter</span>().<span style="color:#a6e22e">write</span>(gson.<span style="color:#a6e22e">toJson</span>(messages));
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="server-sent-events---một-chiều-nhưng-hiệu-quả">Server-Sent Events - Một chiều nhưng hiệu quả
-</h2><p>SSE (Server-Sent Events) là một bước tiến đáng kể, nhưng lại ít người biết đến. SSE cho phép server push data xuống client qua một HTTP connection duy nhất, persistent. Khác với Polling, connection được giữ mở và server có thể gửi events bất kỳ lúc nào.</p>
+</span></span></code></pre></div><h2 id="server-sent-events---một-chiều-nhưng-hiệu-quả">Server-Sent Events - Một chiều nhưng hiệu quả</h2>
+<p>SSE (Server-Sent Events) là một bước tiến đáng kể, nhưng lại ít người biết đến. SSE cho phép server push data xuống client qua một HTTP connection duy nhất, persistent. Khác với Polling, connection được giữ mở và server có thể gửi events bất kỳ lúc nào.</p>
 <p>Điểm hay của SSE là nó vô cùng đơn giản. Client chỉ cần tạo một <code>EventSource</code> object, và server chỉ cần set header <code>Content-Type: text/event-stream</code> rồi gửi data theo format đặc biệt. Browser tự động xử lý reconnection nếu connection bị đứt.</p>
 <p>Tuy nhiên, SSE có một hạn chế lớn: nó chỉ là one-way communication. Server có thể push data xuống client, nhưng client muốn gửi data lên server thì vẫn phải tạo HTTP request riêng. Điều này OK với use cases như live notifications hay stock price updates (nơi client chỉ cần nhận data), nhưng không phù hợp với chat hoặc collaborative editing (nơi cần giao tiếp hai chiều liên tục).</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#75715e">// Client-side SSE - cực kỳ đơn giản
@@ -321,8 +564,8 @@
 </span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">eventEmitter</span>.<span style="color:#a6e22e">off</span>(<span style="color:#e6db74">&#39;newMessage&#39;</span>, <span style="color:#a6e22e">sendEvent</span>);
 </span></span><span style="display:flex;"><span>    });
 </span></span><span style="display:flex;"><span>});
-</span></span></code></pre></div><h2 id="websocket---full-duplex-connection-thực-sự">WebSocket - Full-duplex connection thực sự
-</h2><p>WebSocket là game changer. Thay vì hack HTTP để tạo ra persistent connection, WebSocket thiết kế lại từ đầu cho realtime communication. Nó bắt đầu như một HTTP request, nhưng sau handshake thành công, connection được upgrade thành một TCP socket thuần túy, chạy trên chính TCP connection đó.</p>
+</span></span></code></pre></div><h2 id="websocket---full-duplex-connection-thực-sự">WebSocket - Full-duplex connection thực sự</h2>
+<p>WebSocket là game changer. Thay vì hack HTTP để tạo ra persistent connection, WebSocket thiết kế lại từ đầu cho realtime communication. Nó bắt đầu như một HTTP request, nhưng sau handshake thành công, connection được upgrade thành một TCP socket thuần túy, chạy trên chính TCP connection đó.</p>
 <p>Quá trình handshake của WebSocket khá thú vị. Client gửi một HTTP GET request với header đặc biệt <code>Upgrade: websocket</code> và <code>Connection: Upgrade</code>. Request này còn bao gồm một <code>Sec-WebSocket-Key</code> được client random generate. Server nhận request, validate headers, tính toán <code>Sec-WebSocket-Accept</code> bằng cách hash <code>Sec-WebSocket-Key</code> với một magic string cố định theo spec, rồi trả về HTTP 101 Switching Protocols.</p>
 <pre tabindex="0"><code>GET /chat HTTP/1.1
 Host: example.com
@@ -420,32 +663,32 @@ Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
 </span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Client disconnected: &#34;</span> <span style="color:#f92672">+</span> session.<span style="color:#a6e22e">getId</span>());
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="so-sánh-từ-góc-nhìn-network-layer">So sánh từ góc nhìn network layer
-</h2><p>Khi đặt ba cơ chế lên bàn cân, sự khác biệt ở tầng mạng rất rõ ràng. HTTP Polling tạo ra một connection mới cho mỗi request (hoặc reuse connection nếu dùng Keep-Alive), gửi full HTTP headers, nhận response, rồi đóng hoặc return connection về pool. Overhead của TCP handshake và HTTP parsing lặp đi lặp lại là không thể chấp nhận với scale lớn.</p>
+</span></span></code></pre></div><h2 id="so-sánh-từ-góc-nhìn-network-layer">So sánh từ góc nhìn network layer</h2>
+<p>Khi đặt ba cơ chế lên bàn cân, sự khác biệt ở tầng mạng rất rõ ràng. HTTP Polling tạo ra một connection mới cho mỗi request (hoặc reuse connection nếu dùng Keep-Alive), gửi full HTTP headers, nhận response, rồi đóng hoặc return connection về pool. Overhead của TCP handshake và HTTP parsing lặp đi lặp lại là không thể chấp nhận với scale lớn.</p>
 <p>Long Polling cải thiện bằng cách giữ connection lâu hơn, nhưng request-response cycle vẫn tồn tại. Server phải hold connection trong trạng thái pending, tiêu tốn memory cho mỗi connection. Khi event xảy ra, connection đóng và client phải tạo request mới ngay lập tức, leading to một loạt TCP handshakes và HTTP overhead không cần thiết.</p>
 <p>SSE giữ một connection persistent, tránh được overhead của connection establishment. Data được gửi qua cùng một TCP connection dưới dạng text stream với overhead tối thiểu. Tuy nhiên, giao tiếp vẫn là một chiều. Client gửi data lên server phải dùng HTTP requests riêng, không thể multiplex qua cùng connection.</p>
 <p>WebSocket thắng áp đảo về mặt efficiency. Một TCP connection duy nhất được establish qua HTTP handshake, sau đó chuyển sang binary protocol với frame overhead chỉ 2-14 bytes. Không có HTTP headers cho mỗi message. Cả hai chiều đều có thể gửi data đồng thời mà không chờ đợi. Latency giảm vì không có request-response roundtrip.</p>
 <p>Về resource usage phía server, WebSocket có vẻ tốn kém vì mỗi connection cần một socket descriptor và một ít memory cho buffers. Nhưng khi so sánh với Long Polling (mỗi client cũng chiếm một connection đang pending), WebSocket thực ra hiệu quả hơn vì bạn không cần continuously tạo request mới và handle HTTP protocol overhead.</p>
-<h2 id="độ-trễ-và-user-experience">Độ trễ và user experience
-</h2><p>Độ trễ là yếu tố quyết định user experience trong realtime apps. Với Polling, worst-case latency bằng polling interval. Nếu bạn poll mỗi 2 giây, user có thể phải đợi gần 2 giây để thấy update. Giảm interval xuống 500ms thì cải thiện latency nhưng lại tăng server load gấp 4 lần.</p>
+<h2 id="độ-trễ-và-user-experience">Độ trễ và user experience</h2>
+<p>Độ trễ là yếu tố quyết định user experience trong realtime apps. Với Polling, worst-case latency bằng polling interval. Nếu bạn poll mỗi 2 giây, user có thể phải đợi gần 2 giây để thấy update. Giảm interval xuống 500ms thì cải thiện latency nhưng lại tăng server load gấp 4 lần.</p>
 <p>Long Polling về lý thuyết có latency thấp vì server respond ngay khi có event. Nhưng trong thực tế, việc đóng connection và tạo request mới mất thời gian. Client phải đợi previous request complete, parse response, rồi mới tạo request tiếp theo. Nếu events xảy ra liên tục, client có thể miss events vì đang trong quá trình tạo request mới.</p>
 <p>SSE có latency gần như realtime vì connection luôn mở và server push ngay khi có event. Nhưng hướng ngược lại vẫn phải qua HTTP request, add latency cho two-way interactions.</p>
 <p>WebSocket đạt latency thấp nhất. Message được gửi trực tiếp qua TCP socket mà không qua HTTP processing. Không có connection setup, không có request queuing. Khi user nhấn send, message đến server trong vài chục milliseconds tùy network conditions, và response về ngay lập tức.</p>
 <p>Mình đã benchmark ba cơ chế này trên cùng một chat application. Với 1000 concurrent users gửi messages với tần suất trung bình 1 message/phút, Polling (2s interval) có average latency 1.2s và server CPU usage 45%. Long Polling giảm latency xuống 200ms nhưng CPU vẫn ở 30% do connection handling. WebSocket chỉ có latency 50ms với CPU usage dưới 10%. Sự khác biệt không thể rõ ràng hơn.</p>
-<h2 id="tình-huống-thực-tế-và-lựa-chọn-công-nghệ">Tình huống thực tế và lựa chọn công nghệ
-</h2><p>Chat application realtime là use case rõ ràng nhất cho WebSocket. User cần thấy messages ngay lập tức, và cả hai phía đều liên tục gửi data. WebSocket cung cấp latency thấp nhất và bandwidth efficiency tốt nhất. Mình đã develop một chat app với WebSocket và experience mượt mà như native messaging apps. Messages đến trong vòng 100ms, typing indicators work perfectly, và server handle được vài nghìn concurrent connections mà không vấn đề gì.</p>
+<h2 id="tình-huống-thực-tế-và-lựa-chọn-công-nghệ">Tình huống thực tế và lựa chọn công nghệ</h2>
+<p>Chat application realtime là use case rõ ràng nhất cho WebSocket. User cần thấy messages ngay lập tức, và cả hai phía đều liên tục gửi data. WebSocket cung cấp latency thấp nhất và bandwidth efficiency tốt nhất. Mình đã develop một chat app với WebSocket và experience mượt mà như native messaging apps. Messages đến trong vòng 100ms, typing indicators work perfectly, và server handle được vài nghìn concurrent connections mà không vấn đề gì.</p>
 <p>Live dashboard và monitoring systems cũng benefit nhiều từ WebSocket hoặc SSE. Nếu dashboard chỉ cần hiển thị data mà không gửi commands lên server, SSE là lựa chọn đơn giản và hiệu quả. Nhưng nếu user cần interact với dashboard (filter data, send commands), WebSocket linh hoạt hơn vì two-way communication.</p>
 <p>Notification systems có thể dùng SSE hoặc WebSocket. SSE đơn giản hơn và browser support tốt. Nhưng nếu app đã dùng WebSocket cho features khác, việc reuse connection cho notifications sẽ tiết kiệm resources hơn maintain hai loại connections riêng biệt.</p>
 <p>Collaborative editing tools như Google Docs absolutely cần WebSocket. Mỗi keystroke phải được sync với latency cực thấp. Operational Transform hoặc CRDT algorithms require continuous two-way sync. Polling hoặc SSE đơn giản không đủ nhanh.</p>
 <p>Gaming và multiplayer apps cũng vậy. Player actions cần được reflect ngay lập tức. WebSocket cung cấp low-latency two-way channel cần thiết. Thậm chí nhiều games chuyển sang WebRTC cho peer-to-peer connections, nhưng signaling vẫn qua WebSocket.</p>
 <p>Còn những trường hợp nào nên dùng Polling? Thực ra rất ít. Một case hợp lý là khi bạn cần support legacy browsers hoặc corporate firewalls block WebSocket. HTTP Polling luôn work vì nó chỉ là regular HTTP requests. Nhưng đó là trade-off bạn phải chấp nhận cho compatibility, không phải vì performance.</p>
-<h2 id="khi-nào-nên-dùng-cái-nào">Khi nào nên dùng cái nào
-</h2><p>Sau nhiều năm làm việc với realtime systems, mình rút ra được kinh nghiệm sau. Nếu ứng dụng cần two-way realtime communication với latency thấp, WebSocket là lựa chọn mặc định. Chat, gaming, collaborative tools, live trading platforms đều thuộc category này.</p>
+<h2 id="khi-nào-nên-dùng-cái-nào">Khi nào nên dùng cái nào</h2>
+<p>Sau nhiều năm làm việc với realtime systems, mình rút ra được kinh nghiệm sau. Nếu ứng dụng cần two-way realtime communication với latency thấp, WebSocket là lựa chọn mặc định. Chat, gaming, collaborative tools, live trading platforms đều thuộc category này.</p>
 <p>Nếu ứng dụng chỉ cần server push data xuống client mà không cần client gửi data liên tục, SSE là option đơn giản và đủ dùng. Live notifications, stock tickers, news feeds, monitoring dashboards chỉ hiển thị data đều work tốt với SSE. Bonus là SSE tự động reconnect khi connection drop, bạn không cần code thêm.</p>
 <p>Polling chỉ nên dùng khi không có lựa chọn nào khác. Legacy systems, environments không support WebSocket, hoặc khi update frequency thực sự thấp (vài phút một lần) thì Polling acceptable. Nhưng hãy nhớ rằng nó không scale well và waste resources.</p>
 <p>Một pattern mình thường dùng là hybrid approach. WebSocket cho primary realtime features, fallback về Long Polling nếu WebSocket không available (do firewall hoặc proxy). Libraries như Socket.IO đã implement sẵn auto-fallback này. Start với WebSocket, nếu handshake fail, try Long Polling, cuối cùng mới xuống Polling thông thường.</p>
-<h2 id="kết-luận">Kết luận
-</h2><p>WebSocket không phải là silver bullet cho mọi vấn đề, nhưng nó chắc chắn là best solution cho realtime communication. Việc hiểu rõ cách WebSocket hoạt động ở tầng mạng, từ HTTP handshake đến TCP full-duplex connection, giúp bạn debug issues và optimize performance hiệu quả hơn.</p>
+<h2 id="kết-luận">Kết luận</h2>
+<p>WebSocket không phải là silver bullet cho mọi vấn đề, nhưng nó chắc chắn là best solution cho realtime communication. Việc hiểu rõ cách WebSocket hoạt động ở tầng mạng, từ HTTP handshake đến TCP full-duplex connection, giúp bạn debug issues và optimize performance hiệu quả hơn.</p>
 <p>HTTP Polling và Long Polling là những giải pháp tình thế từ thời WebSocket chưa được support rộng rãi. Giờ đây với browser support gần như universal, chúng ta không còn lý do để chịu đựng overhead và latency của Polling nữa. SSE là middle ground tốt cho one-way communication, đơn giản hơn WebSocket nhưng vẫn efficient.</p>
 <p>Khi thiết kế realtime systems, hãy nghĩ về data flow direction, latency requirements, và scale expectations. Những yếu tố này sẽ guide bạn đến đúng technology choice. Đừng ngại implement và benchmark các options khác nhau. Real-world performance thường khác xa theoretical analysis, và chỉ có testing mới cho bạn con số chính xác.</p>
 <hr>
@@ -457,259 +700,155 @@ Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
 <li>Socket.IO Documentation</li>
 </ul>
 
-</section>
+        </div>
+      </article>
+    </div>
 
-
-    <footer class="article-footer">
     
-    <section class="article-tags">
-        
-            <a href="/tags/websocket/">WebSocket</a>
-        
-            <a href="/tags/http/">HTTP</a>
-        
-            <a href="/tags/sse/">SSE</a>
-        
-            <a href="/tags/realtime/">Realtime</a>
-        
-            <a href="/tags/network/">Network</a>
-        
-            <a href="/tags/javascript/">JavaScript</a>
-        
-            <a href="/tags/node.js/">Node.js</a>
-        
-    </section>
+    <div class="lg:col-span-3">
+<div
+  class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg shadow-lg p-6"
+>
+  
+  
+  <div class="text-center mb-4">
+    <img
+      src="/images/avatar.jpg"
+      alt="Lý Thuận An"
+      class="w-32 h-32 rounded-lg mx-auto object-cover shadow-md border-4 border-slate-700"
+    />
+  </div>
+  
 
+  
+  <h3
+    class="text-lg font-bold mb-2 text-white text-center flex items-center justify-center"
+  >
+    <svg
+      class="w-5 h-5 mr-2 text-cyan-400"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+      ></path>
+    </svg>
+    ABOUT ME
+  </h3>
 
+  
+  <div class="space-y-3">
+    
+    
+    <div class="text-center">
+      <h4 class="font-bold text-white text-xl">
+        Lý Thuận An
+      </h4>
+    </div>
+    
+
+    
+    
+    <p class="text-gray-400 text-sm text-center leading-relaxed italic">
+      Engineer #Pencraft Cloud, Open Source Enthusiast and Life Adventurer
+    </p>
+    
+
+    
+    
+    <p class="text-gray-300 leading-relaxed text-sm">
+      Mình là Lý Thuận An, đang theo học năm cuối chuyên ngành Trí tuệ nhân tạo tại Đại học Công nghệ TP.HCM (HUTECH). Định hướng nghề nghiệp của mình tập trung vào việc kết nối nghiên cứu AI với phát triển ứng dụng thực tế.
+    </p>
+    
+
+    
+    <div class="space-y-2 pt-2">
+      
+      <a
+        href="mailto:anly1704@gmail.com"
+        class="flex items-center text-gray-300 hover:text-cyan-400 transition-colors text-sm"
+      >
+        <svg
+          class="w-4 h-4 mr-2 text-cyan-400"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"
+          />
+        </svg>
+        anly1704@gmail.com
+      </a>
+       
+      <div class="flex items-center text-gray-300 text-sm">
+        <svg
+          class="w-4 h-4 mr-2 text-cyan-400"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"
+          />
+        </svg>
+        &#43;84 769 339 058
+      </div>
+      
+    </div>
+
+    
+    <div class="flex items-center justify-center gap-3 pt-3">
+      
+      <a
+        href="https://github.com/aresu-1704"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center justify-center w-10 h-10 bg-gray-700 hover:bg-gray-600 text-white rounded-full transition-all duration-200 hover:scale-110"
+        title="GitHub"
+      >
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+          />
+        </svg>
+      </a>
+       
+      <a
+        href="https://www.facebook.com/an.thuan.3139241"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center justify-center w-10 h-10 bg-blue-600 hover:bg-blue-500 text-white rounded-full transition-all duration-200 hover:scale-110"
+        title="Facebook"
+      >
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+          />
+        </svg>
+      </a>
+      
+    </div>
+  </div>
+  
+</div>
+</div>
+  </div>
+</div>
+</main>
+
+    
+    <footer
+      class="bg-slate-950 text-gray-400 py-8 mt-12 border-t border-slate-800"
+    >
+      <div class="container mx-auto px-4 text-center">
+        <p>&copy; 2025 THUẬN AN IT BLOG. All rights reserved.</p>
+      </div>
     </footer>
 
-
     
-</article>
-
-    
-
-    
-
-<aside class="related-content--wrapper">
-    <h2 class="section-title">Related content</h2>
-    <div class="related-content">
-        <div class="flex article-list--tile">
-            
-                
-<article class="has-image">
-    <a href="/post/js-client-server/">
-        
-        
-            <div class="article-image">
-                
-                    <img src="/images/js-client-server.jpg" loading="lazy" data-key="" data-hash="/images/js-client-server.jpg"/>
-                
-            </div>
-        
-
-        <div class="article-details">
-            <h2 class="article-title">JavaScript trong mô hình Client–Server: Từ trình duyệt đến server</h2>
-        </div>
-    </a>
-</article>
-
-            
-                
-<article class="has-image">
-    <a href="/post/java-tcp-udp/">
-        
-        
-            <div class="article-image">
-                
-                    <img src="/images/java-tcp-udp.jpg" loading="lazy" data-key="" data-hash="/images/java-tcp-udp.jpg"/>
-                
-            </div>
-        
-
-        <div class="article-details">
-            <h2 class="article-title">Java Socket Programming: TCP vs UDP trong ứng dụng thực tế</h2>
-        </div>
-    </a>
-</article>
-
-            
-                
-<article class="has-image">
-    <a href="/post/advanced-chat-tcp-java/">
-        
-        
-            <div class="article-image">
-                
-                    <img src="/images/multi-thread-example.jpg" loading="lazy" data-key="" data-hash="/images/multi-thread-example.jpg"/>
-                
-            </div>
-        
-
-        <div class="article-details">
-            <h2 class="article-title">Ứng dụng Chat sử dụng TCP trong Java (Phần 2)</h2>
-        </div>
-    </a>
-</article>
-
-            
-                
-<article class="has-image">
-    <a href="/post/simple-chat-tcp-java/">
-        
-        
-            <div class="article-image">
-                
-                    <img src="/images/simple-chat-room.jpg" loading="lazy" data-key="" data-hash="/images/simple-chat-room.jpg"/>
-                
-            </div>
-        
-
-        <div class="article-details">
-            <h2 class="article-title">Ứng dụng Chat sử dụng TCP trong Java (Phần 1)</h2>
-        </div>
-    </a>
-</article>
-
-            
-                
-<article class="has-image">
-    <a href="/post/java-client-server/">
-        
-        
-            <div class="article-image">
-                
-                    <img src="/images/java-socket-programming-process.jpg" loading="lazy" data-key="" data-hash="/images/java-socket-programming-process.jpg"/>
-                
-            </div>
-        
-
-        <div class="article-details">
-            <h2 class="article-title">Java Client–Server</h2>
-        </div>
-    </a>
-</article>
-
-            
-        </div>
-    </div>
-</aside>
-
-     
-    
-        
-    
-
-    <footer class="site-footer">
-    <section class="copyright">
-        &copy; 
-        
-        2025 Kiến thức lập trình
-    </section>
-    
-    <section class="powerby">
-        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.32.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
-    </section>
-</footer>
-
-
-    
-<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-
-    
-    <div class="pswp__bg"></div>
-
-    
-    <div class="pswp__scroll-wrap">
-
-        
-        <div class="pswp__container">
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-        </div>
-
-        
-        <div class="pswp__ui pswp__ui--hidden">
-
-            <div class="pswp__top-bar">
-
-                
-
-                <div class="pswp__counter"></div>
-
-                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-
-                <button class="pswp__button pswp__button--share" title="Share"></button>
-
-                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-
-                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-
-                
-                
-                <div class="pswp__preloader">
-                    <div class="pswp__preloader__icn">
-                        <div class="pswp__preloader__cut">
-                            <div class="pswp__preloader__donut"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                <div class="pswp__share-tooltip"></div>
-            </div>
-
-            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-            </button>
-
-            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-            </button>
-
-            <div class="pswp__caption">
-                <div class="pswp__caption__center"></div>
-            </div>
-
-        </div>
-
-    </div>
-
-</div><script 
-                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
-                defer
-                >
-            </script><script 
-                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
-                defer
-                >
-            </script><link 
-                rel="stylesheet" 
-                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
-            ><link 
-                rel="stylesheet" 
-                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
-            >
-
-            </main>
-        </div>
-        <script 
-                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
-                
-                >
-            </script><script type="text/javascript" src="/ts/main.bcc7e9405c3d3cb732a7311965dda94f6ae5bcc3030b1c75796c4d2ed04912aa.js" defer></script>
-<script>
-    (function () {
-        const customFont = document.createElement('link');
-        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
-
-        customFont.type = "text/css";
-        customFont.rel = "stylesheet";
-
-        document.head.appendChild(customFont);
-    }());
-</script>
-
-    </body>
+    <script src="/js/search.js"></script>
+  </body>
 </html>

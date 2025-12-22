@@ -1,352 +1,1404 @@
 <!DOCTYPE html>
-<html lang="vi-vn" dir="ltr">
-    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="">
-<title>Posts</title>
+<html lang="en">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content=""
+    />
+    <title>
+      Posts - THUẬN AN IT BLOG
+    </title>
 
-<link rel='canonical' href='http://localhost:1313/post/'>
+    
+    
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
+    
 
-<link rel="stylesheet" href="/scss/style.min.6074b3f881d887398809e454b84ee6668c1a2f5c01bbffe38339b724acdda96e.css"><meta property='og:title' content="Posts">
-<meta property='og:description' content="">
-<meta property='og:url' content='http://localhost:1313/post/'>
-<meta property='og:site_name' content='Kiến thức lập trình'>
-<meta property='og:type' content='website'><meta property='og:updated_time' content=' 2025-12-22T01:30:00&#43;07:00 '/>
-<meta name="twitter:title" content="Posts">
-<meta name="twitter:description" content=""><link rel="alternate" type="application/rss&#43;xml" href="http://localhost:1313/post/index.xml">
-    </head>
-    <body class="">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    
     <script>
-        (function() {
-            const colorSchemeKey = 'StackColorScheme';
-            if(!localStorage.getItem(colorSchemeKey)){
-                localStorage.setItem(colorSchemeKey, "auto");
-            }
-        })();
-    </script><script>
-    (function() {
-        const colorSchemeKey = 'StackColorScheme';
-        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
-        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
-
-        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
-            
-
-            document.documentElement.dataset.scheme = 'dark';
-        } else {
-            document.documentElement.dataset.scheme = 'light';
-        }
-    })();
-</script>
-<div class="container main-container flex on-phone--column compact"><aside class="sidebar left-sidebar sticky ">
-    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
-        <span class="hamburger-box">
-            <span class="hamburger-inner"></span>
-        </span>
-    </button>
-
-    <header>
-        
-            
-            <figure class="site-avatar">
-                <a href="/">
-                
-                    
-                    
-                    
-                        
-                        <img src="/img/avatar_hu_f2c6dce42be5aaca.png" width="300"
-                            height="300" class="site-logo" loading="lazy" alt="Avatar">
-                    
-                
-                </a>
-                
-            </figure>
-            
-        
-        
-        <div class="site-meta">
-            <h1 class="site-name"><a href="/">Kiến thức lập trình</a></h1>
-            <h2 class="site-description"></h2>
-        </div>
-    </header><ol class="menu" id="main-menu">
-        
-        
-        
-        <li >
-            <a href='/research/' >
-                
-                
-                
-                <span>Research</span>
-            </a>
-        </li>
-        
-        
-        <li >
-            <a href='/portfolio/' >
-                
-                
-                
-                <span>Portfolio</span>
-            </a>
-        </li>
-        
-        
-        <li >
-            <a href='/about/' >
-                
-                
-                
-                <span>About</span>
-            </a>
-        </li>
-        
-        
-        <li >
-            <a href='/contact/' >
-                
-                
-                
-                <span>Contact</span>
-            </a>
-        </li>
-        
-        <li class="menu-bottom-section">
-            <ol class="menu">
-
-                
-                    <li id="dark-mode-toggle">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="8" cy="12" r="2" />
-  <rect x="2" y="6" width="20" height="12" rx="6" />
-</svg>
-
-
-
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="16" cy="12" r="2" />
-  <rect x="2" y="6" width="20" height="12" rx="6" />
-</svg>
-
-
-
-                        <span>Dark Mode</span>
-                    </li>
-                
-            </ol>
-        </li>
-    </ol>
-</aside>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#f0f9ff",
+                100: "#e0f2fe",
+                200: "#bae6fd",
+                300: "#7dd3fc",
+                400: "#38bdf8",
+                500: "#0ea5e9",
+                600: "#0284c7",
+                700: "#0369a1",
+                800: "#075985",
+                900: "#0c4a6e",
+              },
+            },
+          },
+        },
+      };
+    </script>
 
     
-
-            <main class="main full-width">
-    <header>
-        <h3 class="section-title">
-            
-                Section
-            
-        </h3>
-
-        <div class="section-card">
-            <div class="section-details">
-                <h3 class="section-count">9 pages</h3>
-                <h1 class="section-term">Posts</h1>
-                
-            </div>
-        </div>
-    </header>
+     
+    <link rel="stylesheet" href="http://localhost:1313/css/main.css" />
     
-    <section class="article-list--compact">
-        
-            <article>
-    <a href="/post/java-nio-blocking-nonblocking/">
-        <div class="article-details">
-            <h2 class="article-title">Từ Blocking I/O đến Non-blocking I/O: Java NIO thay đổi cách Server xử lý mạng như thế nào?</h2>
-            <footer class="article-time">
-                <time datetime='2025-12-22T01:30:00&#43;07:00'>Dec 22, 2025</time>
-            </footer>
-        </div>
-            <div class="article-image">
-                
-                    <img src="/images/java-nio.jpg" loading="lazy" alt="Featured image of post Từ Blocking I/O đến Non-blocking I/O: Java NIO thay đổi cách Server xử lý mạng như thế nào?" />
-                
-            </div>
-        
-    </a>
-</article>
-        
-            <article>
-    <a href="/post/https-mitm-security/">
-        <div class="article-details">
-            <h2 class="article-title">Bảo mật mạng trong ứng dụng Java &amp; JavaScript: từ HTTPS đến Man-in-the-Middle</h2>
-            <footer class="article-time">
-                <time datetime='2025-12-22T01:20:00&#43;07:00'>Dec 22, 2025</time>
-            </footer>
-        </div>
-            <div class="article-image">
-                
-                    <img src="/images/https-security.jpg" loading="lazy" alt="Featured image of post Bảo mật mạng trong ứng dụng Java &amp; JavaScript: từ HTTPS đến Man-in-the-Middle" />
-                
-            </div>
-        
-    </a>
-</article>
-        
-            <article>
-    <a href="/post/cors-same-origin-policy/">
-        <div class="article-details">
-            <h2 class="article-title">CORS và Same-Origin Policy dưới góc nhìn mạng máy tính (JavaScript)</h2>
-            <footer class="article-time">
-                <time datetime='2025-12-22T01:11:00&#43;07:00'>Dec 22, 2025</time>
-            </footer>
-        </div>
-            <div class="article-image">
-                
-                    <img src="/images/cors.jpg" loading="lazy" alt="Featured image of post CORS và Same-Origin Policy dưới góc nhìn mạng máy tính (JavaScript)" />
-                
-            </div>
-        
-    </a>
-</article>
-        
-            <article>
-    <a href="/post/websocket-vs-polling-sse/">
-        <div class="article-details">
-            <h2 class="article-title">WebSocket hoạt động ra sao ở tầng mạng? So sánh với HTTP Polling và SSE</h2>
-            <footer class="article-time">
-                <time datetime='2025-12-22T01:01:00&#43;07:00'>Dec 22, 2025</time>
-            </footer>
-        </div>
-            <div class="article-image">
-                
-                    <img src="/images/websocket.jpg" loading="lazy" alt="Featured image of post WebSocket hoạt động ra sao ở tầng mạng? So sánh với HTTP Polling và SSE" />
-                
-            </div>
-        
-    </a>
-</article>
-        
-            <article>
-    <a href="/post/java-tcp-udp/">
-        <div class="article-details">
-            <h2 class="article-title">Java Socket Programming: TCP vs UDP trong ứng dụng thực tế</h2>
-            <footer class="article-time">
-                <time datetime='2025-12-22T00:44:00&#43;07:00'>Dec 22, 2025</time>
-            </footer>
-        </div>
-            <div class="article-image">
-                
-                    <img src="/images/java-tcp-udp.jpg" loading="lazy" alt="Featured image of post Java Socket Programming: TCP vs UDP trong ứng dụng thực tế" />
-                
-            </div>
-        
-    </a>
-</article>
-        
-            <article>
-    <a href="/post/js-client-server/">
-        <div class="article-details">
-            <h2 class="article-title">JavaScript trong mô hình Client–Server: Từ trình duyệt đến server</h2>
-            <footer class="article-time">
-                <time datetime='2025-12-22T00:23:10&#43;07:00'>Dec 22, 2025</time>
-            </footer>
-        </div>
-            <div class="article-image">
-                
-                    <img src="/images/js-client-server.jpg" loading="lazy" alt="Featured image of post JavaScript trong mô hình Client–Server: Từ trình duyệt đến server" />
-                
-            </div>
-        
-    </a>
-</article>
-        
-            <article>
-    <a href="/post/advanced-chat-tcp-java/">
-        <div class="article-details">
-            <h2 class="article-title">Ứng dụng Chat sử dụng TCP trong Java (Phần 2)</h2>
-            <footer class="article-time">
-                <time datetime='2025-12-20T19:00:00&#43;07:00'>Dec 20, 2025</time>
-            </footer>
-        </div>
-            <div class="article-image">
-                
-                    <img src="/images/multi-thread-example.jpg" loading="lazy" alt="Featured image of post Ứng dụng Chat sử dụng TCP trong Java (Phần 2)" />
-                
-            </div>
-        
-    </a>
-</article>
-        
-            <article>
-    <a href="/post/simple-chat-tcp-java/">
-        <div class="article-details">
-            <h2 class="article-title">Ứng dụng Chat sử dụng TCP trong Java (Phần 1)</h2>
-            <footer class="article-time">
-                <time datetime='2025-12-18T19:00:00&#43;07:00'>Dec 18, 2025</time>
-            </footer>
-        </div>
-            <div class="article-image">
-                
-                    <img src="/images/simple-chat-room.jpg" loading="lazy" alt="Featured image of post Ứng dụng Chat sử dụng TCP trong Java (Phần 1)" />
-                
-            </div>
-        
-    </a>
-</article>
-        
-            <article>
-    <a href="/post/java-client-server/">
-        <div class="article-details">
-            <h2 class="article-title">Java Client–Server</h2>
-            <footer class="article-time">
-                <time datetime='2025-12-16T19:00:00&#43;07:00'>Dec 16, 2025</time>
-            </footer>
-        </div>
-            <div class="article-image">
-                
-                    <img src="/images/java-socket-programming-process.jpg" loading="lazy" alt="Featured image of post Java Client–Server" />
-                
-            </div>
-        
-    </a>
-</article>
-        
-    </section>
-<footer class="site-footer">
-    <section class="copyright">
-        &copy; 
-        
-        2025 Kiến thức lập trình
-    </section>
+  </head>
+  <body class="bg-slate-900 text-gray-100">
     
-    <section class="powerby">
-        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.32.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
-    </section>
-</footer>
+    
+<nav class="bg-slate-950 border-b border-slate-800 shadow-lg sticky top-0 z-50">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      
+      <a
+        href="/"
+        class="text-xl font-bold text-cyan-400 hover:text-cyan-300 transition-colors"
+      >
+        THUẬN AN IT BLOG
+      </a>
 
+      
+      <div class="hidden md:flex items-center space-x-8">
+        
+        <a
+          href="/"
+          class="text-gray-300 hover:text-cyan-400 transition-colors font-medium"
+        >
+          Home
+        </a>
 
-            </main>
+        
+        <div class="relative group">
+          <button
+            class="text-gray-300 hover:text-cyan-400 transition-colors font-medium flex items-center"
+          >
+            Categories
+            <svg
+              class="w-4 h-4 ml-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              ></path>
+            </svg>
+          </button>
+
+          
+          <div
+            class="absolute left-0 mt-2 w-48 bg-slate-800 border border-slate-700 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200"
+          >
+            <div class="py-2">
+              
+              <a
+                href="http://localhost:1313/categories/backend/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Backend
+                <span class="text-gray-500 text-sm">(1)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/java/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Java
+                <span class="text-gray-500 text-sm">(6)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/javascript/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                JavaScript
+                <span class="text-gray-500 text-sm">(3)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/network/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Network
+                <span class="text-gray-500 text-sm">(2)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/network-programming/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Network Programming
+                <span class="text-gray-500 text-sm">(2)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/networking/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Networking
+                <span class="text-gray-500 text-sm">(4)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/programming/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Programming
+                <span class="text-gray-500 text-sm">(4)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/security/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Security
+                <span class="text-gray-500 text-sm">(1)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/system-design/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                System Design
+                <span class="text-gray-500 text-sm">(1)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/web-development/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Web Development
+                <span class="text-gray-500 text-sm">(1)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/web-security/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Web Security
+                <span class="text-gray-500 text-sm">(1)</span>
+              </a>
+              
+            </div>
+          </div>
         </div>
-        <script 
-                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
-                
-                >
-            </script><script type="text/javascript" src="/ts/main.bcc7e9405c3d3cb732a7311965dda94f6ae5bcc3030b1c75796c4d2ed04912aa.js" defer></script>
+
+        
+        <a
+          href="/categories/"
+          class="text-gray-300 hover:text-cyan-400 transition-colors font-medium"
+        >
+          Tất cả danh mục
+        </a>
+      </div>
+
+      
+      <button
+        id="mobile-menu-button"
+        class="md:hidden text-gray-300 hover:text-cyan-400 focus:outline-none"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          ></path>
+        </svg>
+      </button>
+    </div>
+
+    
+    <div id="mobile-menu" class="hidden md:hidden pb-4">
+      <a
+        href="/"
+        class="block py-2 text-gray-300 hover:text-cyan-400 transition-colors font-medium"
+      >
+        Home
+      </a>
+      <div class="py-2">
+        <div class="font-medium text-white mb-2">Categories:</div>
+        
+        <a
+          href="http://localhost:1313/categories/backend/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Backend
+          <span class="text-gray-500 text-sm">(1)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/java/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Java
+          <span class="text-gray-500 text-sm">(6)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/javascript/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          JavaScript
+          <span class="text-gray-500 text-sm">(3)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/network/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Network
+          <span class="text-gray-500 text-sm">(2)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/network-programming/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Network Programming
+          <span class="text-gray-500 text-sm">(2)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/networking/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Networking
+          <span class="text-gray-500 text-sm">(4)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/programming/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Programming
+          <span class="text-gray-500 text-sm">(4)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/security/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Security
+          <span class="text-gray-500 text-sm">(1)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/system-design/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          System Design
+          <span class="text-gray-500 text-sm">(1)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/web-development/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Web Development
+          <span class="text-gray-500 text-sm">(1)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/web-security/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Web Security
+          <span class="text-gray-500 text-sm">(1)</span>
+        </a>
+        
+      </div>
+      <a
+        href="/categories/"
+        class="block py-2 text-gray-300 hover:text-cyan-400 transition-colors font-medium"
+      >
+        Tất cả danh mục
+      </a>
+    </div>
+  </div>
+</nav>
+
+
 <script>
-    (function () {
-        const customFont = document.createElement('link');
-        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
-
-        customFont.type = "text/css";
-        customFont.rel = "stylesheet";
-
-        document.head.appendChild(customFont);
-    }());
+  document
+    .getElementById("mobile-menu-button")
+    .addEventListener("click", function () {
+      const menu = document.getElementById("mobile-menu");
+      menu.classList.toggle("hidden");
+    });
 </script>
 
-    </body>
+
+    
+    <main class="min-h-screen">
+<div class="container mx-auto px-4 py-8">
+  <div class="grid grid-cols-1 lg:grid-cols-10 gap-8">
+    
+    <div class="lg:col-span-7">
+      <h1 class="text-4xl font-bold mb-4 text-white">Posts</h1>
+
+      
+
+      
+      <div id="posts-container" class="space-y-6">
+        
+        <article
+          class="post-item bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6 hover:shadow-xl hover:border-cyan-500 transition-all duration-300"
+        >
+          
+          
+          <div class="mb-4 -mx-6 -mt-6">
+            <img
+              src="images/java-nio.jpg"
+              alt="Từ Blocking I/O đến Non-blocking I/O: Java NIO thay đổi cách Server xử lý mạng như thế nào?"
+              class="w-full h-48 object-cover rounded-t-lg"
+            />
+          </div>
+          
+
+          <h2 class="text-2xl font-bold mb-2">
+            <a
+              href="http://localhost:1313/post/java-nio-blocking-nonblocking/"
+              class="text-cyan-400 hover:text-cyan-300 transition-colors"
+            >
+              Từ Blocking I/O đến Non-blocking I/O: Java NIO thay đổi cách Server xử lý mạng như thế nào?
+            </a>
+          </h2>
+
+          <div
+            class="text-sm text-gray-400 mb-3 flex flex-wrap items-center gap-4"
+          >
+            
+            <span class="flex items-center">
+              <svg
+                class="w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+              22/12/2025
+            </span>
+
+            
+            
+            <span class="flex items-center flex-wrap gap-2">
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                ></path>
+              </svg>
+               
+              <a
+                href="/categories/java"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Java</a
+              >
+               , 
+              <a
+                href="/categories/backend"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Backend</a
+              >
+               , 
+              <a
+                href="/categories/system-design"
+                class="text-cyan-400 hover:text-cyan-300"
+                >System Design</a
+              >
+              
+            </span>
+            
+          </div>
+
+          
+          
+          <p class="text-gray-300 mb-3">Phân tích sâu về sự chuyển đổi từ blocking I/O sang non-blocking I/O trong Java. Hiểu rõ Java NIO, Selector, Multiplexing và cách chúng thay đổi kiến trúc server hiện đại</p>
+          
+
+          <a
+            href="http://localhost:1313/post/java-nio-blocking-nonblocking/"
+            class="inline-block text-cyan-400 hover:text-cyan-300 font-semibold"
+          >
+            Đọc thêm →
+          </a>
+        </article>
+        
+        <article
+          class="post-item bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6 hover:shadow-xl hover:border-cyan-500 transition-all duration-300"
+        >
+          
+          
+          <div class="mb-4 -mx-6 -mt-6">
+            <img
+              src="images/https-security.jpg"
+              alt="Bảo mật mạng trong ứng dụng Java &amp; JavaScript: từ HTTPS đến Man-in-the-Middle"
+              class="w-full h-48 object-cover rounded-t-lg"
+            />
+          </div>
+          
+
+          <h2 class="text-2xl font-bold mb-2">
+            <a
+              href="http://localhost:1313/post/https-mitm-security/"
+              class="text-cyan-400 hover:text-cyan-300 transition-colors"
+            >
+              Bảo mật mạng trong ứng dụng Java &amp; JavaScript: từ HTTPS đến Man-in-the-Middle
+            </a>
+          </h2>
+
+          <div
+            class="text-sm text-gray-400 mb-3 flex flex-wrap items-center gap-4"
+          >
+            
+            <span class="flex items-center">
+              <svg
+                class="w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+              22/12/2025
+            </span>
+
+            
+            
+            <span class="flex items-center flex-wrap gap-2">
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                ></path>
+              </svg>
+               
+              <a
+                href="/categories/security"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Security</a
+              >
+               , 
+              <a
+                href="/categories/java"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Java</a
+              >
+               , 
+              <a
+                href="/categories/javascript"
+                class="text-cyan-400 hover:text-cyan-300"
+                >JavaScript</a
+              >
+               , 
+              <a
+                href="/categories/network"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Network</a
+              >
+              
+            </span>
+            
+          </div>
+
+          
+          
+          <p class="text-gray-300 mb-3">Phân tích sâu về HTTPS, TLS và tấn công Man-in-the-Middle trong ứng dụng Java và JavaScript. Hiểu rõ vì sao HTTPS không còn là tùy chọn mà là yêu cầu bắt buộc</p>
+          
+
+          <a
+            href="http://localhost:1313/post/https-mitm-security/"
+            class="inline-block text-cyan-400 hover:text-cyan-300 font-semibold"
+          >
+            Đọc thêm →
+          </a>
+        </article>
+        
+        <article
+          class="post-item bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6 hover:shadow-xl hover:border-cyan-500 transition-all duration-300"
+        >
+          
+          
+          <div class="mb-4 -mx-6 -mt-6">
+            <img
+              src="images/cors.jpg"
+              alt="CORS và Same-Origin Policy dưới góc nhìn mạng máy tính (JavaScript)"
+              class="w-full h-48 object-cover rounded-t-lg"
+            />
+          </div>
+          
+
+          <h2 class="text-2xl font-bold mb-2">
+            <a
+              href="http://localhost:1313/post/cors-same-origin-policy/"
+              class="text-cyan-400 hover:text-cyan-300 transition-colors"
+            >
+              CORS và Same-Origin Policy dưới góc nhìn mạng máy tính (JavaScript)
+            </a>
+          </h2>
+
+          <div
+            class="text-sm text-gray-400 mb-3 flex flex-wrap items-center gap-4"
+          >
+            
+            <span class="flex items-center">
+              <svg
+                class="w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+              22/12/2025
+            </span>
+
+            
+            
+            <span class="flex items-center flex-wrap gap-2">
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                ></path>
+              </svg>
+               
+              <a
+                href="/categories/web-security"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Web Security</a
+              >
+               , 
+              <a
+                href="/categories/javascript"
+                class="text-cyan-400 hover:text-cyan-300"
+                >JavaScript</a
+              >
+               , 
+              <a
+                href="/categories/network"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Network</a
+              >
+              
+            </span>
+            
+          </div>
+
+          
+          
+          <p class="text-gray-300 mb-3">Phân tích sâu về Same-Origin Policy và CORS từ góc độ bảo mật web và mạng máy tính. Hiểu rõ preflight request, vì sao Postman không gặp CORS, và vai trò của browser trong việc bảo vệ người dùng</p>
+          
+
+          <a
+            href="http://localhost:1313/post/cors-same-origin-policy/"
+            class="inline-block text-cyan-400 hover:text-cyan-300 font-semibold"
+          >
+            Đọc thêm →
+          </a>
+        </article>
+        
+        <article
+          class="post-item bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6 hover:shadow-xl hover:border-cyan-500 transition-all duration-300"
+        >
+          
+          
+          <div class="mb-4 -mx-6 -mt-6">
+            <img
+              src="images/websocket.jpg"
+              alt="WebSocket hoạt động ra sao ở tầng mạng? So sánh với HTTP Polling và SSE"
+              class="w-full h-48 object-cover rounded-t-lg"
+            />
+          </div>
+          
+
+          <h2 class="text-2xl font-bold mb-2">
+            <a
+              href="http://localhost:1313/post/websocket-vs-polling-sse/"
+              class="text-cyan-400 hover:text-cyan-300 transition-colors"
+            >
+              WebSocket hoạt động ra sao ở tầng mạng? So sánh với HTTP Polling và SSE
+            </a>
+          </h2>
+
+          <div
+            class="text-sm text-gray-400 mb-3 flex flex-wrap items-center gap-4"
+          >
+            
+            <span class="flex items-center">
+              <svg
+                class="w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+              22/12/2025
+            </span>
+
+            
+            
+            <span class="flex items-center flex-wrap gap-2">
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                ></path>
+              </svg>
+               
+              <a
+                href="/categories/network-programming"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Network Programming</a
+              >
+               , 
+              <a
+                href="/categories/web-development"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Web Development</a
+              >
+              
+            </span>
+            
+          </div>
+
+          
+          
+          <p class="text-gray-300 mb-3">Phân tích sâu về cơ chế WebSocket, HTTP Polling và Server-Sent Events từ góc nhìn network layer. Hiểu rõ handshake, full-duplex connection và cách chọn công nghệ phù hợp cho ứng dụng realtime</p>
+          
+
+          <a
+            href="http://localhost:1313/post/websocket-vs-polling-sse/"
+            class="inline-block text-cyan-400 hover:text-cyan-300 font-semibold"
+          >
+            Đọc thêm →
+          </a>
+        </article>
+        
+        <article
+          class="post-item bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6 hover:shadow-xl hover:border-cyan-500 transition-all duration-300"
+        >
+          
+          
+          <div class="mb-4 -mx-6 -mt-6">
+            <img
+              src="images/java-tcp-udp.jpg"
+              alt="Java Socket Programming: TCP vs UDP trong ứng dụng thực tế"
+              class="w-full h-48 object-cover rounded-t-lg"
+            />
+          </div>
+          
+
+          <h2 class="text-2xl font-bold mb-2">
+            <a
+              href="http://localhost:1313/post/java-tcp-udp/"
+              class="text-cyan-400 hover:text-cyan-300 transition-colors"
+            >
+              Java Socket Programming: TCP vs UDP trong ứng dụng thực tế
+            </a>
+          </h2>
+
+          <div
+            class="text-sm text-gray-400 mb-3 flex flex-wrap items-center gap-4"
+          >
+            
+            <span class="flex items-center">
+              <svg
+                class="w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+              22/12/2025
+            </span>
+
+            
+            
+            <span class="flex items-center flex-wrap gap-2">
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                ></path>
+              </svg>
+               
+              <a
+                href="/categories/java"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Java</a
+              >
+               , 
+              <a
+                href="/categories/network-programming"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Network Programming</a
+              >
+              
+            </span>
+            
+          </div>
+
+          
+          
+          <p class="text-gray-300 mb-3">Phân tích chuyên sâu về TCP và UDP trong lập trình mạng Java, so sánh Socket và DatagramSocket, kèm ví dụ thực tế cho chat app, game online và streaming</p>
+          
+
+          <a
+            href="http://localhost:1313/post/java-tcp-udp/"
+            class="inline-block text-cyan-400 hover:text-cyan-300 font-semibold"
+          >
+            Đọc thêm →
+          </a>
+        </article>
+        
+        <article
+          class="post-item bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6 hover:shadow-xl hover:border-cyan-500 transition-all duration-300"
+        >
+          
+          
+          <div class="mb-4 -mx-6 -mt-6">
+            <img
+              src="images/js-client-server.jpg"
+              alt="JavaScript trong mô hình Client–Server: Từ trình duyệt đến server"
+              class="w-full h-48 object-cover rounded-t-lg"
+            />
+          </div>
+          
+
+          <h2 class="text-2xl font-bold mb-2">
+            <a
+              href="http://localhost:1313/post/js-client-server/"
+              class="text-cyan-400 hover:text-cyan-300 transition-colors"
+            >
+              JavaScript trong mô hình Client–Server: Từ trình duyệt đến server
+            </a>
+          </h2>
+
+          <div
+            class="text-sm text-gray-400 mb-3 flex flex-wrap items-center gap-4"
+          >
+            
+            <span class="flex items-center">
+              <svg
+                class="w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+              22/12/2025
+            </span>
+
+            
+            
+            <span class="flex items-center flex-wrap gap-2">
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                ></path>
+              </svg>
+               
+              <a
+                href="/categories/programming"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Programming</a
+              >
+               , 
+              <a
+                href="/categories/javascript"
+                class="text-cyan-400 hover:text-cyan-300"
+                >JavaScript</a
+              >
+               , 
+              <a
+                href="/categories/networking"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Networking</a
+              >
+              
+            </span>
+            
+          </div>
+
+          
+          
+          <p class="text-gray-300 mb-3">Khám phá cách JavaScript hoạt động ở cả phía Client và Server, cùng demo thực tế về giao tiếp Client-Server</p>
+          
+
+          <a
+            href="http://localhost:1313/post/js-client-server/"
+            class="inline-block text-cyan-400 hover:text-cyan-300 font-semibold"
+          >
+            Đọc thêm →
+          </a>
+        </article>
+        
+        <article
+          class="post-item bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6 hover:shadow-xl hover:border-cyan-500 transition-all duration-300"
+        >
+          
+          
+          <div class="mb-4 -mx-6 -mt-6">
+            <img
+              src="images/multi-thread-example.jpg"
+              alt="Ứng dụng Chat sử dụng TCP trong Java (Phần 2)"
+              class="w-full h-48 object-cover rounded-t-lg"
+            />
+          </div>
+          
+
+          <h2 class="text-2xl font-bold mb-2">
+            <a
+              href="http://localhost:1313/post/advanced-chat-tcp-java/"
+              class="text-cyan-400 hover:text-cyan-300 transition-colors"
+            >
+              Ứng dụng Chat sử dụng TCP trong Java (Phần 2)
+            </a>
+          </h2>
+
+          <div
+            class="text-sm text-gray-400 mb-3 flex flex-wrap items-center gap-4"
+          >
+            
+            <span class="flex items-center">
+              <svg
+                class="w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+              20/12/2025
+            </span>
+
+            
+            
+            <span class="flex items-center flex-wrap gap-2">
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                ></path>
+              </svg>
+               
+              <a
+                href="/categories/programming"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Programming</a
+              >
+               , 
+              <a
+                href="/categories/java"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Java</a
+              >
+               , 
+              <a
+                href="/categories/networking"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Networking</a
+              >
+              
+            </span>
+            
+          </div>
+
+          
+          
+          <p class="text-gray-300 mb-3">Hướng dẫn xây dựng ứng dụng Chat nâng cao sử dụng TCP trong Java nâng cao bằng Multi-threads</p>
+          
+
+          <a
+            href="http://localhost:1313/post/advanced-chat-tcp-java/"
+            class="inline-block text-cyan-400 hover:text-cyan-300 font-semibold"
+          >
+            Đọc thêm →
+          </a>
+        </article>
+        
+        <article
+          class="post-item bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6 hover:shadow-xl hover:border-cyan-500 transition-all duration-300"
+        >
+          
+          
+          <div class="mb-4 -mx-6 -mt-6">
+            <img
+              src="/images/simple-chat-room.jpg"
+              alt="Ứng dụng Chat sử dụng TCP trong Java (Phần 1)"
+              class="w-full h-48 object-cover rounded-t-lg"
+            />
+          </div>
+          
+
+          <h2 class="text-2xl font-bold mb-2">
+            <a
+              href="http://localhost:1313/post/simple-chat-tcp-java/"
+              class="text-cyan-400 hover:text-cyan-300 transition-colors"
+            >
+              Ứng dụng Chat sử dụng TCP trong Java (Phần 1)
+            </a>
+          </h2>
+
+          <div
+            class="text-sm text-gray-400 mb-3 flex flex-wrap items-center gap-4"
+          >
+            
+            <span class="flex items-center">
+              <svg
+                class="w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+              18/12/2025
+            </span>
+
+            
+            
+            <span class="flex items-center flex-wrap gap-2">
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                ></path>
+              </svg>
+               
+              <a
+                href="/categories/programming"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Programming</a
+              >
+               , 
+              <a
+                href="/categories/java"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Java</a
+              >
+               , 
+              <a
+                href="/categories/networking"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Networking</a
+              >
+              
+            </span>
+            
+          </div>
+
+          
+          
+          <p class="text-gray-300 mb-3">Hướng dẫn xây dựng ứng dụng Chat đơn giản sử dụng TCP trong Java</p>
+          
+
+          <a
+            href="http://localhost:1313/post/simple-chat-tcp-java/"
+            class="inline-block text-cyan-400 hover:text-cyan-300 font-semibold"
+          >
+            Đọc thêm →
+          </a>
+        </article>
+        
+        <article
+          class="post-item bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6 hover:shadow-xl hover:border-cyan-500 transition-all duration-300"
+        >
+          
+          
+          <div class="mb-4 -mx-6 -mt-6">
+            <img
+              src="/images/java-socket-programming-process.jpg"
+              alt="Java Client–Server"
+              class="w-full h-48 object-cover rounded-t-lg"
+            />
+          </div>
+          
+
+          <h2 class="text-2xl font-bold mb-2">
+            <a
+              href="http://localhost:1313/post/java-client-server/"
+              class="text-cyan-400 hover:text-cyan-300 transition-colors"
+            >
+              Java Client–Server
+            </a>
+          </h2>
+
+          <div
+            class="text-sm text-gray-400 mb-3 flex flex-wrap items-center gap-4"
+          >
+            
+            <span class="flex items-center">
+              <svg
+                class="w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+              16/12/2025
+            </span>
+
+            
+            
+            <span class="flex items-center flex-wrap gap-2">
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                ></path>
+              </svg>
+               
+              <a
+                href="/categories/programming"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Programming</a
+              >
+               , 
+              <a
+                href="/categories/java"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Java</a
+              >
+               , 
+              <a
+                href="/categories/networking"
+                class="text-cyan-400 hover:text-cyan-300"
+                >Networking</a
+              >
+              
+            </span>
+            
+          </div>
+
+          
+          
+          <p class="text-gray-300 mb-3">Tổng quan và hướng dẫn lập trình mô hình Client–Server bằng Java, giải thích cách giao tiếp giữa client và server.</p>
+          
+
+          <a
+            href="http://localhost:1313/post/java-client-server/"
+            class="inline-block text-cyan-400 hover:text-cyan-300 font-semibold"
+          >
+            Đọc thêm →
+          </a>
+        </article>
+        
+      </div>
+    </div>
+
+    
+    <div class="lg:col-span-3">
+<div class="space-y-6">
+  
+  
+<div
+  class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg shadow-lg p-6 sticky top-20 mb-6"
+>
+  <h3 class="text-lg font-bold mb-4 flex items-center text-white">
+    <svg
+      class="w-5 h-5 mr-2 text-cyan-400"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+      ></path>
+    </svg>
+    Tìm kiếm
+  </h3>
+
+  <input
+    type="text"
+    id="search-input"
+    placeholder="Nhập từ khóa..."
+    class="w-full px-4 py-2 bg-slate-700 border border-slate-600 text-white placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all"
+  />
+
+  <p id="search-result-count" class="text-sm text-gray-400 mt-2"></p>
+</div>
+
+
+  
+  
+<div
+  class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg shadow-lg p-6"
+>
+  
+  
+  <div class="text-center mb-4">
+    <img
+      src="/images/avatar.jpg"
+      alt="Lý Thuận An"
+      class="w-32 h-32 rounded-lg mx-auto object-cover shadow-md border-4 border-slate-700"
+    />
+  </div>
+  
+
+  
+  <h3
+    class="text-lg font-bold mb-2 text-white text-center flex items-center justify-center"
+  >
+    <svg
+      class="w-5 h-5 mr-2 text-cyan-400"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+      ></path>
+    </svg>
+    ABOUT ME
+  </h3>
+
+  
+  <div class="space-y-3">
+    
+    
+    <div class="text-center">
+      <h4 class="font-bold text-white text-xl">
+        Lý Thuận An
+      </h4>
+    </div>
+    
+
+    
+    
+    <p class="text-gray-400 text-sm text-center leading-relaxed italic">
+      Engineer #Pencraft Cloud, Open Source Enthusiast and Life Adventurer
+    </p>
+    
+
+    
+    
+    <p class="text-gray-300 leading-relaxed text-sm">
+      Mình là Lý Thuận An, đang theo học năm cuối chuyên ngành Trí tuệ nhân tạo tại Đại học Công nghệ TP.HCM (HUTECH). Định hướng nghề nghiệp của mình tập trung vào việc kết nối nghiên cứu AI với phát triển ứng dụng thực tế.
+    </p>
+    
+
+    
+    <div class="space-y-2 pt-2">
+      
+      <a
+        href="mailto:anly1704@gmail.com"
+        class="flex items-center text-gray-300 hover:text-cyan-400 transition-colors text-sm"
+      >
+        <svg
+          class="w-4 h-4 mr-2 text-cyan-400"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"
+          />
+        </svg>
+        anly1704@gmail.com
+      </a>
+       
+      <div class="flex items-center text-gray-300 text-sm">
+        <svg
+          class="w-4 h-4 mr-2 text-cyan-400"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"
+          />
+        </svg>
+        &#43;84 769 339 058
+      </div>
+      
+    </div>
+
+    
+    <div class="flex items-center justify-center gap-3 pt-3">
+      
+      <a
+        href="https://github.com/aresu-1704"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center justify-center w-10 h-10 bg-gray-700 hover:bg-gray-600 text-white rounded-full transition-all duration-200 hover:scale-110"
+        title="GitHub"
+      >
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+          />
+        </svg>
+      </a>
+       
+      <a
+        href="https://www.facebook.com/an.thuan.3139241"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center justify-center w-10 h-10 bg-blue-600 hover:bg-blue-500 text-white rounded-full transition-all duration-200 hover:scale-110"
+        title="Facebook"
+      >
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+          />
+        </svg>
+      </a>
+      
+    </div>
+  </div>
+  
+</div>
+
+</div>
+</div>
+  </div>
+</div>
+</main>
+
+    
+    <footer
+      class="bg-slate-950 text-gray-400 py-8 mt-12 border-t border-slate-800"
+    >
+      <div class="container mx-auto px-4 text-center">
+        <p>&copy; 2025 THUẬN AN IT BLOG. All rights reserved.</p>
+      </div>
+    </footer>
+
+    
+    <script src="/js/search.js"></script>
+  </body>
 </html>

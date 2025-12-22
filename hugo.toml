@@ -1,8 +1,26 @@
 baseURL = 'https://example.org/'
 languageCode = 'vi-vn'
-title = 'Kiến thức lập trình'
-theme = 'Stack'
+title = 'THUẬN AN IT BLOG'
 
+# Favicon
+[params]
+  favicon = "/images/favicon.ico"
+
+# Taxonomy
+[taxonomies]
+  category = "categories"
+  tag = "tags"
+
+# About section - easy to customize
+[params.about]
+  name = "Lý Thuận An"
+  title = "Engineer #Pencraft Cloud, Open Source Enthusiast and Life Adventurer"
+  avatar = "/images/avatar.jpg"
+  description = "Mình là Lý Thuận An, đang theo học năm cuối chuyên ngành Trí tuệ nhân tạo tại Đại học Công nghệ TP.HCM (HUTECH). Định hướng nghề nghiệp của mình tập trung vào việc kết nối nghiên cứu AI với phát triển ứng dụng thực tế."
+  email = "anly1704@gmail.com"
+  phone = "+84 769 339 058"
+  github = "https://github.com/aresu-1704"
+  facebook = "https://www.facebook.com/an.thuan.3139241"
 
 [markup.goldmark.renderer]
 unsafe = true

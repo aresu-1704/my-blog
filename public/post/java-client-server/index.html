@@ -1,281 +1,521 @@
 <!DOCTYPE html>
-<html lang="vi-vn" dir="ltr">
-    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Tổng quan và hướng dẫn lập trình mô hình Client–Server bằng Java, giải thích cách giao tiếp giữa client và server.">
-<title>Java Client–Server</title>
+<html lang="en">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Tổng quan và hướng dẫn lập trình mô hình Client–Server bằng Java, giải thích cách giao tiếp giữa client và server."
+    />
+    <title>
+      Java Client–Server - THUẬN AN IT BLOG
+    </title>
 
-<link rel='canonical' href='http://localhost:1313/post/java-client-server/'>
+    
+    
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
+    
 
-<link rel="stylesheet" href="/scss/style.min.6074b3f881d887398809e454b84ee6668c1a2f5c01bbffe38339b724acdda96e.css"><meta property='og:title' content="Java Client–Server">
-<meta property='og:description' content="Tổng quan và hướng dẫn lập trình mô hình Client–Server bằng Java, giải thích cách giao tiếp giữa client và server.">
-<meta property='og:url' content='http://localhost:1313/post/java-client-server/'>
-<meta property='og:site_name' content='Kiến thức lập trình'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Java' /><meta property='article:tag' content='Client-Server' /><meta property='article:tag' content='TCP/IP' /><meta property='article:tag' content='Socket' /><meta property='article:tag' content='Network' /><meta property='article:published_time' content='2025-12-16T19:00:00&#43;07:00'/><meta property='article:modified_time' content='2025-12-16T19:00:00&#43;07:00'/><meta property='og:image' content='http://localhost:1313/images/java-socket-programming-process.jpg' />
-<meta name="twitter:title" content="Java Client–Server">
-<meta name="twitter:description" content="Tổng quan và hướng dẫn lập trình mô hình Client–Server bằng Java, giải thích cách giao tiếp giữa client và server."><meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content='http://localhost:1313/images/java-socket-programming-process.jpg' />
-    </head>
-    <body class="
-    article-page
-    ">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    
     <script>
-        (function() {
-            const colorSchemeKey = 'StackColorScheme';
-            if(!localStorage.getItem(colorSchemeKey)){
-                localStorage.setItem(colorSchemeKey, "auto");
-            }
-        })();
-    </script><script>
-    (function() {
-        const colorSchemeKey = 'StackColorScheme';
-        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
-        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
-
-        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
-            
-
-            document.documentElement.dataset.scheme = 'dark';
-        } else {
-            document.documentElement.dataset.scheme = 'light';
-        }
-    })();
-</script>
-<div class="container main-container flex on-phone--column compact"><aside class="sidebar left-sidebar sticky ">
-    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
-        <span class="hamburger-box">
-            <span class="hamburger-inner"></span>
-        </span>
-    </button>
-
-    <header>
-        
-            
-            <figure class="site-avatar">
-                <a href="/">
-                
-                    
-                    
-                    
-                        
-                        <img src="/img/avatar_hu_f2c6dce42be5aaca.png" width="300"
-                            height="300" class="site-logo" loading="lazy" alt="Avatar">
-                    
-                
-                </a>
-                
-            </figure>
-            
-        
-        
-        <div class="site-meta">
-            <h1 class="site-name"><a href="/">Kiến thức lập trình</a></h1>
-            <h2 class="site-description"></h2>
-        </div>
-    </header><ol class="menu" id="main-menu">
-        
-        
-        
-        <li >
-            <a href='/research/' >
-                
-                
-                
-                <span>Research</span>
-            </a>
-        </li>
-        
-        
-        <li >
-            <a href='/portfolio/' >
-                
-                
-                
-                <span>Portfolio</span>
-            </a>
-        </li>
-        
-        
-        <li >
-            <a href='/about/' >
-                
-                
-                
-                <span>About</span>
-            </a>
-        </li>
-        
-        
-        <li >
-            <a href='/contact/' >
-                
-                
-                
-                <span>Contact</span>
-            </a>
-        </li>
-        
-        <li class="menu-bottom-section">
-            <ol class="menu">
-
-                
-                    <li id="dark-mode-toggle">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="8" cy="12" r="2" />
-  <rect x="2" y="6" width="20" height="12" rx="6" />
-</svg>
-
-
-
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="16" cy="12" r="2" />
-  <rect x="2" y="6" width="20" height="12" rx="6" />
-</svg>
-
-
-
-                        <span>Dark Mode</span>
-                    </li>
-                
-            </ol>
-        </li>
-    </ol>
-</aside>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#f0f9ff",
+                100: "#e0f2fe",
+                200: "#bae6fd",
+                300: "#7dd3fc",
+                400: "#38bdf8",
+                500: "#0ea5e9",
+                600: "#0284c7",
+                700: "#0369a1",
+                800: "#075985",
+                900: "#0c4a6e",
+              },
+            },
+          },
+        },
+      };
+    </script>
 
     
-
-            <main class="main full-width">
-    <article class="has-image main-article">
-    <header class="article-header">
-        <div class="article-image">
-            <a href="/post/java-client-server/">
-                
-                    <img src="/images/java-socket-programming-process.jpg" loading="lazy" alt="Featured image of post Java Client–Server" />
-                
-            </a>
-        </div>
+     
+    <link rel="stylesheet" href="http://localhost:1313/css/main.css" />
     
-
-    <div class="article-details">
+  </head>
+  <body class="bg-slate-900 text-gray-100">
     
-    <header class="article-category">
+    
+<nav class="bg-slate-950 border-b border-slate-800 shadow-lg sticky top-0 z-50">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      
+      <a
+        href="/"
+        class="text-xl font-bold text-cyan-400 hover:text-cyan-300 transition-colors"
+      >
+        THUẬN AN IT BLOG
+      </a>
+
+      
+      <div class="hidden md:flex items-center space-x-8">
         
-            <a href="/categories/programming/" >
-                Programming
-            </a>
+        <a
+          href="/"
+          class="text-gray-300 hover:text-cyan-400 transition-colors font-medium"
+        >
+          Home
+        </a>
+
         
-            <a href="/categories/java/" >
+        <div class="relative group">
+          <button
+            class="text-gray-300 hover:text-cyan-400 transition-colors font-medium flex items-center"
+          >
+            Categories
+            <svg
+              class="w-4 h-4 ml-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              ></path>
+            </svg>
+          </button>
+
+          
+          <div
+            class="absolute left-0 mt-2 w-48 bg-slate-800 border border-slate-700 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200"
+          >
+            <div class="py-2">
+              
+              <a
+                href="http://localhost:1313/categories/backend/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Backend
+                <span class="text-gray-500 text-sm">(1)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/java/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
                 Java
-            </a>
-        
-            <a href="/categories/networking/" >
+                <span class="text-gray-500 text-sm">(6)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/javascript/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                JavaScript
+                <span class="text-gray-500 text-sm">(3)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/network/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Network
+                <span class="text-gray-500 text-sm">(2)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/network-programming/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Network Programming
+                <span class="text-gray-500 text-sm">(2)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/networking/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
                 Networking
-            </a>
-        
-    </header>
-    
+                <span class="text-gray-500 text-sm">(4)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/programming/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Programming
+                <span class="text-gray-500 text-sm">(4)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/security/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Security
+                <span class="text-gray-500 text-sm">(1)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/system-design/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                System Design
+                <span class="text-gray-500 text-sm">(1)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/web-development/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Web Development
+                <span class="text-gray-500 text-sm">(1)</span>
+              </a>
+              
+              <a
+                href="http://localhost:1313/categories/web-security/"
+                class="block px-4 py-2 text-gray-300 hover:bg-slate-700 hover:text-cyan-400 transition-colors"
+              >
+                Web Security
+                <span class="text-gray-500 text-sm">(1)</span>
+              </a>
+              
+            </div>
+          </div>
+        </div>
 
-    <div class="article-title-wrapper">
-        <h2 class="article-title">
-            <a href="/post/java-client-server/">Java Client–Server</a>
-        </h2>
-    
         
-        <h3 class="article-subtitle">
-            Tổng quan và hướng dẫn lập trình mô hình Client–Server bằng Java, giải thích cách giao tiếp giữa client và server.
-        </h3>
-        
+        <a
+          href="/categories/"
+          class="text-gray-300 hover:text-cyan-400 transition-colors font-medium"
+        >
+          Tất cả danh mục
+        </a>
+      </div>
+
+      
+      <button
+        id="mobile-menu-button"
+        class="md:hidden text-gray-300 hover:text-cyan-400 focus:outline-none"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          ></path>
+        </svg>
+      </button>
     </div>
 
     
-    
-    
-    
-    <footer class="article-time">
+    <div id="mobile-menu" class="hidden md:hidden pb-4">
+      <a
+        href="/"
+        class="block py-2 text-gray-300 hover:text-cyan-400 transition-colors font-medium"
+      >
+        Home
+      </a>
+      <div class="py-2">
+        <div class="font-medium text-white mb-2">Categories:</div>
         
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
-  <circle cx="18" cy="18" r="4" />
-  <path d="M15 3v4" />
-  <path d="M7 3v4" />
-  <path d="M3 11h16" />
-  <path d="M18 16.496v1.504l1 1" />
-</svg>
-                <time class="article-time--published" datetime='2025-12-16T19:00:00&#43;07:00'>Dec 16, 2025</time>
-            </div>
+        <a
+          href="http://localhost:1313/categories/backend/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Backend
+          <span class="text-gray-500 text-sm">(1)</span>
+        </a>
         
+        <a
+          href="http://localhost:1313/categories/java/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Java
+          <span class="text-gray-500 text-sm">(6)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/javascript/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          JavaScript
+          <span class="text-gray-500 text-sm">(3)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/network/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Network
+          <span class="text-gray-500 text-sm">(2)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/network-programming/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Network Programming
+          <span class="text-gray-500 text-sm">(2)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/networking/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Networking
+          <span class="text-gray-500 text-sm">(4)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/programming/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Programming
+          <span class="text-gray-500 text-sm">(4)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/security/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Security
+          <span class="text-gray-500 text-sm">(1)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/system-design/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          System Design
+          <span class="text-gray-500 text-sm">(1)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/web-development/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Web Development
+          <span class="text-gray-500 text-sm">(1)</span>
+        </a>
+        
+        <a
+          href="http://localhost:1313/categories/web-security/"
+          class="block py-1 pl-4 text-gray-300 hover:text-cyan-400 transition-colors"
+        >
+          Web Security
+          <span class="text-gray-500 text-sm">(1)</span>
+        </a>
+        
+      </div>
+      <a
+        href="/categories/"
+        class="block py-2 text-gray-300 hover:text-cyan-400 transition-colors font-medium"
+      >
+        Tất cả danh mục
+      </a>
+    </div>
+  </div>
+</nav>
+
+
+<script>
+  document
+    .getElementById("mobile-menu-button")
+    .addEventListener("click", function () {
+      const menu = document.getElementById("mobile-menu");
+      menu.classList.toggle("hidden");
+    });
+</script>
+
+
+    
+    <main class="min-h-screen">
+<div class="container mx-auto px-4 py-8">
+  <div class="grid grid-cols-1 lg:grid-cols-10 gap-8">
+    
+    <div class="lg:col-span-7">
+      <article
+        class="bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-8"
+      >
+        
+        <header class="mb-8">
+          
+          
+          <div class="mb-6 -mx-8 -mt-8">
+            <img
+              src="/images/java-socket-programming-process.jpg"
+              alt="Java Client–Server"
+              class="w-full h-64 object-cover rounded-t-lg"
+            />
+          </div>
+          
+
+          <h1 class="text-4xl font-bold mb-4 text-white">Java Client–Server</h1>
+
+          <div
+            class="flex flex-wrap items-center gap-4 text-sm text-gray-400 mb-4"
+          >
+            
+            <span class="flex items-center">
+              <svg
+                class="w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+              16/12/2025
+            </span>
+
+            
+            
+            <span class="flex items-center">
+              <svg
+                class="w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                ></path>
+              </svg>
+              Aresu
+            </span>
+            
+          </div>
+
+          
+          
+          <div class="flex flex-wrap gap-2 mb-4">
+            
+            <a
+              href="/categories/programming"
+              class="px-3 py-1 bg-cyan-900 bg-opacity-30 text-cyan-300 border border-cyan-600 rounded-full text-sm hover:bg-cyan-800 hover:bg-opacity-40 transition-colors"
+            >
+              Programming
+            </a>
+            
+            <a
+              href="/categories/java"
+              class="px-3 py-1 bg-cyan-900 bg-opacity-30 text-cyan-300 border border-cyan-600 rounded-full text-sm hover:bg-cyan-800 hover:bg-opacity-40 transition-colors"
+            >
+              Java
+            </a>
+            
+            <a
+              href="/categories/networking"
+              class="px-3 py-1 bg-cyan-900 bg-opacity-30 text-cyan-300 border border-cyan-600 rounded-full text-sm hover:bg-cyan-800 hover:bg-opacity-40 transition-colors"
+            >
+              Networking
+            </a>
+            
+          </div>
+          
+
+          
+          
+          <div class="flex flex-wrap gap-2">
+            
+            <a
+              href="/tags/java"
+              class="px-3 py-1 bg-slate-700 text-gray-300 rounded-full text-sm hover:bg-slate-600 transition-colors"
+            >
+              #Java
+            </a>
+            
+            <a
+              href="/tags/client-server"
+              class="px-3 py-1 bg-slate-700 text-gray-300 rounded-full text-sm hover:bg-slate-600 transition-colors"
+            >
+              #Client-Server
+            </a>
+            
+            <a
+              href="/tags/tcp/ip"
+              class="px-3 py-1 bg-slate-700 text-gray-300 rounded-full text-sm hover:bg-slate-600 transition-colors"
+            >
+              #TCP/IP
+            </a>
+            
+            <a
+              href="/tags/socket"
+              class="px-3 py-1 bg-slate-700 text-gray-300 rounded-full text-sm hover:bg-slate-600 transition-colors"
+            >
+              #Socket
+            </a>
+            
+            <a
+              href="/tags/network"
+              class="px-3 py-1 bg-slate-700 text-gray-300 rounded-full text-sm hover:bg-slate-600 transition-colors"
+            >
+              #Network
+            </a>
+            
+          </div>
+          
+        </header>
 
         
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="12" cy="12" r="9" />
-  <polyline points="12 7 12 12 15 15" />
-</svg>
-
-
-
-                <time class="article-time--reading">
-                    6 minute read
-                </time>
-            </div>
-        
-    </footer>
-    
-
-    
-</div>
-
-</header>
-
-    <section class="article-content">
-    
-    
-    <p>Networking (Lập trình mạng) là trái tim của hầu hết các ứng dụng hiện đại, từ Web server, chat app cho đến các game online. Trong bài viết này, chúng ta sẽ đi sâu vào mô hình Client–Server sử dụng Java. Mình sẽ hướng dẫn bạn từ khái niệm cơ bản nhất cho đến việc viết code một ứng dụng chat đơn giản giữa hai máy tính.</p>
-<h2 id="1-mô-hình-client-server-là-gì">1. Mô hình Client-Server là gì?
-</h2><p>Trước khi viết code, chúng ta cần hiểu kiến trúc này hoạt động như thế nào.</p>
+        <div
+          class="prose prose-invert max-w-none prose-headings:font-bold prose-headings:text-white prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:underline prose-img:rounded-lg prose-pre:bg-slate-950 prose-pre:border prose-pre:border-slate-700 prose-code:text-cyan-300 text-gray-300"
+        >
+          <p>Networking (Lập trình mạng) là trái tim của hầu hết các ứng dụng hiện đại, từ Web server, chat app cho đến các game online. Trong bài viết này, chúng ta sẽ đi sâu vào mô hình Client–Server sử dụng Java. Mình sẽ hướng dẫn bạn từ khái niệm cơ bản nhất cho đến việc viết code một ứng dụng chat đơn giản giữa hai máy tính.</p>
+<h2 id="1-mô-hình-client-server-là-gì">1. Mô hình Client-Server là gì?</h2>
+<p>Trước khi viết code, chúng ta cần hiểu kiến trúc này hoạt động như thế nào.</p>
 <p><strong>Server (Máy chủ)</strong>: Là một chương trình chạy trên một máy tính, luôn ở trạng thái &ldquo;lắng nghe&rdquo; (listening) tại một cổng (port) xác định. Nhiệm vụ của nó là chờ đợi yêu cầu kết nối từ Client và xử lý yêu cầu đó.</p>
 <p><strong>Client (Máy khách)</strong>: Là chương trình chủ động gửi yêu cầu kết nối đến Server (thông qua địa chỉ IP và Port) để trao đổi dữ liệu.</p>
-<p><img src="/images/java-client-server.jpg"
-	
-	
-	
-	loading="lazy"
-	
-		alt="Mô hình Client-Server"
-	
-	
-></p>
+<p><img src="/images/java-client-server.jpg" alt="Mô hình Client-Server"></p>
 <p>Trong Java, giao tiếp này thường dựa trên giao thức <strong>TCP/IP</strong> (Transmission Control Protocol/Internet Protocol) để đảm bảo dữ liệu được truyền đi tin cậy, không bị mất gói tin.</p>
-<h2 id="2-các-khái-niệm-cốt-lõi-trong-java-networking">2. Các khái niệm cốt lõi trong Java Networking
-</h2><p>Để lập trình mạng trong Java, bạn sẽ làm việc chủ yếu với gói <code>java.net</code>. Dưới đây là những &ldquo;nhân vật chính&rdquo;:</p>
-<h3 id="a-ip-address-và-port">a. IP Address và Port
-</h3><p>Hãy tưởng tượng IP Address là &ldquo;địa chỉ nhà&rdquo;, còn Port là &ldquo;số phòng&rdquo; trong ngôi nhà đó.</p>
+<h2 id="2-các-khái-niệm-cốt-lõi-trong-java-networking">2. Các khái niệm cốt lõi trong Java Networking</h2>
+<p>Để lập trình mạng trong Java, bạn sẽ làm việc chủ yếu với gói <code>java.net</code>. Dưới đây là những &ldquo;nhân vật chính&rdquo;:</p>
+<h3 id="a-ip-address-và-port">a. IP Address và Port</h3>
+<p>Hãy tưởng tượng IP Address là &ldquo;địa chỉ nhà&rdquo;, còn Port là &ldquo;số phòng&rdquo; trong ngôi nhà đó.</p>
 <ul>
 <li>Để tìm thấy máy chủ, Client cần <strong>IP Address</strong>.</li>
 <li>Để biết ứng dụng nào trên máy chủ sẽ nhận dữ liệu (Web server, Mail server hay Chat server), Client cần <strong>Port Number</strong>.</li>
 </ul>
-<h3 id="b-socket">b. Socket
-</h3><p>Socket là &ldquo;đầu mối&rdquo; kết nối. Khi Client và Server kết nối thành công, một đường ống ảo (virtual pipe) được tạo ra. Hai bên sẽ gửi và nhận dữ liệu thông qua đường ống này bằng các Socket.</p>
+<h3 id="b-socket">b. Socket</h3>
+<p>Socket là &ldquo;đầu mối&rdquo; kết nối. Khi Client và Server kết nối thành công, một đường ống ảo (virtual pipe) được tạo ra. Hai bên sẽ gửi và nhận dữ liệu thông qua đường ống này bằng các Socket.</p>
 <ul>
 <li><strong>ServerSocket</strong>: Class chỉ dùng cho phía Server. Nhiệm vụ duy nhất là chờ đợi và chấp nhận kết nối.</li>
 <li><strong>Socket</strong>: Class dùng cho cả Client (để kết nối) và Server (để giao tiếp sau khi đã chấp nhận kết nối).</li>
 </ul>
-<h2 id="3-quy-trình-giao-tiếp-workflow">3. Quy trình giao tiếp (Workflow)
-</h2><p>Quy trình giao tiếp tiêu chuẩn gồm 4 bước:</p>
+<h2 id="3-quy-trình-giao-tiếp-workflow">3. Quy trình giao tiếp (Workflow)</h2>
+<p>Quy trình giao tiếp tiêu chuẩn gồm 4 bước:</p>
 <ol>
 <li><strong>Server khởi tạo</strong>: Tạo ServerSocket và gắn vào một cổng (bind port), ví dụ cổng 5000.</li>
 <li><strong>Server lắng nghe</strong>: Gọi hàm <code>accept()</code> và chờ đợi. Lúc này chương trình Server sẽ tạm dừng (block) cho đến khi có ai đó gõ cửa.</li>
 <li><strong>Client kết nối</strong>: Tạo Socket với tham số là IP của Server và cổng 5000.</li>
 <li><strong>Trao đổi dữ liệu</strong>: Server chấp nhận kết nối. Cả hai bên sử dụng InputStream (để đọc) và OutputStream (để ghi) nhằm gửi tin nhắn qua lại.</li>
 </ol>
-<h2 id="4-thực-hành-xây-dựng-ứng-dụng-echo-a-z">4. Thực hành: Xây dựng ứng dụng Echo (A-Z)
-</h2><p>Chúng ta sẽ viết một ứng dụng đơn giản: Client gửi một câu chào, Server nhận được và trả lời lại.</p>
-<h3 id="bước-1-viết-chương-trình-server-simpleserverjava">Bước 1: Viết chương trình Server (SimpleServer.java)
-</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> java.io.*;
+<h2 id="4-thực-hành-xây-dựng-ứng-dụng-echo-a-z">4. Thực hành: Xây dựng ứng dụng Echo (A-Z)</h2>
+<p>Chúng ta sẽ viết một ứng dụng đơn giản: Client gửi một câu chào, Server nhận được và trả lời lại.</p>
+<h3 id="bước-1-viết-chương-trình-server-simpleserverjava">Bước 1: Viết chương trình Server (SimpleServer.java)</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> java.io.*;
 </span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.net.*;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimpleServer</span> {
@@ -322,8 +562,8 @@
 <li><code>accept()</code>: Phương thức quan trọng nhất, nó &ldquo;bắt&rdquo; lấy yêu cầu kết nối.</li>
 <li><code>BufferedReader &amp; PrintWriter</code>: Dùng để đọc/ghi chuỗi văn bản (String) thay vì từng byte lẻ tẻ, giúp code gọn hơn.</li>
 </ul>
-<h3 id="bước-2-viết-chương-trình-client-simpleclientjava">Bước 2: Viết chương trình Client (SimpleClient.java)
-</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> java.io.*;
+<h3 id="bước-2-viết-chương-trình-client-simpleclientjava">Bước 2: Viết chương trình Client (SimpleClient.java)</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> java.io.*;
 </span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.net.*;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimpleClient</span> {
@@ -361,14 +601,14 @@
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="bước-3-chạy-và-kiểm-thử">Bước 3: Chạy và kiểm thử
-</h3><p>Để thấy kết quả, bạn cần chạy 2 chương trình này song song (tốt nhất là trên 2 cửa sổ Terminal hoặc 2 tab Console trong IDE).</p>
+</span></span></code></pre></div><h3 id="bước-3-chạy-và-kiểm-thử">Bước 3: Chạy và kiểm thử</h3>
+<p>Để thấy kết quả, bạn cần chạy 2 chương trình này song song (tốt nhất là trên 2 cửa sổ Terminal hoặc 2 tab Console trong IDE).</p>
 <ol>
 <li><strong>Chạy SimpleServer.java trước</strong>: Bạn sẽ thấy dòng &ldquo;Đang chờ kết nối&hellip;&rdquo;.</li>
 <li><strong>Chạy SimpleClient.java sau</strong>: Ngay lập tức Client sẽ kết nối.</li>
 </ol>
-<h2 id="5-nâng-cao-xử-lý-đa-luồng-multi-threading">5. Nâng cao: Xử lý đa luồng (Multi-threading)
-</h2><p>Vấn đề của đoạn code trên là Server chỉ phục vụ được một Client duy nhất tại một thời điểm. Nếu Client A đang kết nối, Client B sẽ phải chờ.</p>
+<h2 id="5-nâng-cao-xử-lý-đa-luồng-multi-threading">5. Nâng cao: Xử lý đa luồng (Multi-threading)</h2>
+<p>Vấn đề của đoạn code trên là Server chỉ phục vụ được một Client duy nhất tại một thời điểm. Nếu Client A đang kết nối, Client B sẽ phải chờ.</p>
 <p>Trong thực tế, để Server phục vụ hàng ngàn người cùng lúc, chúng ta cần sử dụng <strong>Multi-threading</strong> (Đa luồng).</p>
 <p><strong>Ý tưởng:</strong></p>
 <ul>
@@ -383,8 +623,8 @@
 </span></span><span style="display:flex;"><span>    Thread worker <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Thread(<span style="color:#66d9ef">new</span> ClientHandler(socket));
 </span></span><span style="display:flex;"><span>    worker.<span style="color:#a6e22e">start</span>();
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="6-lời-kết">6. Lời kết
-</h2><p>Lập trình Client-Server với Java thoạt nhìn có vẻ phức tạp với nhiều khái niệm về Stream và Socket, nhưng bản chất chỉ là việc mở một đường ống và đẩy dữ liệu qua lại.</p>
+</span></span></code></pre></div><h2 id="6-lời-kết">6. Lời kết</h2>
+<p>Lập trình Client-Server với Java thoạt nhìn có vẻ phức tạp với nhiều khái niệm về Stream và Socket, nhưng bản chất chỉ là việc mở một đường ống và đẩy dữ liệu qua lại.</p>
 <p>Nắm vững kiến thức này là bước đệm quan trọng để bạn tiến tới các kỹ thuật cao cấp hơn như:</p>
 <ul>
 <li>Non-blocking I/O (Java NIO).</li>
@@ -393,151 +633,155 @@
 </ul>
 <p>Hy vọng bài viết này giúp bạn có cái nhìn tổng quan và tự tay viết được ứng dụng mạng đầu tiên của mình!</p>
 
-</section>
-
-
-    <footer class="article-footer">
-    
-    <section class="article-tags">
-        
-            <a href="/tags/java/">Java</a>
-        
-            <a href="/tags/client-server/">Client-Server</a>
-        
-            <a href="/tags/tcp/ip/">TCP/IP</a>
-        
-            <a href="/tags/socket/">Socket</a>
-        
-            <a href="/tags/network/">Network</a>
-        
-    </section>
-
-
-    </footer>
-
-
-    
-</article>
-
-    
-
-    
-
-     
-    
-        
-    
-
-    <footer class="site-footer">
-    <section class="copyright">
-        &copy; 
-        
-        2025 Kiến thức lập trình
-    </section>
-    
-    <section class="powerby">
-        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.32.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
-    </section>
-</footer>
-
-
-    
-<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-
-    
-    <div class="pswp__bg"></div>
-
-    
-    <div class="pswp__scroll-wrap">
-
-        
-        <div class="pswp__container">
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
         </div>
-
-        
-        <div class="pswp__ui pswp__ui--hidden">
-
-            <div class="pswp__top-bar">
-
-                
-
-                <div class="pswp__counter"></div>
-
-                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-
-                <button class="pswp__button pswp__button--share" title="Share"></button>
-
-                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-
-                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-
-                
-                
-                <div class="pswp__preloader">
-                    <div class="pswp__preloader__icn">
-                        <div class="pswp__preloader__cut">
-                            <div class="pswp__preloader__donut"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                <div class="pswp__share-tooltip"></div>
-            </div>
-
-            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-            </button>
-
-            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-            </button>
-
-            <div class="pswp__caption">
-                <div class="pswp__caption__center"></div>
-            </div>
-
-        </div>
-
+      </article>
     </div>
 
-</div><script 
-                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
-                defer
-                >
-            </script><script 
-                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
-                defer
-                >
-            </script><link 
-                rel="stylesheet" 
-                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
-            ><link 
-                rel="stylesheet" 
-                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
-            >
+    
+    <div class="lg:col-span-3">
+<div
+  class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg shadow-lg p-6"
+>
+  
+  
+  <div class="text-center mb-4">
+    <img
+      src="/images/avatar.jpg"
+      alt="Lý Thuận An"
+      class="w-32 h-32 rounded-lg mx-auto object-cover shadow-md border-4 border-slate-700"
+    />
+  </div>
+  
 
-            </main>
-        </div>
-        <script 
-                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
-                
-                >
-            </script><script type="text/javascript" src="/ts/main.bcc7e9405c3d3cb732a7311965dda94f6ae5bcc3030b1c75796c4d2ed04912aa.js" defer></script>
-<script>
-    (function () {
-        const customFont = document.createElement('link');
-        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+  
+  <h3
+    class="text-lg font-bold mb-2 text-white text-center flex items-center justify-center"
+  >
+    <svg
+      class="w-5 h-5 mr-2 text-cyan-400"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+      ></path>
+    </svg>
+    ABOUT ME
+  </h3>
 
-        customFont.type = "text/css";
-        customFont.rel = "stylesheet";
+  
+  <div class="space-y-3">
+    
+    
+    <div class="text-center">
+      <h4 class="font-bold text-white text-xl">
+        Lý Thuận An
+      </h4>
+    </div>
+    
 
-        document.head.appendChild(customFont);
-    }());
-</script>
+    
+    
+    <p class="text-gray-400 text-sm text-center leading-relaxed italic">
+      Engineer #Pencraft Cloud, Open Source Enthusiast and Life Adventurer
+    </p>
+    
 
-    </body>
+    
+    
+    <p class="text-gray-300 leading-relaxed text-sm">
+      Mình là Lý Thuận An, đang theo học năm cuối chuyên ngành Trí tuệ nhân tạo tại Đại học Công nghệ TP.HCM (HUTECH). Định hướng nghề nghiệp của mình tập trung vào việc kết nối nghiên cứu AI với phát triển ứng dụng thực tế.
+    </p>
+    
+
+    
+    <div class="space-y-2 pt-2">
+      
+      <a
+        href="mailto:anly1704@gmail.com"
+        class="flex items-center text-gray-300 hover:text-cyan-400 transition-colors text-sm"
+      >
+        <svg
+          class="w-4 h-4 mr-2 text-cyan-400"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"
+          />
+        </svg>
+        anly1704@gmail.com
+      </a>
+       
+      <div class="flex items-center text-gray-300 text-sm">
+        <svg
+          class="w-4 h-4 mr-2 text-cyan-400"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"
+          />
+        </svg>
+        &#43;84 769 339 058
+      </div>
+      
+    </div>
+
+    
+    <div class="flex items-center justify-center gap-3 pt-3">
+      
+      <a
+        href="https://github.com/aresu-1704"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center justify-center w-10 h-10 bg-gray-700 hover:bg-gray-600 text-white rounded-full transition-all duration-200 hover:scale-110"
+        title="GitHub"
+      >
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+          />
+        </svg>
+      </a>
+       
+      <a
+        href="https://www.facebook.com/an.thuan.3139241"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center justify-center w-10 h-10 bg-blue-600 hover:bg-blue-500 text-white rounded-full transition-all duration-200 hover:scale-110"
+        title="Facebook"
+      >
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+          />
+        </svg>
+      </a>
+      
+    </div>
+  </div>
+  
+</div>
+</div>
+  </div>
+</div>
+</main>
+
+    
+    <footer
+      class="bg-slate-950 text-gray-400 py-8 mt-12 border-t border-slate-800"
+    >
+      <div class="container mx-auto px-4 text-center">
+        <p>&copy; 2025 THUẬN AN IT BLOG. All rights reserved.</p>
+      </div>
+    </footer>
+
+    
+    <script src="/js/search.js"></script>
+  </body>
 </html>

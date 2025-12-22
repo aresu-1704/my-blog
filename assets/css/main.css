@@ -1,0 +1,220 @@
+/* Custom CSS for Hugo Blog with Tailwind CSS v3 - Dark Blue Theme */
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom dark blue background */
+body {
+    background-color: #0f172a; /* slate-900 */
+}
+
+/* Custom prose styles for blog content - Dark Theme with Better Formatting */
+.prose-invert {
+    color: #e2e8f0;
+    max-width: 75ch; /* Limit line length for readability */
+    line-height: 1.8; /* Increase line spacing */
+}
+
+/* Paragraph spacing */
+.prose-invert p {
+    margin-bottom: 1.5em;
+    line-height: 1.8;
+}
+
+/* Headings spacing */
+.prose-invert h1,
+.prose-invert h2,
+.prose-invert h3,
+.prose-invert h4,
+.prose-invert h5,
+.prose-invert h6 {
+    color: #ffffff;
+    margin-top: 2em;
+    margin-bottom: 1em;
+    line-height: 1.3;
+}
+
+/* Remove top margin from first heading to avoid excessive whitespace */
+.prose-invert h1:first-child,
+.prose-invert h2:first-child {
+    margin-top: 0;
+}
+
+.prose-invert h1 {
+    font-size: 2.25em;
+}
+
+.prose-invert h2 {
+    font-size: 1.875em;
+}
+
+.prose-invert h3 {
+    font-size: 1.5em;
+}
+
+/* Images - center and add spacing */
+.prose-invert img {
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+    margin: 2em auto; /* Center images with vertical spacing */
+    display: block;
+    max-width: 100%;
+}
+
+/* Lists spacing */
+.prose-invert ul,
+.prose-invert ol {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    padding-left: 1.5em;
+}
+
+.prose-invert li {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+/* Code blocks */
+.prose-invert code {
+    background-color: #1e293b;
+    color: #67e8f9;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+}
+
+.prose-invert pre {
+    background-color: #020617;
+    color: #f1f5f9;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    overflow-x: auto;
+    border: 1px solid #334155;
+    margin: 2em 0; /* Add vertical spacing */
+}
+
+.prose-invert pre code {
+    background-color: transparent;
+    padding: 0;
+    color: inherit;
+}
+
+/* Blockquotes */
+.prose-invert blockquote {
+    border-left: 4px solid #22d3ee;
+    padding-left: 1em;
+    margin: 2em 0;
+    font-style: italic;
+    color: #cbd5e1;
+}
+
+/* Links - improve contrast */
+.prose-invert a {
+    color: #67e8f9; /* Lighter cyan for better contrast */
+    text-decoration: underline;
+    text-decoration-color: #22d3ee;
+    text-underline-offset: 3px;
+}
+
+.prose-invert a:hover {
+    color: #a5f3fc;
+    text-decoration-color: #67e8f9;
+}
+
+/* Tables */
+.prose-invert table {
+    margin: 2em 0;
+    width: 100%;
+}
+
+.prose-invert th,
+.prose-invert td {
+    padding: 0.75em;
+    border: 1px solid #334155;
+}
+
+.prose-invert th {
+    background-color: #1e293b;
+    font-weight: bold;
+}
+
+/* Hr */
+.prose-invert hr {
+    border-color: #334155;
+    margin: 3em 0;
+}
+
+/* Sticky elements offset for navbar */
+.sticky {
+    position: sticky;
+}
+
+/* Custom transitions */
+.transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+}
+
+/* Search highlight */
+.search-highlight {
+    background-color: #fef3c7;
+    animation: highlightFade 2s ease-in-out;
+}
+
+@keyframes highlightFade {
+    0% {
+        background-color: #fef3c7;
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
+/* Link hover effects */
+a {
+    transition: color 0.2s ease-in-out;
+}
+
+/* Custom button styles */
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary {
+    background-color: #0ea5e9;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0284c7;
+}
+
+.btn-secondary {
+    background-color: #334155;
+    color: #e2e8f0;
+}
+
+.btn-secondary:hover {
+    background-color: #475569;
+}
+
+/* Gradient backgrounds for cards */
+.gradient-card {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
+/* Fix email links visibility */
+a[href^="mailto:"] {
+    color: #67e8f9 !important;
+    text-decoration: underline;
+}
+
+a[href^="mailto:"]:hover {
+    color: #a5f3fc !important;
+}

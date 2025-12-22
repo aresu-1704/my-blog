@@ -1,0 +1,108 @@
+{{ define "main" }}
+<div class="container mx-auto px-4 py-8">
+  <div class="grid grid-cols-1 lg:grid-cols-10 gap-8">
+    <!-- Left Column: Post Content (70%) -->
+    <div class="lg:col-span-7">
+      <article
+        class="bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-8"
+      >
+        <!-- Post Header -->
+        <header class="mb-8">
+          <!-- Post Image -->
+          {{ if .Params.image }}
+          <div class="mb-6 -mx-8 -mt-8">
+            <img
+              src="{{ .Params.image | relURL }}"
+              alt="{{ .Title }}"
+              class="w-full h-96 object-cover rounded-t-lg"
+            />
+          </div>
+          {{ end }}
+
+          <h1 class="text-4xl font-bold mb-4 text-white">{{ .Title }}</h1>
+
+          <div
+            class="flex flex-wrap items-center gap-4 text-sm text-gray-400 mb-4"
+          >
+            <!-- Date -->
+            <span class="flex items-center">
+              <svg
+                class="w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+              {{ .Date.Format "02/01/2006" }}
+            </span>
+
+            <!-- Author -->
+            {{ if .Params.author }}
+            <span class="flex items-center">
+              <svg
+                class="w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                ></path>
+              </svg>
+              {{ .Params.author }}
+            </span>
+            {{ end }}
+          </div>
+
+          <!-- Categories -->
+          {{ if .Params.categories }}
+          <div class="flex flex-wrap gap-2 mb-4">
+            {{ range .Params.categories }}
+            <a
+              href="/categories/{{ . | urlize }}"
+              class="px-3 py-1 bg-cyan-900 bg-opacity-30 text-cyan-300 border border-cyan-600 rounded-full text-sm hover:bg-cyan-800 hover:bg-opacity-40 transition-colors"
+            >
+              {{ . }}
+            </a>
+            {{ end }}
+          </div>
+          {{ end }}
+
+          <!-- Tags -->
+          {{ if .Params.tags }}
+          <div class="flex flex-wrap gap-2">
+            {{ range .Params.tags }}
+            <a
+              href="/tags/{{ . | urlize }}"
+              class="px-3 py-1 bg-slate-700 text-gray-300 rounded-full text-sm hover:bg-slate-600 transition-colors"
+            >
+              #{{ . }}
+            </a>
+            {{ end }}
+          </div>
+          {{ end }}
+        </header>
+
+        <!-- Post Content -->
+        <div
+          class="prose prose-invert max-w-none prose-headings:font-bold prose-headings:text-white prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:underline prose-img:rounded-lg prose-pre:bg-slate-950 prose-pre:border prose-pre:border-slate-700 prose-code:text-cyan-300 text-gray-300"
+        >
+          {{ .Content }}
+        </div>
+      </article>
+    </div>
+
+    <!-- Right Column: Sidebar (30%) -->
+    <div class="lg:col-span-3">{{ partial "about.html" . }}</div>
+  </div>
+</div>
+{{ end }}

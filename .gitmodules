@@ -1,3 +1,9 @@
 [submodule "themes/Stack"]
 	path = themes/Stack
 	url = https://github.com/CaiJimmy/hugo-theme-stack.git
+[submodule "themes/CleanWhite"]
+	path = themes/CleanWhite
+	url = https://github.com/zhaohuabing/hugo-theme-cleanwhite.git
+[submodule "themes/Adritian"]
+	path = themes/Adritian
+	url = https://github.com/zetxek/adritian-free-hugo-theme.git
