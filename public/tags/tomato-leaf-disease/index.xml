@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Tomato Leaf Disease on Kiến thức lập trình</title>
+        <link>http://localhost:1313/tags/tomato-leaf-disease/</link>
+        <description>Recent content in Tomato Leaf Disease on Kiến thức lập trình</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>vi-vn</language>
+        <lastBuildDate>Thu, 20 Nov 2025 09:00:00 +0700</lastBuildDate><atom:link href="http://localhost:1313/tags/tomato-leaf-disease/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>YOLOv10n-VT: A Lightweight and Practical Model for Tomato Leaf Disease Detection in Vietnam</title>
+        <link>http://localhost:1313/research/</link>
+        <pubDate>Thu, 20 Nov 2025 09:00:00 +0700</pubDate>
+        
+        <guid>http://localhost:1313/research/</guid>
+        <description></description>
+        </item>
+        
+    </channel>
+</rss>

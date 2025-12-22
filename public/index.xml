@@ -658,12 +658,10 @@ Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
 &lt;h2 id=&#34;tcp-transmission-control-protocol&#34;&gt;TCP: Transmission Control Protocol
 &lt;/h2&gt;&lt;h3 id=&#34;tcp-handshake---cái-bắt-tay-3-bước-tốn-thời-gian&#34;&gt;TCP Handshake - Cái bắt tay 3 bước tốn thời gian
 &lt;/h3&gt;&lt;p&gt;Trước khi gửi bất kỳ data nào, TCP phải thiết lập kết nối qua 3-way handshake. Client gửi một segment với cờ SYN kèm theo sequence number ngẫu nhiên (gọi là ISN - Initial Sequence Number). Server nhận được thì gửi lại SYN-ACK, vừa xác nhận ISN của client vừa gửi ISN của chính nó. Cuối cùng client gửi ACK để xác nhận ISN của server.&lt;/p&gt;
-&lt;p align=&#34;center&#34;&gt;
-  &lt;img src=&#34;http://localhost:1313/images/tcp-3-way.png&#34; alt=&#34;JavaScript Client-Side&#34; /&gt;
-&lt;/p&gt;
-&lt;p align=&#34;center&#34;&gt;
-  &lt;em&gt;TCP 3 bước bắt tay&lt;/em&gt;
-&lt;/p&gt;
+&lt;div style=&#34;text-align: center; margin: 2rem 0;&#34;&gt;
+  &lt;img src=&#34;http://localhost:1313/images/tcp-3-way.png&#34; alt=&#34;TCP 3-way handshake&#34; style=&#34;max-width: 600px; width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);&#34; /&gt;
+  &lt;p style=&#34;margin-top: 0.8rem; color: #666; font-style: italic;&#34;&gt;TCP 3 bước bắt tay&lt;/p&gt;
+&lt;/div&gt;
 &lt;p&gt;Nghe có vẻ đơn giản nhưng quá trình này tốn &lt;strong&gt;1.5 RTT&lt;/strong&gt; (Round-Trip Time). Nếu client và server ở xa nhau thì latency này khá đáng kể. Chưa kể cả hai bên phải giữ connection state trong memory. Khi đóng kết nối lại phải 4-way handshake nữa, thêm 2 RTT nữa.&lt;/p&gt;
 &lt;h3 id=&#34;tcp-đảm-bảo-reliable-như-thế-nào&#34;&gt;TCP đảm bảo reliable như thế nào?
 &lt;/h3&gt;&lt;p&gt;TCP không tin tưởng network layer. Nó tự implement reliability bằng cách đánh số thứ tự cho từng byte data. Khi receiver nhận được data, nó gửi ACK packet ngược lại để báo &amp;ldquo;tao đã nhận đến byte số X rồi&amp;rdquo;. Sender sẽ giữ data trong buffer cho đến khi nhận được ACK.&lt;/p&gt;
@@ -996,12 +994,10 @@ Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
 &lt;li&gt;&lt;strong&gt;Gửi yêu cầu (Request)&lt;/strong&gt;: Sử dụng &lt;code&gt;fetch()&lt;/code&gt; hoặc &lt;code&gt;axios&lt;/code&gt; để gọi dữ liệu từ Server mà không cần tải lại trang (AJAX).&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;Giới hạn:&lt;/strong&gt; Không thể đọc/ghi file trực tiếp trên máy tính người dùng (vì lý do bảo mật), không thể kết nối trực tiếp vào Database.&lt;/p&gt;
-&lt;p align=&#34;center&#34;&gt;
-  &lt;img src=&#34;http://localhost:1313/images/client-side-js.jpg&#34; alt=&#34;JavaScript Client-Side&#34; /&gt;
-&lt;/p&gt;
-&lt;p align=&#34;center&#34;&gt;
-  &lt;em&gt;Mô hình Javascript ở phía khách&lt;/em&gt;
-&lt;/p&gt;
+&lt;div style=&#34;text-align: center; margin: 2rem 0;&#34;&gt;
+  &lt;img src=&#34;http://localhost:1313/images/client-side-js.jpg&#34; alt=&#34;JavaScript Client-Side&#34; style=&#34;max-width: 600px; width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);&#34; /&gt;
+  &lt;p style=&#34;margin-top: 0.8rem; color: #666; font-style: italic;&#34;&gt;Mô hình Javascript ở phía khách&lt;/p&gt;
+&lt;/div&gt;
 &lt;h3 id=&#34;b-javascript-tại-server-nodejs&#34;&gt;B. JavaScript tại Server (Node.js)
 &lt;/h3&gt;&lt;p&gt;Tại đây, JS chạy trên môi trường Node.js (một runtime sử dụng V8 Engine của Google nhưng tách khỏi trình duyệt).&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Nhiệm vụ:&lt;/strong&gt;&lt;/p&gt;
@@ -1158,41 +1154,6 @@ Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
 &lt;li&gt;Tìm hiểu về &lt;strong&gt;RESTful API design&lt;/strong&gt; và best practices&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Happy coding!&lt;/p&gt;
-</description>
-        </item>
-        <item>
-        <title>About Me</title>
-        <link>http://localhost:1313/about/</link>
-        <pubDate>Sun, 21 Dec 2025 21:50:00 +0700</pubDate>
-        
-        <guid>http://localhost:1313/about/</guid>
-        <description>&lt;div style=&#34;text-align: center; margin-bottom: 2rem;&#34;&gt;
-  &lt;img src=&#34;http://localhost:1313/images/about-me.jpg&#34; alt=&#34;Lý Thuận An&#34; style=&#34;height: 600px; border-radius: 50px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);&#34;&gt;
-&lt;/div&gt;
-&lt;h2 id=&#34;đôi-nét-về-bản-thân-tôi&#34;&gt;Đôi nét về bản thân tôi
-&lt;/h2&gt;&lt;p&gt;Mình là &lt;strong&gt;Lý Thuận An&lt;/strong&gt;, đang theo học năm cuối chuyên ngành Trí tuệ nhân tạo tại Đại học Công nghệ TP.HCM (HUTECH). Quá trình học tập với GPA 3.8/4.0 và danh hiệu sinh viên tiêu biểu năm học 2022-2023 không phải là điểm đến, mà là minh chứng cho cách tiếp cận mà mình đã chọn: luôn đào sâu để hiểu bản chất của vấn đề thay vì chỉ học theo tutorial có sẵn.&lt;/p&gt;
-&lt;p&gt;Định hướng nghề nghiệp của mình tập trung vào việc kết nối nghiên cứu AI với phát triển ứng dụng thực tế, đặc biệt là Mobile App. Mình tin rằng giá trị thực sự của AI không nằm ở việc chạy được mô hình, mà ở khả năng hiểu kiến trúc, điều chỉnh phù hợp với yêu cầu cụ thể, và triển khai trong môi trường production.&lt;/p&gt;
-&lt;p&gt;Trong ngắn hạn, mình tập trung hoàn thiện nền tảng kỹ thuật, tham gia các hoạt động nghiên cứu và viết paper, đồng thời triển khai các dự án có tính ứng dụng cao. Về dài hạn, mục tiêu là xây dựng những sản phẩm AI giải quyết các bài toán thực tiễn, mang lại giá trị xã hội đo đếm được, hoặc tiếp tục con đường nghiên cứu chuyên sâu trong lĩnh vực này.&lt;/p&gt;
-&lt;h2 id=&#34;tiêu-chí-blog&#34;&gt;Tiêu chí Blog
-&lt;/h2&gt;&lt;p&gt;Blog này là nơi mình chia sẻ những gì học được từ quá trình nghiên cứu và phát triển sản phẩm. Từ các khái niệm nền tảng về mạng máy tính, lập trình hệ thống, đến những phân tích kỹ thuật về AI và kiến trúc ứng dụng. Mỗi bài viết là một cách để mình hệ thống lại kiến thức và góp phần vào cộng đồng kỹ thuật Việt Nam.&lt;/p&gt;
-&lt;p&gt;Mình viết theo triết lý &amp;ldquo;đi sâu vào bản chất&amp;rdquo; - không chỉ dừng lại ở việc code chạy được, mà cần hiểu tại sao nó chạy, nó hoạt động như thế nào ở tầng dưới, và khi nào nên dùng giải pháp nào. Hy vọng những chia sẻ này hữu ích cho các bạn đang học và làm việc trong lĩnh vực công nghệ! 🚀&lt;/p&gt;
-&lt;h2 id=&#34;ngoài-lề-một-chút&#34;&gt;Ngoài lề một chút
-&lt;/h2&gt;&lt;p&gt;Ngoài code ra thì mình cũng là game thủ trung thành (chủ yếu là để&amp;hellip; debug stress sau khi debug code 😅). Thỉnh thoảng cũng ra sân chơi thể thao để nhắc nhở bản thân rằng không phải cứ ngồi một chỗ là cơ thể sẽ tự động khỏe mạnh. Cân bằng giữa màn hình và đời thực là cả một nghệ thuật! ⚽🏀&lt;/p&gt;
-&lt;div style=&#34;text-align: center; margin-bottom: 2rem;&#34;&gt;
-  &lt;img src=&#34;http://localhost:1313/images/my-desk.jpg&#34; alt=&#34;Lý Thuận An&#34; style=&#34;box-shadow: 0 4px 6px rgba(0,0,0,0.1);&#34;&gt;
-&lt;/div&gt;
-&lt;div style=&#34;text-align: center; margin-bottom: 2rem;&#34;&gt;
-  &lt;em&gt;Khoe tí góc làm việc (và chơi game)&lt;/em&gt;
-&lt;/div&gt;
-&lt;h2 id=&#34;liên-hệ&#34;&gt;Liên hệ
-&lt;/h2&gt;&lt;p&gt;Nếu muốn trao đổi về AI, công nghệ, hoặc đơn giản là chém gió về game và cuộc sống, feel free liên hệ mình nhé:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Email:&lt;/strong&gt; &lt;a class=&#34;link&#34; href=&#34;mailto:anly1704@gmail.com&#34; &gt;anly1704@gmail.com&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;GitHub:&lt;/strong&gt; &lt;a class=&#34;link&#34; href=&#34;https://github.com/aresu-1704&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;aresu-1704&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;hr&gt;
-&lt;p&gt;&lt;em&gt;&amp;ldquo;The best way to learn is to teach, and the best way to understand is to explain.&amp;rdquo;&lt;/em&gt;&lt;/p&gt;
 </description>
         </item>
         <item>
@@ -1849,6 +1810,197 @@ Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
 &lt;li&gt;Lập trình Game Real-time.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Hy vọng bài viết này giúp bạn có cái nhìn tổng quan và tự tay viết được ứng dụng mạng đầu tiên của mình!&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title></title>
+        <link>http://localhost:1313/about/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://localhost:1313/about/</guid>
+        <description>&lt;h1 style=&#34;font-size: 3.5em; font-weight: bold; margin-bottom: 1em;&#34;&gt;VỀ BẢN THÂN TÔI&lt;/h1&gt;
+&lt;div style=&#34;text-align: center; margin: 2rem 0;&#34;&gt;
+  &lt;img src=&#34;http://localhost:1313/images/about-me.jpg&#34; alt=&#34;Lý Thuận An&#34; style=&#34;max-width: 600px; width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);&#34;&gt;
+&lt;/div&gt;
+&lt;h2 id=&#34;đôi-nét-về-bản-thân-tôi&#34;&gt;Đôi nét về bản thân tôi
+&lt;/h2&gt;&lt;p&gt;Mình là &lt;strong&gt;Lý Thuận An&lt;/strong&gt;, đang theo học năm cuối chuyên ngành Trí tuệ nhân tạo tại Đại học Công nghệ TP.HCM (HUTECH). Quá trình học tập với GPA 3.8/4.0 và danh hiệu sinh viên tiêu biểu năm học 2022-2023 không phải là điểm đến, mà là minh chứng cho cách tiếp cận mà mình đã chọn: luôn đào sâu để hiểu bản chất của vấn đề thay vì chỉ học theo tutorial có sẵn.&lt;/p&gt;
+&lt;p&gt;Định hướng nghề nghiệp của mình tập trung vào việc kết nối nghiên cứu AI với phát triển ứng dụng thực tế, đặc biệt là Mobile App. Mình tin rằng giá trị thực sự của AI không nằm ở việc chạy được mô hình, mà ở khả năng hiểu kiến trúc, điều chỉnh phù hợp với yêu cầu cụ thể, và triển khai trong môi trường production.&lt;/p&gt;
+&lt;p&gt;Trong ngắn hạn, mình tập trung hoàn thiện nền tảng kỹ thuật, tham gia các hoạt động nghiên cứu và viết paper, đồng thời triển khai các dự án có tính ứng dụng cao. Về dài hạn, mục tiêu là xây dựng những sản phẩm AI giải quyết các bài toán thực tiễn, mang lại giá trị xã hội đo đếm được, hoặc tiếp tục con đường nghiên cứu chuyên sâu trong lĩnh vực này.&lt;/p&gt;
+&lt;h2 id=&#34;tiêu-chí-blog&#34;&gt;Tiêu chí Blog
+&lt;/h2&gt;&lt;p&gt;Blog này là nơi mình chia sẻ những gì học được từ quá trình nghiên cứu và phát triển sản phẩm. Từ các khái niệm nền tảng về mạng máy tính, lập trình hệ thống, đến những phân tích kỹ thuật về AI và kiến trúc ứng dụng. Mỗi bài viết là một cách để mình hệ thống lại kiến thức và góp phần vào cộng đồng kỹ thuật Việt Nam.&lt;/p&gt;
+&lt;p&gt;Mình viết theo triết lý &amp;ldquo;đi sâu vào bản chất&amp;rdquo; - không chỉ dừng lại ở việc code chạy được, mà cần hiểu tại sao nó chạy, nó hoạt động như thế nào ở tầng dưới, và khi nào nên dùng giải pháp nào. Hy vọng những chia sẻ này hữu ích cho các bạn đang học và làm việc trong lĩnh vực công nghệ! 🚀&lt;/p&gt;
+&lt;h2 id=&#34;ngoài-lề-một-chút&#34;&gt;Ngoài lề một chút
+&lt;/h2&gt;&lt;p&gt;Ngoài code ra thì mình cũng là game thủ trung thành (chủ yếu là để&amp;hellip; debug stress sau khi debug code 😅). Thỉnh thoảng cũng ra sân chơi thể thao để nhắc nhở bản thân rằng không phải cứ ngồi một chỗ là cơ thể sẽ tự động khỏe mạnh. Cân bằng giữa màn hình và đời thực là cả một nghệ thuật! ⚽🏀&lt;/p&gt;
+&lt;div style=&#34;text-align: center; margin: 2rem 0;&#34;&gt;
+  &lt;img src=&#34;http://localhost:1313/images/my-desk.jpg&#34; alt=&#34;Góc làm việc&#34; style=&#34;max-width: 600px; width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);&#34;&gt;
+  &lt;p style=&#34;margin-top: 0.8rem; color: #666; font-style: italic;&#34;&gt;Khoe tí góc làm việc (và chơi game)&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2 id=&#34;liên-hệ&#34;&gt;Liên hệ
+&lt;/h2&gt;&lt;p&gt;Nếu muốn trao đổi về AI, công nghệ, hoặc đơn giản là chém gió về game và cuộc sống, feel free liên hệ mình nhé:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Email:&lt;/strong&gt; &lt;a class=&#34;link&#34; href=&#34;mailto:anly1704@gmail.com&#34; &gt;anly1704@gmail.com&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GitHub:&lt;/strong&gt; &lt;a class=&#34;link&#34; href=&#34;https://github.com/aresu-1704&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;aresu-1704&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;em&gt;&amp;ldquo;The best way to learn is to teach, and the best way to understand is to explain.&amp;rdquo;&lt;/em&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title></title>
+        <link>http://localhost:1313/contact/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://localhost:1313/contact/</guid>
+        <description>&lt;div style=&#34;max-width: 800px; margin: 0 auto;&#34;&gt;
+&lt;h1 style=&#34;font-size: 3.5em; font-weight: bold; margin-bottom: 1em;&#34;&gt;LIÊN HỆ&lt;/h1&gt;
+&lt;div style=&#34;display: flex; gap: 60px; align-items: flex-start; flex-wrap: wrap;&#34;&gt;
+&lt;div style=&#34;flex: 1; min-width: 300px;&#34;&gt;
+&lt;h2 id=&#34;thuận-an&#34;&gt;THUẬN AN
+&lt;/h2&gt;&lt;div style=&#34;margin: 20px 0;&#34;&gt;
+&lt;p style=&#34;display: flex; align-items: center; gap: 10px; margin: 10px 0;&#34;&gt;
+&lt;svg width=&#34;24&#34; height=&#34;24&#34; fill=&#34;currentColor&#34; viewBox=&#34;0 0 24 24&#34; style=&#34;color: #4a9d8f;&#34;&gt;
+&lt;path d=&#34;M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z&#34;/&gt;
+&lt;/svg&gt;
+&lt;a href=&#34;mailto:anly1704@gmail.com&#34; style=&#34;color: #333; text-decoration: none;&#34;&gt;anly1704@gmail.com&lt;/a&gt;
+&lt;/p&gt;
+&lt;p style=&#34;display: flex; align-items: center; gap: 10px; margin: 10px 0;&#34;&gt;
+&lt;svg width=&#34;24&#34; height=&#34;24&#34; fill=&#34;currentColor&#34; viewBox=&#34;0 0 24 24&#34; style=&#34;color: #4a9d8f;&#34;&gt;
+&lt;path d=&#34;M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z&#34;/&gt;
+&lt;/svg&gt;
+&lt;span&gt;+84 769 339 058&lt;/span&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;div style=&#34;display: flex; align-items: center; gap: 12px; margin-top: 30px;&#34;&gt;
+&lt;a href=&#34;https://github.com/aresu-1704&#34; target=&#34;_blank&#34; rel=&#34;noopener noreferrer&#34;
+   style=&#34;display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+          background: #333; color: white; border-radius: 50%; text-decoration: none; transition: transform 0.2s;&#34;&gt;
+&lt;svg width=&#34;20&#34; height=&#34;20&#34; fill=&#34;currentColor&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;path d=&#34;M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z&#34;/&gt;
+&lt;/svg&gt;
+&lt;/a&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.facebook.com/an.thuan.3139241&#34; target=&#34;_blank&#34; rel=&#34;noopener noreferrer&#34;
+style=&#34;display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+background: #1877f2; color: white; border-radius: 50%; text-decoration: none; transition: transform 0.2s;&#34;&gt;
+&lt;svg width=&#34;20&#34; height=&#34;20&#34; fill=&#34;currentColor&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;path d=&#34;M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z&#34;/&gt;
+&lt;/svg&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div style=&#34;flex: 1; min-width: 300px;&#34;&gt;
+&lt;form action=&#34;#&#34; method=&#34;POST&#34; style=&#34;display: flex; flex-direction: column; gap: 15px;&#34;&gt;
+&lt;input type=&#34;text&#34; name=&#34;name&#34; placeholder=&#34;Name *&#34; required
+       style=&#34;padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 1em;&#34;&gt;
+&lt;p&gt;&lt;input type=&#34;email&#34; name=&#34;email&#34; placeholder=&#34;Email *&#34; required
+style=&#34;padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 1em;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;input type=&#34;text&#34; name=&#34;subject&#34; placeholder=&#34;Subject&#34;
+style=&#34;padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 1em;&#34;&gt;&lt;/p&gt;
+&lt;textarea name=&#34;message&#34; placeholder=&#34;Message&#34; rows=&#34;6&#34;
+          style=&#34;padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 1em; resize: vertical;&#34;&gt;&lt;/textarea&gt;
+&lt;p&gt;&lt;button type=&#34;submit&#34;
+style=&#34;padding: 12px 30px; background: #4a9d8f; color: white; border: none;
+border-radius: 4px; font-size: 1em; cursor: pointer; align-self: flex-end;
+transition: background 0.3s;&#34;&gt;
+Send
+&lt;/button&gt;&lt;/p&gt;
+&lt;/form&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;style&gt;
+button:hover {
+  background: #3a8d7f !important;
+}
+
+a[href^=&#34;https://github.com&#34;]:hover,
+a[href^=&#34;https://facebook.com&#34;]:hover {
+  transform: scale(1.1);
+}
+&lt;/style&gt;
+</description>
+        </item>
+        <item>
+        <title></title>
+        <link>http://localhost:1313/portfolio/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://localhost:1313/portfolio/</guid>
+        <description>&lt;h1 style=&#34;font-size: 3.5em; font-weight: bold; margin-bottom: 1em;&#34;&gt;NHỮNG DỰ ÁN CỦA TÔI&lt;/h1&gt;
+&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu
+&lt;/h2&gt;&lt;p&gt;Các dự án dưới đây phản ánh quá trình tôi tiếp cận bài toán kỹ thuật từ góc nhìn thực tế: từ việc thu thập và xử lý dữ liệu, thiết kế kiến trúc hệ thống, đến triển khai và tối ưu cho môi trường sản xuất. Mỗi dự án không chỉ là một bài tập công nghệ, mà là một nỗ lực nhằm giải quyết nhu cầu cụ thể trong nông nghiệp, an ninh, mạng xã hội và giải trí.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;ứng-dụng-nhận-diện-bệnh-trên-lá-cà-chua-2025&#34;&gt;Ứng dụng nhận diện bệnh trên lá cà chua (2025)
+&lt;/h2&gt;&lt;p&gt;Trong sản xuất nông nghiệp, việc phát hiện sớm bệnh trên lá cây là yếu tố quyết định đến năng suất, nhưng phương pháp thủ công vẫn chiếm ưu thế do thiếu công cụ hỗ trợ phù hợp với điều kiện thực địa. Tôi phát triển ứng dụng di động này nhằm đưa mô hình học sâu đến tay người dùng cuối một cách trực tiếp và dễ sử dụng nhất. Thay vì dựa vào các bộ dữ liệu quốc tế như PlantVillage với điều kiện lý tưởng, tôi xây dựng dataset bản địa hóa phản ánh đúng môi trường canh tác tại Việt Nam—ánh sáng không đồng đều, nền phức tạp, lá chồng chéo—rồi huấn luyện một biến thể YOLO được tối ưu cho thiết bị biên.&lt;/p&gt;
+&lt;p&gt;Kiến trúc hệ thống bao gồm backend FastAPI phục vụ inference từ mô hình PyTorch, database PostgreSQL lưu trữ lịch sử phát hiện và metadata, cùng với ứng dụng Flutter cho phép người dùng chụp ảnh trực tiếp tại ruộng và nhận kết quả gần như tức thì. Mô hình chỉ nặng 4.9 MB, chạy mượt trên thiết bị di động tầm trung mà vẫn đạt độ chính xác cao, cho thấy việc tối ưu kiến trúc có chủ đích mang lại giá trị thực tiễn rõ rệt. Toàn bộ mã nguồn và hướng dẫn triển khai có thể tìm thấy tại &lt;a class=&#34;link&#34; href=&#34;https://github.com/aresu-1704/tomato-disease-detect&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;repository trên GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;hệ-thống-giám-sát-và-đếm-số-lượng-người-ra-vào-khu-vực-2025&#34;&gt;Hệ thống giám sát và đếm số lượng người ra vào khu vực (2025)
+&lt;/h2&gt;&lt;p&gt;Việc giám sát lưu lượng người trong các khu vực công cộng, cửa hàng hay văn phòng thường yêu cầu thống kê chính xác theo thời gian thực, nhưng các giải pháp thương mại thường đắt đỏ và khó tùy chỉnh. Tôi xây dựng hệ thống này dựa trên mô hình MobileNetSSD, một kiến trúc phát hiện đối tượng nhẹ và đáp ứng tốt yêu cầu real-time trên phần cứng phổ thông. Hệ thống không chỉ phát hiện người trong khung hình mà còn theo dõi quỹ đạo di chuyển để phân biệt người vào và người ra, từ đó cung cấp số liệu thống kê chính xác theo từng khoảng thời gian.&lt;/p&gt;
+&lt;p&gt;Thách thức chính nằm ở việc xử lý các tình huống phức tạp như người chồng chéo, thay đổi góc nhìn camera, và điều kiện ánh sáng khác nhau. Tôi kết hợp kỹ thuật tracking đơn giản nhưng hiệu quả để duy trì identity của từng đối tượng qua các frame liên tiếp, đồng thời tối ưu pipeline xử lý để đảm bảo độ trễ thấp. Dự án này phù hợp cho các kịch bản cần giám sát tự động mà không yêu cầu hạ tầng phức tạp, và toàn bộ implementation có sẵn trên &lt;a class=&#34;link&#34; href=&#34;https://github.com/aresu-1704/people-tracking-realtime&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;mạng-xã-hội-di-động-relo-2025&#34;&gt;Mạng xã hội di động RELO (2025)
+&lt;/h2&gt;&lt;p&gt;Xây dựng một nền tảng mạng xã hội từ đầu là bài toán về khả năng mở rộng, độ trễ thấp và trải nghiệm người dùng mượt mà. RELO được thiết kế như một hệ thống hoàn chỉnh với ba trụ cột chính: nhắn tin thời gian thực, newsfeed cá nhân hóa, và quản lý hồ sơ người dùng. Tôi chịu trách nhiệm phát triển toàn bộ ứng dụng di động bằng Flutter, đồng thời thiết kế luồng dữ liệu giữa client và backend FastAPI, sử dụng MongoDB làm cơ sở dữ liệu chính nhờ tính linh hoạt về schema và khả năng xử lý document lồng nhau.&lt;/p&gt;
+&lt;p&gt;Phần nhắn tin thời gian thực được xây dựng dựa trên WebSocket, đảm bảo độ trễ thấp và đồng bộ hóa tin nhắn giữa các thiết bị. Newsfeed áp dụng cơ chế pagination và lazy loading để tối ưu hiệu năng khi tải dữ liệu lớn. Một thách thức thú vị là thiết kế state management phía client sao cho đồng bộ giữa các màn hình khác nhau mà không gây rò rỉ bộ nhớ hay tải lại dữ liệu không cần thiết. Toàn bộ mã nguồn và kiến trúc hệ thống được công khai tại &lt;a class=&#34;link&#34; href=&#34;https://github.com/aresu-1704/relo-social-network&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;RELO repository&lt;/a&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;website-nghe-nhạc-trực-tuyến-musicresu-2024&#34;&gt;Website nghe nhạc trực tuyến Musicresu (2024)
+&lt;/h2&gt;&lt;p&gt;Streaming nhạc trực tuyến là một bài toán quen thuộc nhưng không đơn giản khi cần cân bằng giữa trải nghiệm người dùng, quản lý metadata phức tạp và khả năng gợi ý nội dung thông minh. Tôi phát triển Musicresu như một nền tảng fullstack hoàn chỉnh, sử dụng ReactJS cho giao diện người dùng và ASP.NET Core cho backend API. Hệ thống cho phép người dùng tải lên, chia sẻ và nghe nhạc trực tuyến, đồng thời tích hợp cơ chế gợi ý bài hát dựa trên lịch sử nghe—một tính năng cốt lõi giúp cải thiện engagement và thời gian sử dụng.&lt;/p&gt;
+&lt;p&gt;Kiến trúc backend được thiết kế theo mô hình RESTful, sử dụng MongoDB để lưu trữ metadata của bài hát, playlist và lịch sử nghe. Phần gợi ý hoạt động dựa trên collaborative filtering đơn giản nhưng hiệu quả, phân tích các pattern nghe nhạc để đề xuất các bài hát tương tự. Phía client, tôi tối ưu audio streaming để giảm độ trễ khi chuyển bài và hỗ trợ background playback. Dự án này giúp tôi hiểu sâu hơn về toàn bộ stack từ frontend đến backend, cũng như cách xử lý dữ liệu đa phương tiện trong môi trường web. Chi tiết triển khai có thể xem tại &lt;a class=&#34;link&#34; href=&#34;https://github.com/aresu-1704/musicresu-musicwebsite&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;repository Musicresu&lt;/a&gt;.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title></title>
+        <link>http://localhost:1313/research/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://localhost:1313/research/</guid>
+        <description>&lt;h1 style=&#34;font-size: 3.5em; font-weight: bold; margin-bottom: 1em;&#34;&gt;CÁC CÔNG TRÌNH NGHIÊN CỨU&lt;/h1&gt;
+&lt;h2 id=&#34;giới-thiệu&#34;&gt;Giới thiệu
+&lt;/h2&gt;&lt;p&gt;Trang này tổng hợp các nghiên cứu và công trình khoa học của tôi trong lĩnh vực Thị giác máy tính, Học sâu và ứng dụng Trí tuệ nhân tạo. Mỗi nghiên cứu đều hướng đến việc giải quyết các bài toán thực tế, đặc biệt là trong bối cảnh Việt Nam, với mục tiêu thu hẹp khoảng cách giữa lý thuyết và triển khai ứng dụng.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;yolov10n-vt-nhận-diện-bệnh-lá-cà-chua-tối-ưu-cho-thiết-bị-biên-2025&#34;&gt;YOLOv10n-VT: Nhận diện bệnh lá cà chua tối ưu cho thiết bị biên (2025)
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Hội nghị:&lt;/strong&gt; VNICT 2025 - Hội nghị quốc gia lần thứ XXVII về Công nghệ Thông tin và Truyền thông, Ninh Bình&lt;br&gt;
+&lt;strong&gt;Lĩnh vực:&lt;/strong&gt; Computer Vision, Edge AI, Agricultural AI&lt;br&gt;
+&lt;strong&gt;Keywords:&lt;/strong&gt; YOLO, Object Detection, Tomato Leaf Disease, Edge Computing&lt;/p&gt;
+&lt;div style=&#34;text-align: center; margin: 2rem 0;&#34;&gt;
+  &lt;img src=&#34;http://localhost:1313/research/ki-yeu-vnict.jpg&#34; alt=&#34;Kỷ yếu VNICT 2025&#34; style=&#34;max-width: 600px; width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);&#34; /&gt;
+  &lt;p style=&#34;margin-top: 0.8rem; color: #666; font-style: italic;&#34;&gt;Kỷ yếu hội nghị VNICT 2025 tại Ninh Bình&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2 id=&#34;bối-cảnh-nghiên-cứu&#34;&gt;Bối cảnh nghiên cứu
+&lt;/h2&gt;&lt;p&gt;Cà chua là một trong những cây trồng có giá trị kinh tế cao tại Việt Nam, đặc biệt tại các vùng chuyên canh như Lâm Đồng, Gia Lai hay Đồng bằng sông Hồng. Tuy nhiên, năng suất và chất lượng cà chua thường xuyên bị ảnh hưởng bởi các bệnh trên lá do nấm, vi khuẩn và virus gây ra. Trong thực tế sản xuất, việc phát hiện bệnh vẫn chủ yếu dựa vào kinh nghiệm thủ công, dễ sai lệch và khó mở rộng trên diện rộng, đặc biệt trong bối cảnh thiếu nhân lực kỹ thuật.&lt;/p&gt;
+&lt;p&gt;Sự phát triển của học sâu và thị giác máy tính đã mở ra khả năng tự động hóa quá trình giám sát cây trồng. Trong đó, các mô hình phát hiện đối tượng theo thời gian thực như YOLO cho thấy tiềm năng lớn nhờ cân bằng tốt giữa tốc độ và độ chính xác. Tuy nhiên, khoảng cách giữa nghiên cứu và triển khai thực tế trong nông nghiệp Việt Nam vẫn còn khá lớn.&lt;/p&gt;
+&lt;h2 id=&#34;khoảng-trống-nghiên-cứu&#34;&gt;Khoảng trống nghiên cứu
+&lt;/h2&gt;&lt;p&gt;Phần lớn các nghiên cứu hiện nay về nhận diện bệnh lá cà chua sử dụng các bộ dữ liệu quốc tế như PlantVillage. Những bộ dữ liệu này thường được thu thập trong điều kiện lý tưởng, nền sạch, ánh sáng ổn định và không phản ánh đầy đủ các yếu tố nhiễu trong môi trường canh tác thực tế tại Việt Nam. Khi triển khai ngoài thực địa, hiệu năng của mô hình thường suy giảm đáng kể.&lt;/p&gt;
+&lt;p&gt;Bên cạnh đó, nhiều mô hình đạt độ chính xác cao nhưng có kiến trúc phức tạp, chi phí tính toán lớn, gây khó khăn khi triển khai trên các thiết bị biên như điện thoại thông minh, camera nông nghiệp hoặc hệ thống IoT. Điều này đặt ra nhu cầu về một hướng tiếp cận vừa sát với điều kiện địa phương, vừa tối ưu cho môi trường tài nguyên hạn chế.&lt;/p&gt;
+&lt;h2 id=&#34;động-lực-và-ý-tưởng-nghiên-cứu&#34;&gt;Động lực và ý tưởng nghiên cứu
+&lt;/h2&gt;&lt;p&gt;Chúng tôi thực hiện nghiên cứu này với mục tiêu thu hẹp khoảng cách giữa mô hình học sâu và ứng dụng nông nghiệp thực tế tại Việt Nam. Thay vì chỉ tập trung tối đa hóa độ chính xác, chúng tôi hướng đến một giải pháp cân bằng giữa hiệu năng, độ gọn nhẹ và khả năng triển khai.&lt;/p&gt;
+&lt;p&gt;Hai trụ cột chính của nghiên cứu bao gồm việc xây dựng một bộ dữ liệu bệnh lá cà chua mang tính bản địa hóa cao và đề xuất một biến thể YOLO nhẹ, được tối ưu có chủ đích cho thiết bị biên, mang tên &lt;strong&gt;YOLOv10n-VT&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;bộ-dữ-liệu-vtld-phản-ánh-điều-kiện-thực-tế-việt-nam&#34;&gt;Bộ dữ liệu VTLD: phản ánh điều kiện thực tế Việt Nam
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Vietnamese Tomato Leaf Disease Dataset (VTLD)&lt;/strong&gt; được xây dựng nhằm phản ánh sát nhất điều kiện canh tác tại Việt Nam. Bộ dữ liệu gồm &lt;strong&gt;6.164 ảnh&lt;/strong&gt;, kết hợp giữa ảnh phòng thí nghiệm và ảnh chụp thực địa, được gán nhãn thủ công thành &lt;strong&gt;9 lớp&lt;/strong&gt;, bao gồm 8 loại bệnh phổ biến và 1 lớp lá khỏe mạnh.&lt;/p&gt;
+&lt;p&gt;Khác với các dataset quốc tế, VTLD chứa nhiều yếu tố nhiễu như ánh sáng không đồng đều, nền phức tạp, lá chồng chéo và triệu chứng bệnh có kích thước nhỏ. Điều này khiến bài toán trở nên khó hơn, nhưng đồng thời giúp mô hình học được các đặc trưng có giá trị khi triển khai ngoài thực tế.&lt;/p&gt;
+&lt;h2 id=&#34;yolov10n-vt-tối-ưu-có-chủ-đích-cho-thiết-bị-biên&#34;&gt;YOLOv10n-VT: tối ưu có chủ đích cho thiết bị biên
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;YOLOv10n-VT&lt;/strong&gt; được chúng tôi phát triển như một biến thể tinh chỉnh từ YOLOv10n, với triết lý thiết kế rõ ràng: giảm chi phí tính toán nhưng vẫn duy trì khả năng phát hiện chính xác các triệu chứng bệnh.&lt;/p&gt;
+&lt;p&gt;Thay vì sử dụng các module nặng trong backbone, kiến trúc được đơn giản hóa bằng cách thay thế các khối trích xuất đặc trưng phức tạp bằng cấu trúc nhẹ hơn, vẫn giữ được cơ chế tái sử dụng đặc trưng và ổn định gradient. Một số thành phần attention có chi phí tính toán cao được loại bỏ, trong khi cơ chế &lt;strong&gt;CBAM&lt;/strong&gt; được tích hợp tại các vị trí chiến lược nhằm giúp mô hình tập trung tốt hơn vào vùng chứa triệu chứng bệnh trên lá.&lt;/p&gt;
+&lt;p&gt;Những điều chỉnh này không nhằm tạo ra một kiến trúc hoàn toàn mới, mà tập trung vào việc tái cấu trúc có chọn lọc, phù hợp với bài toán nông nghiệp và mục tiêu triển khai thực tế.&lt;/p&gt;
+&lt;h2 id=&#34;kết-quả-thực-nghiệm-và-phân-tích&#34;&gt;Kết quả thực nghiệm và phân tích
+&lt;/h2&gt;&lt;p&gt;Các thí nghiệm được thực hiện trên nền tảng GPU NVIDIA Tesla P100 và đánh giá thêm trên CPU cũng như thiết bị di động tầm trung. Kết quả cho thấy &lt;strong&gt;YOLOv10n-VT đạt mAP@50 ở mức 93.9%&lt;/strong&gt;, chỉ thấp hơn nhẹ so với YOLOv10n tiêu chuẩn, nhưng lại vượt trội về Precision và Recall so với các mô hình YOLO gọn nhẹ khác.&lt;/p&gt;
+&lt;p&gt;Đáng chú ý, mô hình chỉ có &lt;strong&gt;2.3 triệu tham số&lt;/strong&gt; với dung lượng &lt;strong&gt;4.9 MB&lt;/strong&gt;, đạt tốc độ suy luận nhanh nhất trong các mô hình được so sánh. Trên thiết bị di động tầm trung, YOLOv10n-VT vẫn duy trì khả năng xử lý gần thời gian thực, cho thấy tính khả thi khi triển khai ngoài hiện trường.&lt;/p&gt;
+&lt;p&gt;Những kết quả này cho thấy việc tối ưu kiến trúc có chủ đích, kết hợp với dữ liệu bản địa hóa, có thể mang lại hiệu quả rõ rệt mà không cần đánh đổi quá nhiều về độ chính xác.&lt;/p&gt;
+&lt;h2 id=&#34;triển-khai-thực-tế-và-giá-trị-ứng-dụng&#34;&gt;Triển khai thực tế và giá trị ứng dụng
+&lt;/h2&gt;&lt;p&gt;Một điểm nhấn quan trọng của nghiên cứu là việc triển khai mô hình YOLOv10n-VT trên ứng dụng di động. Thông qua camera của thiết bị, người dùng có thể nhận diện bệnh lá cà chua trực tiếp tại ruộng, hỗ trợ phát hiện sớm và đưa ra biện pháp xử lý kịp thời.&lt;/p&gt;
+&lt;p&gt;Giải pháp này hướng tới việc hỗ trợ nông dân, kỹ sư nông nghiệp và các hệ thống nông nghiệp thông minh trong việc giám sát cây trồng, giảm thiểu thiệt hại kinh tế và nâng cao hiệu quả sản xuất.&lt;/p&gt;
+&lt;h2 id=&#34;hướng-phát-triển-trong-tương-lai&#34;&gt;Hướng phát triển trong tương lai
+&lt;/h2&gt;&lt;p&gt;Trong tương lai, chúng tôi dự định mở rộng nghiên cứu theo hai hướng chính. Thứ nhất là áp dụng phương pháp tương tự cho các cây trồng quan trọng khác tại Việt Nam như lúa, xoài, cam hay hồ tiêu. Thứ hai là tích hợp hệ thống nhận diện bệnh với cơ sở dữ liệu nông nghiệp và các mô hình dự báo dịch hại, hướng tới xây dựng một nền tảng AI hỗ trợ ra quyết định trong nông nghiệp thông minh.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;YOLOv10n-VT&lt;/strong&gt; không chỉ là một mô hình phát hiện đối tượng, mà là một bước đi hướng tới việc đưa AI đến gần hơn với sản xuất nông nghiệp thực tế tại Việt Nam.&lt;/p&gt;
+&lt;div style=&#34;text-align: center; margin: 2rem 0;&#34;&gt;
+  &lt;img src=&#34;http://localhost:1313/research/paper-vnict.jpg&#34; alt=&#34;Báo cáo nghiên cứu tại hội thảo&#34; style=&#34;max-width: 600px; width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);&#34; /&gt;
+  &lt;p style=&#34;margin-top: 0.8rem; color: #666; font-style: italic;&#34;&gt;Báo cáo kết quả nghiên cứu được in trong kỷ yếu VNICT 2025&lt;/p&gt;
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;em&gt;Nghiên cứu được thực hiện tại Trường Đại học Công nghệ TP.HCM, và được trình bày tại VNICT 2025 - Hội nghị quốc gia lần thứ XXVII về Công nghệ Thông tin và Truyền thông, tổ chức tại Ninh Bình.&lt;/em&gt;&lt;/p&gt;
 </description>
         </item>
         

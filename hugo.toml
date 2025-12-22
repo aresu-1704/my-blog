@@ -20,11 +20,6 @@ unsafe = true
     weight = 30
 
   [[menu.main]]
-    name = "Résumé"
-    url = "/resume/"
-    weight = 40
-
-  [[menu.main]]
     name = "About"
     url = "/about/"
     weight = 50

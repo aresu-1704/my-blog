@@ -658,12 +658,10 @@ Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
 &lt;h2 id=&#34;tcp-transmission-control-protocol&#34;&gt;TCP: Transmission Control Protocol
 &lt;/h2&gt;&lt;h3 id=&#34;tcp-handshake---cái-bắt-tay-3-bước-tốn-thời-gian&#34;&gt;TCP Handshake - Cái bắt tay 3 bước tốn thời gian
 &lt;/h3&gt;&lt;p&gt;Trước khi gửi bất kỳ data nào, TCP phải thiết lập kết nối qua 3-way handshake. Client gửi một segment với cờ SYN kèm theo sequence number ngẫu nhiên (gọi là ISN - Initial Sequence Number). Server nhận được thì gửi lại SYN-ACK, vừa xác nhận ISN của client vừa gửi ISN của chính nó. Cuối cùng client gửi ACK để xác nhận ISN của server.&lt;/p&gt;
-&lt;p align=&#34;center&#34;&gt;
-  &lt;img src=&#34;http://localhost:1313/images/tcp-3-way.png&#34; alt=&#34;JavaScript Client-Side&#34; /&gt;
-&lt;/p&gt;
-&lt;p align=&#34;center&#34;&gt;
-  &lt;em&gt;TCP 3 bước bắt tay&lt;/em&gt;
-&lt;/p&gt;
+&lt;div style=&#34;text-align: center; margin: 2rem 0;&#34;&gt;
+  &lt;img src=&#34;http://localhost:1313/images/tcp-3-way.png&#34; alt=&#34;TCP 3-way handshake&#34; style=&#34;max-width: 600px; width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);&#34; /&gt;
+  &lt;p style=&#34;margin-top: 0.8rem; color: #666; font-style: italic;&#34;&gt;TCP 3 bước bắt tay&lt;/p&gt;
+&lt;/div&gt;
 &lt;p&gt;Nghe có vẻ đơn giản nhưng quá trình này tốn &lt;strong&gt;1.5 RTT&lt;/strong&gt; (Round-Trip Time). Nếu client và server ở xa nhau thì latency này khá đáng kể. Chưa kể cả hai bên phải giữ connection state trong memory. Khi đóng kết nối lại phải 4-way handshake nữa, thêm 2 RTT nữa.&lt;/p&gt;
 &lt;h3 id=&#34;tcp-đảm-bảo-reliable-như-thế-nào&#34;&gt;TCP đảm bảo reliable như thế nào?
 &lt;/h3&gt;&lt;p&gt;TCP không tin tưởng network layer. Nó tự implement reliability bằng cách đánh số thứ tự cho từng byte data. Khi receiver nhận được data, nó gửi ACK packet ngược lại để báo &amp;ldquo;tao đã nhận đến byte số X rồi&amp;rdquo;. Sender sẽ giữ data trong buffer cho đến khi nhận được ACK.&lt;/p&gt;
@@ -996,12 +994,10 @@ Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
 &lt;li&gt;&lt;strong&gt;Gửi yêu cầu (Request)&lt;/strong&gt;: Sử dụng &lt;code&gt;fetch()&lt;/code&gt; hoặc &lt;code&gt;axios&lt;/code&gt; để gọi dữ liệu từ Server mà không cần tải lại trang (AJAX).&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;Giới hạn:&lt;/strong&gt; Không thể đọc/ghi file trực tiếp trên máy tính người dùng (vì lý do bảo mật), không thể kết nối trực tiếp vào Database.&lt;/p&gt;
-&lt;p align=&#34;center&#34;&gt;
-  &lt;img src=&#34;http://localhost:1313/images/client-side-js.jpg&#34; alt=&#34;JavaScript Client-Side&#34; /&gt;
-&lt;/p&gt;
-&lt;p align=&#34;center&#34;&gt;
-  &lt;em&gt;Mô hình Javascript ở phía khách&lt;/em&gt;
-&lt;/p&gt;
+&lt;div style=&#34;text-align: center; margin: 2rem 0;&#34;&gt;
+  &lt;img src=&#34;http://localhost:1313/images/client-side-js.jpg&#34; alt=&#34;JavaScript Client-Side&#34; style=&#34;max-width: 600px; width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);&#34; /&gt;
+  &lt;p style=&#34;margin-top: 0.8rem; color: #666; font-style: italic;&#34;&gt;Mô hình Javascript ở phía khách&lt;/p&gt;
+&lt;/div&gt;
 &lt;h3 id=&#34;b-javascript-tại-server-nodejs&#34;&gt;B. JavaScript tại Server (Node.js)
 &lt;/h3&gt;&lt;p&gt;Tại đây, JS chạy trên môi trường Node.js (một runtime sử dụng V8 Engine của Google nhưng tách khỏi trình duyệt).&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Nhiệm vụ:&lt;/strong&gt;&lt;/p&gt;

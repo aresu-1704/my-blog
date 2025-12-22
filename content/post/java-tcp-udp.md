@@ -20,13 +20,10 @@ Hồi học môn mạng máy tính, mình cứ nghĩ TCP và UDP chỉ khác nha
 
 Trước khi gửi bất kỳ data nào, TCP phải thiết lập kết nối qua 3-way handshake. Client gửi một segment với cờ SYN kèm theo sequence number ngẫu nhiên (gọi là ISN - Initial Sequence Number). Server nhận được thì gửi lại SYN-ACK, vừa xác nhận ISN của client vừa gửi ISN của chính nó. Cuối cùng client gửi ACK để xác nhận ISN của server.
 
-<p align="center">
-  <img src="/images/tcp-3-way.png" alt="JavaScript Client-Side" />
-</p>
-
-<p align="center">
-  <em>TCP 3 bước bắt tay</em>
-</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="/images/tcp-3-way.png" alt="TCP 3-way handshake" style="max-width: 600px; width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <p style="margin-top: 0.8rem; color: #666; font-style: italic;">TCP 3 bước bắt tay</p>
+</div>
 
 Nghe có vẻ đơn giản nhưng quá trình này tốn **1.5 RTT** (Round-Trip Time). Nếu client và server ở xa nhau thì latency này khá đáng kể. Chưa kể cả hai bên phải giữ connection state trong memory. Khi đóng kết nối lại phải 4-way handshake nữa, thêm 2 RTT nữa.
 

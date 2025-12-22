@@ -152,9 +152,6 @@
     <loc>http://localhost:1313/categories/programming/</loc>
     <lastmod>2025-12-22T00:23:10+07:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/about/</loc>
-    <lastmod>2025-12-21T21:50:00+07:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/tags/tcp/ip/</loc>
     <lastmod>2025-12-20T19:00:00+07:00</lastmod>
   </url><url>
@@ -166,5 +163,13 @@
   </url><url>
     <loc>http://localhost:1313/post/java-client-server/</loc>
     <lastmod>2025-12-16T19:00:00+07:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/about/</loc>
+  </url><url>
+    <loc>http://localhost:1313/contact/</loc>
+  </url><url>
+    <loc>http://localhost:1313/portfolio/</loc>
+  </url><url>
+    <loc>http://localhost:1313/research/</loc>
   </url>
 </urlset>

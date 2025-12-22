@@ -1,11 +1,7 @@
-+++
-date = '2025-12-21T21:50:00+07:00'
-draft = false
-title = 'About Me'
-+++
+<h1 style="font-size: 3.5em; font-weight: bold; margin-bottom: 1em;">VỀ BẢN THÂN TÔI</h1>
 
-<div style="text-align: center; margin-bottom: 2rem;">
-  <img src="/images/about-me.jpg" alt="Lý Thuận An" style="height: 600px; border-radius: 50px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="/images/about-me.jpg" alt="Lý Thuận An" style="max-width: 600px; width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
 </div>
 
 ## Đôi nét về bản thân tôi
@@ -26,12 +22,9 @@ Mình viết theo triết lý "đi sâu vào bản chất" - không chỉ dừng
 
 Ngoài code ra thì mình cũng là game thủ trung thành (chủ yếu là để... debug stress sau khi debug code 😅). Thỉnh thoảng cũng ra sân chơi thể thao để nhắc nhở bản thân rằng không phải cứ ngồi một chỗ là cơ thể sẽ tự động khỏe mạnh. Cân bằng giữa màn hình và đời thực là cả một nghệ thuật! ⚽🏀
 
-<div style="text-align: center; margin-bottom: 2rem;">
-  <img src="/images/my-desk.jpg" alt="Lý Thuận An" style="box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-</div>
-
-<div style="text-align: center; margin-bottom: 2rem;">
-  <em>Khoe tí góc làm việc (và chơi game)</em>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="/images/my-desk.jpg" alt="Góc làm việc" style="max-width: 600px; width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+  <p style="margin-top: 0.8rem; color: #666; font-style: italic;">Khoe tí góc làm việc (và chơi game)</p>
 </div>
 
 ## Liên hệ

@@ -48,13 +48,10 @@ Tại đây, JS chạy trên môi trường trình duyệt.
 
 **Giới hạn:** Không thể đọc/ghi file trực tiếp trên máy tính người dùng (vì lý do bảo mật), không thể kết nối trực tiếp vào Database.
 
-<p align="center">
-  <img src="/images/client-side-js.jpg" alt="JavaScript Client-Side" />
-</p>
-
-<p align="center">
-  <em>Mô hình Javascript ở phía khách</em>
-</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="/images/client-side-js.jpg" alt="JavaScript Client-Side" style="max-width: 600px; width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <p style="margin-top: 0.8rem; color: #666; font-style: italic;">Mô hình Javascript ở phía khách</p>
+</div>
 
 ### B. JavaScript tại Server (Node.js)
 
