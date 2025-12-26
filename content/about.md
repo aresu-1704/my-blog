@@ -1,8 +1,7 @@
 +++
-title = "ABOUT"
+title = "Về bãn thân tôi"
 date = 2025-12-22T01:20:00+07:00
 +++
-<h1 style="font-size: 3.5em; font-weight: bold; margin-bottom: 1em;">VỀ BẢN THÂN TÔI</h1>
 
 <div style="text-align: center; margin: 2rem 0;">
   <img src="/images/about-me.jpg" alt="Lý Thuận An" style="max-width: 600px; width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">

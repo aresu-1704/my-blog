@@ -1,15 +1,7 @@
 +++
-title = "CONTACT"
+title = "Liên hệ"
 date = 2025-12-22T01:20:00+07:00
 +++
-
-<div style="max-width: 800px; margin: 0 auto;">
-
-<h1 style="font-size: 3.5em; font-weight: bold; margin-bottom: 1em;">LIÊN HỆ</h1>
-
-<div style="display: flex; gap: 60px; align-items: flex-start; flex-wrap: wrap;">
-
-<div style="flex: 1; min-width: 300px;">
 
 ## THUẬN AN
 

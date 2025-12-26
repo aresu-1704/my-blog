@@ -1,9 +1,7 @@
 +++
-title = "RESEARCH"
+title = "Các công trình nghiên cứu của tôi"
 date = 2025-12-22T01:20:00+07:00
 +++
-
-<h1 style="font-size: 3.5em; font-weight: bold; margin-bottom: 1em;">CÁC CÔNG TRÌNH NGHIÊN CỨU</h1>
 
 ## Giới thiệu
 
