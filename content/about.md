@@ -1,5 +1,5 @@
 +++
-title = "Về bãn thân tôi"
+title = "Về bản thân tôi"
 date = 2025-12-22T01:20:00+07:00
 +++
 
