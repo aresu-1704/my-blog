@@ -14,7 +14,7 @@ title = 'THUẬN AN IT BLOG'
 # About section - easy to customize
 [params.about]
   name = "Lý Thuận An"
-  title = "Engineer #Pencraft Cloud, Open Source Enthusiast and Life Adventurer"
+  title = "Kỹ sư AI tương lai, đam mê mã nguồn mở, yêu thích khám phá công nghệ và trải nghiệm cuộc sống"
   avatar = "/images/avatar.jpg"
   description = "Mình là Lý Thuận An, đang theo học năm cuối chuyên ngành Trí tuệ nhân tạo tại Đại học Công nghệ TP.HCM (HUTECH). Định hướng nghề nghiệp của mình tập trung vào việc kết nối nghiên cứu AI với phát triển ứng dụng thực tế."
   email = "anly1704@gmail.com"
