@@ -21,6 +21,16 @@ Blog này là nơi mình chia sẻ những gì học được từ quá trình n
 
 Mình viết theo triết lý "đi sâu vào bản chất" - không chỉ dừng lại ở việc code chạy được, mà cần hiểu tại sao nó chạy, nó hoạt động như thế nào ở tầng dưới, và khi nào nên dùng giải pháp nào. Hy vọng những chia sẻ này hữu ích cho các bạn đang học và làm việc trong lĩnh vực công nghệ! 🚀
 
+## Tải CV của tôi
+
+<div style="text-align: center; margin: 2rem 0; padding: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);">
+  <h3 style="color: white; margin: 0 0 1rem 0; font-size: 1.3rem;">📋 CV / Resume</h3>
+  <p style="color: rgba(255,255,255,0.9); margin: 0 0 1.5rem 0;">Tải xuống CV của tôi để xem chi tiết về kinh nghiệm và kỹ năng</p>
+  <a href="/cv/CV.pdf" download style="display: inline-block; padding: 0.75rem 2rem; background: white; color: #667eea; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 1.1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: transform 0.2s, box-shadow 0.2s;">
+    ⬇️ Tải xuống CV của tôi
+  </a>
+</div>
+
 ## Chứng chỉ
 
 Một số chứng chỉ mình đã hoàn thành trong quá trình học tập:
